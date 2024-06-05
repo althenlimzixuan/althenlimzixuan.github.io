@@ -1,10 +1,8 @@
 # _config.yml
-title: My awesome site
+title: Althen Lim's workspace
 email: althenlim@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  AI ask me to write my awesone description here. Oh well.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://althenlimzixuan.github.com" # the base hostname & protocol for your site
 twitter_username: jekyllrb
@@ -12,6 +10,6 @@ github_username: jekyll
 
 # Build settings
 markdown: kramdown
-theme: minima
+theme: jekyll-theme-minimal
 plugins:
   - jekyll-feed
