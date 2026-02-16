@@ -1,5 +1,587 @@
-<html>
-  Wannt to see the
-  <a href="about.html">about</a>
-  page?
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio Template</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Work+Sans:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-dark: #0a0e27;
+        --text-light: #e8eaf6;
+        --accent: #64ffda;
+        --accent-glow: rgba(100, 255, 218, 0.3);
+        --card-bg: rgba(20, 25, 50, 0.7);
+      }
+
+      body {
+        font-family: "Work Sans", sans-serif;
+        color: var(--text-light);
+        overflow-x: hidden;
+        background: var(--bg-dark);
+      }
+
+      /* Fixed Starfield Background */
+      .starfield {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg-dark);
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      .star {
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle 3s infinite;
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.3;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      /* Scrollable Content */
+      .content {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Navigation */
+      nav {
+        position: sticky;
+        top: 0;
+        padding: 2rem 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(10, 14, 39, 0.8);
+        backdrop-filter: blur(10px);
+        z-index: 100;
+        border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+      }
+
+      .logo {
+        font-family: "Playfair Display", serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-shadow: 0 0 20px var(--accent-glow);
+      }
+
+      nav ul {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      nav a {
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 300;
+        letter-spacing: 0.5px;
+        transition: color 0.3s ease;
+        position: relative;
+      }
+
+      nav a::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background: var(--accent);
+        transition: width 0.3s ease;
+      }
+
+      nav a:hover {
+        color: var(--accent);
+      }
+
+      nav a:hover::after {
+        width: 100%;
+      }
+
+      /* Hero Section */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 5%;
+        text-align: center;
+      }
+
+      .hero-content {
+        animation: fadeInUp 1s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .hero h1 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(3rem, 8vw, 6rem);
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--text-light), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: fadeInUp 1s ease-out 0.2s both;
+      }
+
+      .hero .subtitle {
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        font-weight: 300;
+        margin-bottom: 2rem;
+        opacity: 0.8;
+        animation: fadeInUp 1s ease-out 0.4s both;
+      }
+
+      .cta-button {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        background: transparent;
+        border: 2px solid var(--accent);
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 1s ease-out 0.6s both;
+      }
+
+      .cta-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: var(--accent);
+        transition: left 0.3s ease;
+        z-index: -1;
+      }
+
+      .cta-button:hover {
+        color: var(--bg-dark);
+      }
+
+      .cta-button:hover::before {
+        left: 0;
+      }
+
+      /* Section Styling */
+      section {
+        padding: 6rem 5%;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      h2 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        margin-bottom: 3rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      h2::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 60%;
+        height: 3px;
+        background: var(--accent);
+        box-shadow: 0 0 10px var(--accent-glow);
+      }
+
+      /* About Section */
+      .about-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+      }
+
+      .about-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        font-weight: 300;
+      }
+
+      .profile-image {
+        width: 100%;
+        max-width: 400px;
+        height: 400px;
+        background: linear-gradient(
+          135deg,
+          var(--accent-glow),
+          rgba(100, 120, 255, 0.2)
+        );
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 5rem;
+        margin: 0 auto;
+      }
+
+      /* Projects Grid */
+      .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+      }
+
+      .project-card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid rgba(100, 255, 218, 0.1);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .project-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--accent);
+        box-shadow: 0 20px 40px rgba(100, 255, 218, 0.2);
+      }
+
+      .project-image {
+        width: 100%;
+        height: 250px;
+        background: linear-gradient(
+          135deg,
+          rgba(100, 255, 218, 0.3),
+          rgba(100, 120, 255, 0.3)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+      }
+
+      .project-info {
+        padding: 1.5rem;
+      }
+
+      .project-info h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--accent);
+      }
+
+      .project-info p {
+        font-weight: 300;
+        line-height: 1.6;
+        opacity: 0.9;
+      }
+
+      /* Skills Section */
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+      }
+
+      .skill-item {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        border: 1px solid rgba(100, 255, 218, 0.1);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .skill-item:hover {
+        border-color: var(--accent);
+        transform: scale(1.05);
+        box-shadow: 0 10px 30px var(--accent-glow);
+      }
+
+      .skill-item h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+        color: var(--accent);
+      }
+
+      /* Contact Section */
+      .contact-content {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .contact-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        font-weight: 300;
+        line-height: 1.8;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        margin-top: 2rem;
+      }
+
+      .social-links a {
+        color: var(--text-light);
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .social-links a:hover {
+        color: var(--accent);
+        transform: translateY(-5px);
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: 2rem 5%;
+        background: rgba(10, 14, 39, 0.8);
+        border-top: 1px solid rgba(100, 255, 218, 0.1);
+        font-weight: 300;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        nav ul {
+          gap: 1rem;
+        }
+
+        .about-content {
+          grid-template-columns: 1fr;
+        }
+
+        .projects-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Fixed Starfield Background -->
+    <div class="starfield" id="starfield"></div>
+
+    <!-- Scrollable Content -->
+    <div class="content">
+      <nav>
+        <div class="logo">Portfolio</div>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <section class="hero">
+        <div class="hero-content">
+          <h1>Althen Lim Zi Xuan</h1>
+          <p class="subtitle">Creative Developer & Designer</p>
+          <a href="#projects" class="cta-button">View My Work</a>
+        </div>
+      </section>
+
+      <section id="about">
+        <h2>About Me</h2>
+        <div class="about-content">
+          <div class="about-text">
+            <p>
+              Hello! I'm a passionate creative professional with a love for
+              beautiful design and elegant code. I specialize in creating
+              memorable digital experiences that blend form and function.
+            </p>
+            <br />
+            <p>
+              With years of experience in web development and design, I bring
+              ideas to life through thoughtful solutions and attention to
+              detail. I believe that great work comes from the intersection of
+              creativity and technical excellence.
+            </p>
+          </div>
+          <div class="profile-image">👤</div>
+        </div>
+      </section>
+
+      <section id="projects">
+        <h2>Featured Projects</h2>
+        <div class="projects-grid">
+          <div class="project-card">
+            <div class="project-image">🎨</div>
+            <div class="project-info">
+              <h3>Project One</h3>
+              <p>
+                A beautiful web application with stunning animations and
+                seamless user experience.
+              </p>
+            </div>
+          </div>
+          <div class="project-card">
+            <div class="project-image">💻</div>
+            <div class="project-info">
+              <h3>Project Two</h3>
+              <p>
+                Innovative solution combining cutting-edge technology with
+                elegant design principles.
+              </p>
+            </div>
+          </div>
+          <div class="project-card">
+            <div class="project-image">🚀</div>
+            <div class="project-info">
+              <h3>Project Three</h3>
+              <p>
+                Interactive experience that pushes the boundaries of what's
+                possible on the web.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="skills">
+        <h2>Skills & Expertise</h2>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <h3>Frontend Development</h3>
+            <p>HTML, CSS, JavaScript, React</p>
+          </div>
+          <div class="skill-item">
+            <h3>UI/UX Design</h3>
+            <p>Figma, Adobe XD, Prototyping</p>
+          </div>
+          <div class="skill-item">
+            <h3>Backend</h3>
+            <p>Node.js, Python, Databases</p>
+          </div>
+          <div class="skill-item">
+            <h3>Tools</h3>
+            <p>Git, VS Code, Terminal</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <h2>Get In Touch</h2>
+        <div class="contact-content">
+          <p>
+            I'm always open to new opportunities and collaborations. Whether you
+            have a project in mind or just want to connect, feel free to reach
+            out!
+          </p>
+          <a href="mailto:your.email@example.com" class="cta-button"
+            >Send Email</a
+          >
+          <div class="social-links">
+            <a href="#" title="LinkedIn">🔗</a>
+            <a href="#" title="GitHub">💻</a>
+            <a href="#" title="Twitter">🐦</a>
+            <a href="#" title="Instagram">📷</a>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <p>&copy; 2024 Your Name. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <script>
+      // Generate stars
+      function createStarfield() {
+        const starfield = document.getElementById("starfield");
+        const numberOfStars = 200;
+
+        for (let i = 0; i < numberOfStars; i++) {
+          const star = document.createElement("div");
+          star.className = "star";
+
+          // Random position
+          star.style.left = Math.random() * 100 + "%";
+          star.style.top = Math.random() * 100 + "%";
+
+          // Random size (small, medium, large stars)
+          const size = Math.random() * 3 + 1;
+          star.style.width = size + "px";
+          star.style.height = size + "px";
+
+          // Random animation delay for varied twinkling
+          star.style.animationDelay = Math.random() * 3 + "s";
+
+          // Random animation duration for varied speeds
+          star.style.animationDuration = Math.random() * 3 + 2 + "s";
+
+          starfield.appendChild(star);
+        }
+      }
+
+      // Initialize starfield when page loads
+      createStarfield();
+
+      // Smooth scrolling for navigation links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        });
+      });
+    </script>
+  </body>
 </html>
