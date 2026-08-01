@@ -1,0 +1,73 @@
+---
+import { site } from '../data/site';
+
+const { pathname } = Astro.url;
+const links = [
+  { href: '/work/etp/', label: 'Work' },
+  { href: '/how-i-build/', label: 'How I build' },
+  { href: '/resume/', label: 'Resume' },
+];
+const isActive = (href: string) => pathname === href;
+---
+
+<header class="site-header no-print">
+  <div class="page bar">
+    <a href="/" class="wordmark">{site.name}</a>
+    <nav aria-label="Main">
+      <ul>
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-block-end: 1px solid var(--c-rule);
+  }
+
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    align-items: baseline;
+    justify-content: space-between;
+    padding-block: var(--s-4);
+  }
+
+  .wordmark {
+    font-family: var(--f-sans);
+    font-weight: 600;
+    color: var(--c-fg);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+
+  nav ul {
+    display: flex;
+    gap: var(--s-6);
+    list-style: none;
+    padding: 0;
+    font-family: var(--f-sans);
+    font-size: var(--t-sm);
+  }
+
+  nav a {
+    color: var(--c-muted);
+    text-decoration: none;
+  }
+
+  nav a:hover,
+  nav a[aria-current='page'] {
+    color: var(--c-fg);
+    text-decoration: underline;
+  }
+</style>
