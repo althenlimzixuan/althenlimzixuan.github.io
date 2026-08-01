@@ -1,11 +1,14 @@
 # Personal Portfolio — althenlimzixuan.github.io
 
 @C:\Users\zixua\.claude\practices\workflow.md
-@C:\Users\zixua\.claude\practices\nextjs_web.md
+@C:\Users\zixua\.claude\practices\testing.md
 @C:\Users\zixua\.claude\practices\devops_cicd.md
 
 <!-- Shape B — Single Service. This file is the git root, so it must import
      everything the session needs; nothing above it loads. -->
+
+<!-- testing.md's "80% minimum, enforced in CI" coverage gate does not apply
+     here — see "Quality gates" below for what this repo actually enforces. -->
 
 ## What this is
 
