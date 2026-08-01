@@ -1,0 +1,67 @@
+name: Quality
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run schema tests
+        run: npm test
+
+      - name: Type and content check
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2.9.0
+        with:
+          # --exclude excludes the production origin (https://althenlimzixuan.github.io).
+          # Every page emits an absolute canonical URL and og:url pointing at prod. On a PR
+          # that adds a new route, that URL doesn't exist yet -- it only appears after the
+          # PR merges and deploys. Without this exclusion, every PR that introduces a new
+          # page would fail this gate forever, for a reason that isn't a real defect.
+          # Internal links are still verified against the local dist/ files, which is a
+          # stronger check than hitting production. Do not remove this exclusion without
+          # first understanding the deploy-order race it prevents.
+          #
+          # --root-dir is required for lychee to resolve root-relative internal links
+          # (e.g. "/", "/work/etp/", "/_astro/*.css") against the local dist/ files.
+          # Without it, lychee cannot map an absolute path to a file on disk and every
+          # such link fails to resolve -- verified locally: 26 false errors without this
+          # flag, 0 with it. This is not optional for a site with an empty base path.
+          args: >-
+            --no-progress
+            --include-fragments
+            --accept 200,206,301,302,307,308
+            --max-retries 2
+            --root-dir ${{ github.workspace }}/dist
+            --exclude-path dist/sitemap-index.xml
+            --exclude-path dist/sitemap-0.xml
+            --exclude 'https://althenlimzixuan\.github\.io'
+            'dist/**/*.html'
+          fail: true
+
+      - name: Lighthouse
+        uses: treosh/lighthouse-ci-action@12.6.2
+        with:
+          configPath: ./.lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
