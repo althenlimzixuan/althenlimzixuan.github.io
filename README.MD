@@ -37,7 +37,12 @@ Lighthouse) but do not deploy.
 | Service areas | `src/data/services.yaml` |
 | Employment history | `src/data/experience.yaml` |
 | Case studies | `src/content/projects/*.mdx` |
-| Colours, type, spacing | `src/styles/tokens.css` |
+| Colour/type/spacing values | `src/styles/tokens.css` |
+
+Token *values* live in `tokens.css`, but some composite treatments (section
+headings, buttons) are currently duplicated across individual components
+rather than centralised there — a redesign touching those may need to edit
+more than one file.
 
 Adding a project is one new `.mdx` file — no code changes.
 

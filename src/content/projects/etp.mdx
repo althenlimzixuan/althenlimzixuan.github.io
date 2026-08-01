@@ -45,14 +45,17 @@ ever difficult.
 
 ## What I built
 
-A production system across four surfaces, built solo:
+A production system across three surfaces, built solo:
 
 - **API** — Go with Gin, Wire for dependency injection, GORM over PostgreSQL,
   Redis where it earns its place. Deployed to Cloud Run.
 - **Web** — Next.js App Router, deployed on Vercel.
 - **Mobile** — React Native on Expo.
-- **Shared API client** — TypeScript, generated from the OpenAPI spec and
-  published to GitHub Packages, consumed identically by web and mobile.
+
+All three consume a shared API client — TypeScript, generated from the
+OpenAPI spec and published to GitHub Packages — rather than each hand-writing
+its own fetch layer. That client is infrastructure the surfaces share, not a
+fourth surface in its own right.
 
 Twenty-three delivery phases shipped. The interesting part is not the stack —
 it is four decisions that shaped everything after them.

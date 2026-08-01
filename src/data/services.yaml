@@ -23,7 +23,7 @@
   summary: Expo apps sharing one API contract with the web surface.
   order: 3
   detail:
-    - Expo managed workflow, EAS Build and EAS Submit
+    - Expo managed workflow and EAS Build
     - The same generated API client the web app uses, so the surfaces cannot disagree
     - Offline-tolerant data handling where the product needs it
 

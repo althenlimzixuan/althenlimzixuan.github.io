@@ -69,6 +69,13 @@ Owner identity, contact and CTA config: `src/data/site.ts`. When
 
 ## Visual design
 
-All tokens in `src/styles/tokens.css` — a redesign touches that file only.
+Token *values* (palette, type scale, spacing) live in `src/styles/tokens.css`
+— changing a colour, size or spacing step touches that file only. Some
+composite treatments are currently duplicated across components rather than
+centralised: the section-heading rule (`font-size: var(--t-xl)`, heading
+margins, top border) is copy-pasted into `ExperienceTimeline.astro`,
+`SkillsMatrix.astro`, `resume.astro` and `ProseLayout.astro`; the `.btn` rule
+is duplicated in `Hero.astro` and `ClosingCta.astro`. A redesign that changes
+one of those composites, not just token values, has to touch each copy.
 Avoid teal (#64ffda) on navy (#0a0e27), animated starfields and gradient blobs;
 the previous template used that look and it reads as generic on sight.

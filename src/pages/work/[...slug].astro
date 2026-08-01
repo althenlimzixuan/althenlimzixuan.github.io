@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import ProseLayout from '../../layouts/ProseLayout.astro';
+import { primaryCtaHref, primaryCtaLabel } from '../../data/site';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -22,4 +23,16 @@ const { data } = entry;
   lede={data.tagline}
 >
   <Content />
+  <p class="cta">
+    <a href={primaryCtaHref()}>{primaryCtaLabel()} →</a>
+  </p>
 </ProseLayout>
+
+<style>
+  .cta {
+    margin-block-start: var(--s-16);
+    font-family: var(--f-sans);
+    font-weight: 600;
+    font-size: var(--t-lg);
+  }
+</style>
