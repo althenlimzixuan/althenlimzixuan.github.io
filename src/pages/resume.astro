@@ -51,9 +51,18 @@ import { site } from '../data/site';
 </BaseLayout>
 
 <style>
-  .resume {
-    max-width: var(--w-hero);
-    padding-block: var(--s-16);
+  /* Scoped to screen only: Astro compiles this as `.resume[data-astro-cid-*]`
+     (specificity 0,2,0), which would otherwise outrank the unscoped
+     `.page { max-width: none; padding: 0 }` print override in global.css
+     (specificity 0,1,0) regardless of media query, leaving the resume
+     clamped to --w-hero with screen padding when printed. Wrapping in
+     `@media not print` removes this rule from the print cascade entirely
+     so the sitewide print override applies unopposed. */
+  @media not print {
+    .resume {
+      max-width: var(--w-hero);
+      padding-block: var(--s-16);
+    }
   }
 
   h1 { font-size: var(--t-2xl); }

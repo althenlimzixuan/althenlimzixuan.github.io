@@ -58,6 +58,9 @@ const groups = [
     grid-template-columns: 1fr;
   }
 
+  /* 48rem breakpoint kept inline: custom properties are not valid inside
+     @media conditions (`@media (min-width: var(--bp))` silently never
+     matches), so this value cannot be tokenised. */
   @media (min-width: 48rem) {
     .matrix > div {
       grid-template-columns: 12rem 1fr;
