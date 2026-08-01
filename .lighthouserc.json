@@ -2,7 +2,13 @@
   "ci": {
     "collect": {
       "staticDistDir": "./dist",
-      "numberOfRuns": 1
+      "url": [
+        "http://localhost/",
+        "http://localhost/work/etp/",
+        "http://localhost/how-i-build/",
+        "http://localhost/resume/"
+      ],
+      "numberOfRuns": 3
     },
     "assert": {
       "assertions": {
