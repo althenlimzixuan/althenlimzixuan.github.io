@@ -39,6 +39,14 @@
   --w-prose: 38rem;
   --w-page: 68rem;
   --radius: 4px;
+
+  /* Print — deliberately fixed, never theme-derived: a dark-mode reader
+     must not print a dark background. */
+  --p-bg: #fff;
+  --p-fg: #000;
+  --p-url: #444;
+  --p-body: 11pt;
+  --p-url-size: 9pt;
 }
 
 /* Palette — dark. Driven by the OS preference alone: there is no theme

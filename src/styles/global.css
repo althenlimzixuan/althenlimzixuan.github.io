@@ -115,9 +115,9 @@ hr {
 
 @media print {
   body {
-    background: #fff;
-    color: #000;
-    font-size: 11pt;
+    background: var(--p-bg);
+    color: var(--p-fg);
+    font-size: var(--p-body);
   }
 
   .no-print,
@@ -128,8 +128,8 @@ hr {
 
   a[href^='http']::after {
     content: ' (' attr(href) ')';
-    font-size: 9pt;
-    color: #444;
+    font-size: var(--p-url-size);
+    color: var(--p-url);
   }
 
   .page {
