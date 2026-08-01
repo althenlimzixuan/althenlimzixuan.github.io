@@ -50,14 +50,34 @@ jobs:
           # Without it, lychee cannot map an absolute path to a file on disk and every
           # such link fails to resolve -- verified locally: 26 false errors without this
           # flag, 0 with it. This is not optional for a site with an empty base path.
+          #
+          # The ETP live URL (https://etp-web.vercel.app/) is passed explicitly as its
+          # own input. It appears only in etp.mdx frontmatter (liveUrl), which no
+          # component reads, so it never reaches the built HTML in dist/ and lychee
+          # would otherwise never check it. It is spec-mandated (design spec §9): an
+          # external link check covering the ETP URL, so it cannot rot silently. Do
+          # not remove this as "redundant with dist/**/*.html" -- it is the only
+          # thing that checks it. The URL correctly redirects (307) to a sign-in
+          # page, which is why 307 is in --accept below; this gate should pass on a
+          # healthy ETP and fail only if the URL genuinely breaks.
+          #
+          # --user-agent is set to a real browser string because lychee's default
+          # ("lychee/x.y.z") gets a hard 403 from Google Identity Services
+          # (accounts.google.com/gsi/client), which the ETP sign-in page loads --
+          # confirmed by curl: the same request 403s with any user agent containing
+          # "lychee" and succeeds with a browser UA. That 403 is Google's bot
+          # filtering, not a sign anything on our side is broken, so checking it with
+          # a default UA would fail this gate on a perfectly healthy ETP.
           args: >-
             --no-progress
             --include-fragments
             --accept 200,206,301,302,307,308
             --max-retries 2
+            --user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
             --root-dir ${{ github.workspace }}/dist
             --exclude 'https://althenlimzixuan\.github\.io'
             'dist/**/*.html'
+            'https://etp-web.vercel.app/'
           fail: true
 
       # .lighthouserc.json lists each page explicitly under collect.url instead of relying
