@@ -1,0 +1,73 @@
+---
+import { getCollection } from 'astro:content';
+
+const services = (await getCollection('services')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<section class="page section" aria-labelledby="services-heading">
+  <h2 id="services-heading">What I do</h2>
+  <ul class="grid">
+    {
+      services.map((s) => (
+        <li>
+          <h3>{s.data.title}</h3>
+          <p class="summary">{s.data.summary}</p>
+          <ul class="detail">
+            {s.data.detail.map((d) => <li>{d}</li>)}
+          </ul>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .section { padding-block: var(--s-16); }
+  h2 { margin-block-end: var(--s-12); }
+
+  .grid {
+    display: grid;
+    gap: var(--s-12);
+    grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+    list-style: none;
+    padding: 0;
+  }
+
+  .grid > li {
+    border-block-start: 2px solid var(--c-fg);
+    padding-block-start: var(--s-4);
+  }
+
+  h3 {
+    font-size: var(--t-lg);
+    margin-block-end: var(--s-3);
+  }
+
+  .summary {
+    color: var(--c-muted);
+    margin-block-end: var(--s-4);
+  }
+
+  .detail {
+    list-style: none;
+    padding: 0;
+    font-size: var(--t-sm);
+    font-family: var(--f-sans);
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  .detail li {
+    padding-inline-start: var(--s-4);
+    position: relative;
+    color: var(--c-muted);
+  }
+
+  .detail li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+  }
+</style>

@@ -1,0 +1,124 @@
+---
+import { getCollection } from 'astro:content';
+
+const featured = (await getCollection('projects'))
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)[0];
+
+if (!featured) {
+  throw new Error(
+    'No featured project found. At least one entry in src/content/projects must set featured: true.',
+  );
+}
+
+const { data, id } = featured;
+---
+
+<section class="page section" aria-labelledby="work-heading">
+  <h2 id="work-heading">Selected work</h2>
+
+  <article class="feature">
+    <header>
+      <h3><a href={`/work/${id}/`}>{data.title}</a></h3>
+      <p class="tagline">{data.tagline}</p>
+    </header>
+
+    <dl class="metrics">
+      {
+        data.metrics.map((m) => (
+          <div>
+            <dt>{m.label}</dt>
+            <dd>{m.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <p class="role">{data.role} · {data.period}</p>
+
+    <ul class="stack">
+      {data.stack.map((s) => <li>{s}</li>)}
+    </ul>
+
+    <p class="more">
+      <a href={`/work/${id}/`}>Read the case study →</a>
+    </p>
+  </article>
+</section>
+
+<style>
+  .section { padding-block: var(--s-16); }
+  h2 { margin-block-end: var(--s-12); }
+
+  .feature {
+    border: 1px solid var(--c-rule);
+    border-radius: var(--radius);
+    padding: var(--s-8);
+    background: var(--c-surface);
+  }
+
+  h3 { font-size: var(--t-2xl); }
+  h3 a { color: var(--c-fg); text-decoration: none; }
+  h3 a:hover { text-decoration: underline; }
+
+  .tagline {
+    font-size: var(--t-lg);
+    color: var(--c-muted);
+    margin-block-start: var(--s-3);
+    max-width: var(--w-prose);
+  }
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: var(--s-6);
+    margin-block: var(--s-8);
+    padding-block: var(--s-6);
+    border-block: 1px solid var(--c-rule);
+  }
+
+  dt {
+    font-family: var(--f-sans);
+    font-size: var(--t-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--c-muted);
+  }
+
+  dd {
+    font-family: var(--f-sans);
+    font-size: var(--t-lg);
+    font-weight: 600;
+    margin: var(--s-1) 0 0;
+  }
+
+  .role {
+    font-family: var(--f-sans);
+    font-size: var(--t-sm);
+    color: var(--c-muted);
+  }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    list-style: none;
+    padding: 0;
+    margin-block-start: var(--s-4);
+  }
+
+  .stack li {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    border: 1px solid var(--c-rule);
+    border-radius: var(--radius);
+    padding: var(--s-1) var(--s-2);
+    color: var(--c-muted);
+  }
+
+  .more {
+    margin-block-start: var(--s-8);
+    font-family: var(--f-sans);
+    font-weight: 600;
+  }
+</style>
