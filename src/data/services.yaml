@@ -1,0 +1,37 @@
+- id: api
+  title: Backend APIs in Go
+  summary: Contract-first REST APIs that other teams can build against without asking you questions.
+  order: 1
+  detail:
+    - Gin, GORM and Wire, structured the way a team can extend without a rewrite
+    - OpenAPI spec generated from the source, so the contract cannot drift from the code
+    - RFC 7807 problem responses, URL-versioned routes, explicit handling of 401/403/422/429/503
+    - Postgres schema and migrations, Redis where it earns its place
+
+- id: web
+  title: Web apps in Next.js
+  summary: App Router front ends wired to a real API, deployed and observable.
+  order: 2
+  detail:
+    - Server Components by default, client JavaScript only where interaction demands it
+    - Typed API clients generated from the OpenAPI spec — no hand-written fetch wrappers
+    - Auth in httpOnly cookies, never localStorage
+    - Deployed on Vercel with preview environments per pull request
+
+- id: mobile
+  title: Mobile apps in React Native
+  summary: Expo apps sharing one API contract with the web surface.
+  order: 3
+  detail:
+    - Expo managed workflow, EAS Build and EAS Submit
+    - The same generated API client the web app uses, so the surfaces cannot disagree
+    - Offline-tolerant data handling where the product needs it
+
+- id: delivery
+  title: Delivery you can audit
+  summary: Specs, contracts and CI that make progress visible instead of asserted.
+  order: 4
+  detail:
+    - Written spec and plan before implementation, both committed alongside the code
+    - CI gates on tests, contract regeneration and cost controls
+    - Architecture decisions recorded as ADRs, so the reasoning survives the decision
