@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ExperienceTimeline from '../components/ExperienceTimeline.astro';
+import SkillsMatrix from '../components/SkillsMatrix.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout
+  title={`Resume — ${site.name}`}
+  description={`Resume for ${site.name}, ${site.role}. Go, Next.js, React Native, cloud infrastructure.`}
+>
+  <div class="page resume">
+    <header>
+      <h1>{site.name}</h1>
+      <p class="role">{site.role} · {site.location}</p>
+      <ul class="contact">
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li><a href={site.github}>github.com/althenlimzixuan</a></li>
+        {site.linkedin && <li><a href={site.linkedin}>LinkedIn</a></li>}
+      </ul>
+      <p class="print-hint no-print">Print or save as PDF with Ctrl/Cmd + P.</p>
+    </header>
+
+    <section aria-labelledby="profile-heading">
+      <h2 id="profile-heading">Profile</h2>
+      <p class="prose">
+        Product engineer who takes systems from an empty repository to
+        production. Most recently built ETP end-to-end — a Go API on Cloud Run, a
+        Next.js web app, and a React Native client, all consuming one generated
+        API contract. Comfortable owning the product decision as well as the
+        implementation.
+      </p>
+    </section>
+
+    <section aria-labelledby="selected-heading">
+      <h2 id="selected-heading">Selected work</h2>
+      <h3>ETP — Essential Traveller Planner</h3>
+      <p class="prose">
+        Group-trip itinerary planner. Sole engineer across API, web, mobile and
+        infrastructure. Integer minor-unit money handling with multi-currency
+        settlement, an itinerary validator with a deliberately narrow blocking
+        rule, and a generated OpenAPI contract shared by three surfaces.
+        23 delivery phases shipped; live in production.
+      </p>
+      <p><a href="/work/etp/">Read the case study →</a></p>
+    </section>
+
+    <ExperienceTimeline />
+    <SkillsMatrix />
+  </div>
+</BaseLayout>
+
+<style>
+  .resume {
+    max-width: var(--w-hero);
+    padding-block: var(--s-16);
+  }
+
+  h1 { font-size: var(--t-2xl); }
+
+  .role {
+    font-family: var(--f-sans);
+    color: var(--c-muted);
+    margin-block-start: var(--s-2);
+  }
+
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4) var(--s-6);
+    list-style: none;
+    padding: 0;
+    margin-block-start: var(--s-4);
+    font-family: var(--f-sans);
+    font-size: var(--t-sm);
+  }
+
+  .print-hint {
+    font-family: var(--f-sans);
+    font-size: var(--t-sm);
+    color: var(--c-muted);
+    margin-block-start: var(--s-6);
+  }
+
+  h2 {
+    font-size: var(--t-xl);
+    margin-block: var(--s-16) var(--s-8);
+    padding-block-start: var(--s-6);
+    border-block-start: 1px solid var(--c-rule);
+  }
+
+  h3 {
+    font-size: var(--t-lg);
+    margin-block-end: var(--s-3);
+  }
+
+  section p + p { margin-block-start: var(--s-4); }
+</style>

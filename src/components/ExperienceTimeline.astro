@@ -1,0 +1,105 @@
+---
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('experience')).sort((a, b) =>
+  b.data.start.localeCompare(a.data.start),
+);
+
+const formatMonth = (value: string): string => {
+  const [year, month] = value.split('-');
+  const names = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ];
+  return `${names[Number(month) - 1]} ${year}`;
+};
+
+const range = (start: string, end: string | null): string =>
+  `${formatMonth(start)} — ${end ? formatMonth(end) : 'Present'}`;
+---
+
+{
+  entries.length > 0 && (
+    <section aria-labelledby="experience-heading">
+      <h2 id="experience-heading">Experience</h2>
+      <ol class="timeline">
+        {entries.map((e) => (
+          <li>
+            <p class="period">{range(e.data.start, e.data.end)}</p>
+            <div>
+              <h3>{e.data.title}</h3>
+              <p class="org">{e.data.organisation}</p>
+              <p class="summary">{e.data.summary}</p>
+              {e.data.highlights.length > 0 && (
+                <ul class="highlights">
+                  {e.data.highlights.map((h) => (
+                    <li>{h}</li>
+                  ))}
+                </ul>
+              )}
+              {e.data.stack.length > 0 && (
+                <p class="stack">{e.data.stack.join(' · ')}</p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+<style>
+  h2 {
+    font-size: var(--t-xl);
+    margin-block: var(--s-16) var(--s-8);
+    padding-block-start: var(--s-6);
+    border-block-start: 1px solid var(--c-rule);
+  }
+
+  .timeline {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-12);
+  }
+
+  .timeline > li {
+    display: grid;
+    gap: var(--s-2) var(--s-8);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 48rem) {
+    .timeline > li {
+      grid-template-columns: 12rem 1fr;
+    }
+  }
+
+  .period {
+    font-family: var(--f-sans);
+    font-size: var(--t-sm);
+    color: var(--c-muted);
+  }
+
+  h3 { font-size: var(--t-lg); }
+
+  .org {
+    font-family: var(--f-sans);
+    color: var(--c-muted);
+    margin-block-end: var(--s-3);
+  }
+
+  .highlights {
+    margin-block-start: var(--s-3);
+    padding-inline-start: var(--s-6);
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  .stack {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--c-muted);
+    margin-block-start: var(--s-3);
+  }
+</style>
