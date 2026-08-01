@@ -1,16 +1,11 @@
 ---
-const name = 'Althen Lim Zi Xuan';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{name} — Product Engineer</title>
-  </head>
-  <body>
-    <h1>{name}</h1>
-    <p>Product engineer. Site in progress.</p>
-  </body>
-</html>
+<BaseLayout title={`${site.name} — ${site.role}`} description={site.tagline}>
+  <div class="page">
+    <h1>{site.name}</h1>
+    <p>{site.tagline}</p>
+  </div>
+</BaseLayout>

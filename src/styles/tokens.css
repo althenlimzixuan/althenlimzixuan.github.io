@@ -1,0 +1,57 @@
+:root {
+  color-scheme: light dark;
+
+  /* Palette — light */
+  --c-bg: #fbfaf8;
+  --c-surface: #f4f2ed;
+  --c-fg: #14140f;
+  --c-muted: #5c5c52;
+  --c-rule: #dedad2;
+  --c-accent: #7a2e1e;
+  --c-accent-fg: #fbfaf8;
+
+  /* Type */
+  --f-serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --f-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, monospace;
+
+  /* Type scale — fluid, 1.25 ratio */
+  --t-xs: 0.79rem;
+  --t-sm: 0.889rem;
+  --t-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --t-lg: clamp(1.2rem, 1.1rem + 0.5vw, 1.4rem);
+  --t-xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --t-2xl: clamp(2rem, 1.6rem + 2vw, 3rem);
+  --t-3xl: clamp(2.5rem, 1.9rem + 3vw, 4rem);
+
+  /* Spacing — 4px base */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-6: 1.5rem;
+  --s-8: 2rem;
+  --s-12: 3rem;
+  --s-16: 4rem;
+  --s-24: 6rem;
+
+  /* Layout */
+  --w-prose: 38rem;
+  --w-page: 68rem;
+  --radius: 4px;
+}
+
+/* Palette — dark. Driven by the OS preference alone: there is no theme
+   toggle, so the site ships with zero JavaScript. Adding a toggle later
+   means adding `:root[data-theme='dark']` overrides here plus a control. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c-bg: #14140f;
+    --c-surface: #1c1c16;
+    --c-fg: #f2efe8;
+    --c-muted: #a3a094;
+    --c-rule: #2e2e26;
+    --c-accent: #e8a48a;
+    --c-accent-fg: #14140f;
+  }
+}
