@@ -19,11 +19,15 @@ import { primaryCtaHref, primaryCtaLabel, site } from '../data/site';
 <style>
   .hero {
     padding-block: var(--s-24) var(--s-16);
-    max-width: 46rem;
+    max-width: var(--w-hero);
     margin-inline: 0;
     padding-inline: var(--s-6);
   }
 
+  /* 72rem breakpoint kept inline: custom properties are not valid inside
+     @media conditions (`@media (min-width: var(--bp-wide))` silently never
+     matches), so this value cannot be tokenised. It mirrors --w-page (68rem)
+     plus a little headroom before the hero centres itself. */
   @media (min-width: 72rem) {
     .hero { margin-inline: auto; }
   }
