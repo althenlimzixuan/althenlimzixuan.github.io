@@ -1,11 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ServiceList from '../components/ServiceList.astro';
+import FeaturedProject from '../components/FeaturedProject.astro';
+import ProcessTeaser from '../components/ProcessTeaser.astro';
+import ClosingCta from '../components/ClosingCta.astro';
 import { site } from '../data/site';
 ---
 
-<BaseLayout title={`${site.name} — ${site.role}`} description={site.tagline}>
-  <div class="page">
-    <h1>{site.name}</h1>
-    <p>{site.tagline}</p>
-  </div>
+<BaseLayout
+  title={`${site.name} — ${site.role}`}
+  description="Freelance product engineer. Go APIs, Next.js web apps, React Native mobile — built and shipped end-to-end."
+>
+  <Hero />
+  <ServiceList />
+  <FeaturedProject />
+  <ProcessTeaser />
+  <ClosingCta />
 </BaseLayout>

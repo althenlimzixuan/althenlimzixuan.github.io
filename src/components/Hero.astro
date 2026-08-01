@@ -1,0 +1,73 @@
+---
+import { primaryCtaHref, primaryCtaLabel, site } from '../data/site';
+---
+
+<section class="hero page">
+  <p class="eyebrow">{site.role} · {site.location}</p>
+  <h1>{site.tagline}</h1>
+  <p class="lede">
+    Most teams can find someone to write code. Fewer can find one person who
+    will take a product from an empty repository to something running in
+    production — API, web, mobile and the pipeline that ships them.
+  </p>
+  <div class="actions">
+    <a class="btn btn-primary" href={primaryCtaHref()}>{primaryCtaLabel()}</a>
+    <a class="btn" href="/work/etp/">See the work</a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: var(--s-24) var(--s-16);
+    max-width: 46rem;
+    margin-inline: 0;
+    padding-inline: var(--s-6);
+  }
+
+  @media (min-width: 72rem) {
+    .hero { margin-inline: auto; }
+  }
+
+  .eyebrow {
+    font-family: var(--f-sans);
+    font-size: var(--t-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+    margin-block-end: var(--s-4);
+  }
+
+  h1 { margin-block-end: var(--s-6); }
+
+  .lede {
+    font-size: var(--t-lg);
+    color: var(--c-muted);
+    max-width: var(--w-prose);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    margin-block-start: var(--s-8);
+  }
+
+  .btn {
+    font-family: var(--f-sans);
+    font-size: var(--t-sm);
+    font-weight: 600;
+    padding: var(--s-3) var(--s-6);
+    border: 1px solid var(--c-rule);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--c-fg);
+  }
+
+  .btn:hover { border-color: var(--c-accent); }
+
+  .btn-primary {
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+    color: var(--c-accent-fg);
+  }
+</style>

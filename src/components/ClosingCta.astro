@@ -1,0 +1,55 @@
+---
+import { primaryCtaHref, primaryCtaLabel, site } from '../data/site';
+
+const hasBooking = site.calBookingUrl !== null;
+---
+
+<section class="page section" aria-labelledby="cta-heading">
+  <div class="inner">
+    <h2 id="cta-heading">Have something to build?</h2>
+    <p>
+      I take on a small number of engagements at a time — usually a product that
+      needs to get from nothing to production, or an existing system that needs a
+      surface added without the contract falling apart.
+    </p>
+    <p class="actions">
+      <a class="btn btn-primary" href={primaryCtaHref()}>{primaryCtaLabel()}</a>
+      {hasBooking && <a class="btn" href={`mailto:${site.email}`}>Email instead</a>}
+    </p>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: var(--s-24);
+    border-block-start: 1px solid var(--c-rule);
+  }
+
+  .inner { max-width: var(--w-prose); }
+  h2 { margin-block-end: var(--s-6); }
+  p { color: var(--c-muted); }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    margin-block-start: var(--s-8);
+  }
+
+  .btn {
+    font-family: var(--f-sans);
+    font-size: var(--t-sm);
+    font-weight: 600;
+    padding: var(--s-3) var(--s-6);
+    border: 1px solid var(--c-rule);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--c-fg);
+  }
+
+  .btn-primary {
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+    color: var(--c-accent-fg);
+  }
+</style>

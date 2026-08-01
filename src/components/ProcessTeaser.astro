@@ -1,0 +1,36 @@
+---
+---
+
+<section class="page section" aria-labelledby="process-heading">
+  <h2 id="process-heading">How I build</h2>
+  <div class="prose">
+    <p>
+      One person shipping an API, a web app and a mobile client should be slower
+      than a team. The reason it isn't is the pipeline: every phase starts from a
+      written spec, the API contract is generated from the source rather than
+      maintained by hand, and each surface is implemented against that contract
+      by a separate agent working in parallel.
+    </p>
+    <p>
+      The effect a client cares about is narrow and specific — surfaces do not
+      drift apart, regressions are caught by tests that remember what broke last
+      time, and the reasoning behind each decision is committed next to the code
+      that implements it.
+    </p>
+    <p class="more"><a href="/how-i-build/">See the full process →</a></p>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: var(--s-16);
+    border-block-start: 1px solid var(--c-rule);
+  }
+
+  h2 { margin-block-end: var(--s-8); }
+
+  .more {
+    font-family: var(--f-sans);
+    font-weight: 600;
+  }
+</style>
