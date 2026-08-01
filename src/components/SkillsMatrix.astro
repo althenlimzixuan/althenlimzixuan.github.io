@@ -1,0 +1,75 @@
+---
+const groups = [
+  {
+    label: 'Backend',
+    items: ['Go', 'Gin', 'Wire', 'GORM', 'PostgreSQL', 'Redis', 'REST', 'OpenAPI'],
+  },
+  {
+    label: 'Web',
+    items: ['TypeScript', 'Next.js App Router', 'React', 'Server Components'],
+  },
+  { label: 'Mobile', items: ['React Native', 'Expo', 'EAS Build'] },
+  {
+    label: 'Infrastructure',
+    items: ['Cloud Run', 'Vercel', 'Docker', 'GitHub Actions', 'CI/CD'],
+  },
+  {
+    label: 'Practice',
+    items: [
+      'Contract-first APIs',
+      'Test-driven development',
+      'Architecture decision records',
+      'Product ownership',
+    ],
+  },
+];
+---
+
+<section aria-labelledby="skills-heading">
+  <h2 id="skills-heading">Skills</h2>
+  <dl class="matrix">
+    {
+      groups.map((g) => (
+        <div>
+          <dt>{g.label}</dt>
+          <dd>{g.items.join(' · ')}</dd>
+        </div>
+      ))
+    }
+  </dl>
+</section>
+
+<style>
+  h2 {
+    font-size: var(--t-xl);
+    margin-block: var(--s-16) var(--s-8);
+    padding-block-start: var(--s-6);
+    border-block-start: 1px solid var(--c-rule);
+  }
+
+  .matrix {
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  .matrix > div {
+    display: grid;
+    gap: var(--s-1) var(--s-8);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 48rem) {
+    .matrix > div {
+      grid-template-columns: 12rem 1fr;
+    }
+  }
+
+  dt {
+    font-family: var(--f-sans);
+    font-size: var(--t-sm);
+    font-weight: 600;
+    color: var(--c-muted);
+  }
+
+  dd { margin: 0; }
+</style>
