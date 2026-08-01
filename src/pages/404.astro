@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout title="Page not found" description="That page does not exist.">
+  <div class="page notfound">
+    <p class="code">404</p>
+    <h1>That page doesn't exist</h1>
+    <p class="lede">
+      The link may be out of date, or the page may have moved.
+    </p>
+    <ul>
+      <li><a href="/">Start from the homepage</a></li>
+      <li><a href="/work/etp/">Read the ETP case study</a></li>
+      <li><a href="/how-i-build/">See how I build</a></li>
+      <li><a href={`mailto:${site.email}`}>Email me instead</a></li>
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-block: var(--s-24);
+    max-width: var(--w-prose);
+  }
+
+  .code {
+    font-family: var(--f-mono);
+    color: var(--c-muted);
+    margin-block-end: var(--s-4);
+  }
+
+  .lede {
+    color: var(--c-muted);
+    margin-block-start: var(--s-4);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin-block-start: var(--s-8);
+    display: grid;
+    gap: var(--s-3);
+    font-family: var(--f-sans);
+  }
+</style>
