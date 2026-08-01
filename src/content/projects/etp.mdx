@@ -32,4 +32,124 @@ metrics:
     value: Live in production
 ---
 
-Case study body is written in Task 7.
+## The problem
+
+Group trips fail at sequencing, not at note-keeping. Everyone can list the
+places they want to visit; the hard part is turning that pile into a day-by-day
+plan that respects opening hours, travel time between stops, the trip's date
+range, and what the group actually agreed to.
+
+Most trip apps are shared notes with a nicer font. ETP treats the itinerary as a
+constraint problem and does the logistics work — which is the only part that was
+ever difficult.
+
+## What I built
+
+A production system across four surfaces, built solo:
+
+- **API** — Go with Gin, Wire for dependency injection, GORM over PostgreSQL,
+  Redis where it earns its place. Deployed to Cloud Run.
+- **Web** — Next.js App Router, deployed on Vercel.
+- **Mobile** — React Native on Expo.
+- **Shared API client** — TypeScript, generated from the OpenAPI spec and
+  published to GitHub Packages, consumed identically by web and mobile.
+
+Twenty-three delivery phases shipped. The interesting part is not the stack —
+it is four decisions that shaped everything after them.
+
+## Decision 1 — money is never a float
+
+Every monetary amount in the system is an integer in minor units plus an ISO
+4217 currency code. There is no floating-point money anywhere, at any layer.
+
+This sounds pedantic until you split a S$100 dinner three ways. In floats you
+get three shares that do not sum back to the total, and the discrepancy compounds
+every time someone edits an expense. In minor units, splits are exact integers
+that are *required* to sum to the total — the invariant is enforceable rather
+than aspirational.
+
+The same rule extends to currency conversion. A missing exchange rate is `null`,
+never an assumed parity of 1.0. An expense that cannot be converted into the
+trip's settlement currency is listed as **excluded, with a reason** — it is never
+silently dropped and never counted as zero. A budget that quietly under-reports
+because one expense could not be converted is worse than one that admits it is
+incomplete.
+
+## Decision 2 — one blocking rule, everything else advisory
+
+The itinerary validator produces conflicts across five rules: date-range
+violations, overlapping activities, opening-hours mismatches, tight travel time,
+and member-availability clashes.
+
+Exactly one of them blocks publishing: scheduling an activity outside the trip's
+date range. Every other rule is a warning.
+
+That ratio was the decision. The obvious design makes all five blocking — the
+system is "correct", and unusable. Splitting a group into two parallel activities
+for an afternoon is a legitimate plan, not a scheduling error. An organiser who
+knows a museum stays open late should not be overruled by a stale opening-hours
+record. The validator's job is to surface what the organiser might have missed,
+not to substitute its judgement for theirs.
+
+Severity is declared in exactly one place in the codebase. There is no second
+list to drift out of sync.
+
+## Decision 3 — the contract is generated, not maintained
+
+Three surfaces consume the same API. The failure mode that kills that setup is
+contract drift: the Go handler changes, the spec does not, and the mobile client
+is wrong for two weeks before anyone notices.
+
+So the OpenAPI spec is generated from annotations on the Go source, the
+TypeScript client is generated from the spec, and both regenerate in the same
+pull request as the change. Consumers cannot be wrong about the shape of a
+response, because they did not write it down independently.
+
+The precedence chain is explicit and documented:
+
+> Go source → generated `openapi.yaml` → hand-written `API.md` → summary docs
+
+Drift grows with distance from the source, and naming that ordering is what makes
+disagreements resolvable rather than a matter of opinion.
+
+This has a limit worth stating. The generated spec is silent on anything the
+annotations never declared — conflict-rule severity and trip-member roles are
+real, load-bearing concepts that exist only in Go types. Two of those gaps reached
+production understanding before being caught, which is why the precedence chain is
+written down at all.
+
+## Decision 4 — derive on read, store nothing
+
+There is no balance table. Settlement figures and budget totals are computed
+fresh on every read.
+
+The tempting alternative is a cached balances table updated on write. It is
+faster and it is a permanent source of bugs: every edit path has to remember to
+update it, and the day one path forgets, the numbers are wrong in a way nobody
+notices until someone disputes a payment.
+
+Deriving on read costs a query. It buys an invariant — editing a two-week-old
+expense changes the very next balance read, with no invalidation logic to get
+wrong.
+
+## What it looks like
+
+<p class="note">
+  ETP currently requires an account to use, so there is no public demo link. The
+  walkthrough below shows the real product.
+</p>
+
+Walkthrough and screenshots to be embedded once recorded.
+
+## Honest limitations
+
+- **Travel time is a heuristic**, computed from place coordinates. There is no
+  routing provider behind it yet, so it is a heads-up rather than a promise —
+  which is exactly why it warns instead of blocking.
+- **Assisted scheduling is not shipped.** Activities are placed by hand today;
+  preference-aware automatic ordering is designed but not built. That is the core
+  differentiator and it is still ahead.
+- **No public demo.** Everything is behind authentication, which is a real
+  barrier to showing the work and is on the backlog.
+- **Bookings do not exist.** Flights, hotels and restaurant reservations are a
+  named placeholder in the domain model, not a shipped feature.
