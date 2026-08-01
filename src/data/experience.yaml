@@ -1,0 +1,14 @@
+# Employment history. Each entry:
+#
+# - id: unique-slug
+#   organisation: Company Pte Ltd
+#   title: Senior Engineer
+#   start: "2024-01"        # YYYY-MM
+#   end: null               # null = current role, else "YYYY-MM"
+#   summary: One or two sentences on scope and ownership.
+#   highlights:
+#     - Concrete outcome, ideally with a number
+#   stack: [Go, PostgreSQL]
+#
+# Empty until the owner supplies real history — do not invent entries.
+[]
