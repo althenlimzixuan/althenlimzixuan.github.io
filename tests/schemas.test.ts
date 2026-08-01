@@ -3,6 +3,7 @@ import {
   experienceSchema,
   projectSchema,
   serviceSchema,
+  writingSchema,
 } from '../src/content/schemas';
 
 const validProject = {
@@ -43,6 +44,15 @@ describe('projectSchema', () => {
       projectSchema.parse({ ...validProject, status: 'in-progress' }),
     ).toThrow();
   });
+
+  it('rejects a metric with an empty label', () => {
+    expect(() =>
+      projectSchema.parse({
+        ...validProject,
+        metrics: [{ label: '', value: 'x' }],
+      }),
+    ).toThrow();
+  });
 });
 
 describe('experienceSchema', () => {
@@ -62,6 +72,10 @@ describe('experienceSchema', () => {
     expect(() => experienceSchema.parse({ ...valid, start: '2024' })).toThrow();
   });
 
+  it('rejects a malformed end date', () => {
+    expect(() => experienceSchema.parse({ ...valid, end: '2024' })).toThrow();
+  });
+
   it('defaults highlights and stack to empty arrays', () => {
     const parsed = experienceSchema.parse(valid);
     expect(parsed.highlights).toEqual([]);
@@ -78,6 +92,33 @@ describe('serviceSchema', () => {
         detail: [],
         order: 1,
       }),
+    ).toThrow();
+  });
+});
+
+describe('writingSchema', () => {
+  const valid = {
+    title: 'Shipping a portfolio in a week',
+    description: 'How the site was built.',
+    pubDate: '2026-08-01',
+  };
+
+  it('accepts a valid entry', () => {
+    expect(() => writingSchema.parse(valid)).not.toThrow();
+  });
+
+  it('coerces pubDate from a date string to a Date', () => {
+    const parsed = writingSchema.parse(valid);
+    expect(parsed.pubDate).toBeInstanceOf(Date);
+  });
+
+  it('defaults draft to false when omitted', () => {
+    expect(writingSchema.parse(valid).draft).toBe(false);
+  });
+
+  it('rejects a pubDate that cannot coerce to a date', () => {
+    expect(() =>
+      writingSchema.parse({ ...valid, pubDate: 'not-a-date' }),
     ).toThrow();
   });
 });
