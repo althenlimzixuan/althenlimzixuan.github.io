@@ -5,6 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   quality:
     runs-on: ubuntu-latest
@@ -53,12 +56,15 @@ jobs:
             --accept 200,206,301,302,307,308
             --max-retries 2
             --root-dir ${{ github.workspace }}/dist
-            --exclude-path dist/sitemap-index.xml
-            --exclude-path dist/sitemap-0.xml
             --exclude 'https://althenlimzixuan\.github\.io'
             'dist/**/*.html'
           fail: true
 
+      # .lighthouserc.json lists each page explicitly under collect.url instead of relying
+      # on staticDistDir auto-discovery (which silently caps at 5 HTML files and would stop
+      # covering new pages with no failure signal once the site grows past that). When you
+      # add a new route, add its URL to the "url" array in .lighthouserc.json too, or it
+      # will not be Lighthouse-tested.
       - name: Lighthouse
         uses: treosh/lighthouse-ci-action@12.6.2
         with:
