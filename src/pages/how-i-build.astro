@@ -1,0 +1,119 @@
+---
+import ProseLayout from '../layouts/ProseLayout.astro';
+import { primaryCtaHref, primaryCtaLabel } from '../data/site';
+---
+
+<ProseLayout
+  title="How I build"
+  description="The delivery pipeline behind shipping an API, a web app and a mobile client solo — specs, generated contracts, parallel implementation and regression memory."
+  eyebrow="Process"
+  lede="One person shipping three surfaces should be slower than a team. Here is the machinery that makes it not so."
+>
+  <h2>Every phase starts from a written spec</h2>
+
+  <p>
+    No work begins from a chat message. A phase starts with a design document
+    that states the problem, the decisions taken and the reasons for them, and it
+    is committed to the repository before implementation starts. The
+    implementation plan comes next, as a separate document broken into tasks
+    small enough to test and review individually.
+  </p>
+
+  <p>
+    The payoff is not process theatre. It is that six months later the reasoning
+    behind a decision is still readable, sitting next to the code that implements
+    it — so a change can be evaluated against what was actually intended rather
+    than reverse-engineered from the diff.
+  </p>
+
+  <h2>The contract is generated, never hand-maintained</h2>
+
+  <p>
+    When three surfaces consume one API, the thing that eventually breaks is the
+    contract drifting away from the implementation. The defence is to make it
+    structurally impossible: the OpenAPI specification is generated from the
+    source, the typed client is generated from the specification, and both
+    regenerate inside the same pull request as the change that caused them.
+  </p>
+
+  <p>
+    A surface cannot hold a stale idea of a response shape, because no surface
+    ever wrote that shape down independently.
+  </p>
+
+  <h2>Surfaces are implemented in parallel, against that contract</h2>
+
+  <p>
+    Once the contract for a phase is settled, the API, web and mobile work is
+    dispatched concurrently rather than sequentially. Each surface is implemented
+    against the generated client, so they are working from the same definition
+    rather than from each other's assumptions.
+  </p>
+
+  <p>
+    This is where most of the speed comes from, and it only works because of the
+    previous step. Parallel implementation against a hand-maintained contract just
+    produces three surfaces that disagree in three different ways.
+  </p>
+
+  <h2>Tests remember what broke before</h2>
+
+  <p>
+    Every phase produces a test plan and a test report, and standing risks carry
+    forward between phases. When a class of bug appears once — money scale and
+    overflow, in one real case — it becomes a permanent item that later phases are
+    explicitly checked against.
+  </p>
+
+  <p>
+    Regression suites usually decay because nobody remembers why a given test
+    exists. Attaching each one to the incident that caused it keeps that context
+    attached to the test.
+  </p>
+
+  <h2>CI is gated and cost-controlled</h2>
+
+  <p>
+    Continuous integration runs tests, regenerates the contract and verifies the
+    build on every pull request. It is also deliberately cheap to run: a pipeline
+    that costs too much per push gets skipped under deadline pressure, and a gate
+    that gets skipped is not a gate.
+  </p>
+
+  <h2>What this means if you are hiring me</h2>
+
+  <ul>
+    <li>
+      <strong>You get surfaces that agree with each other.</strong> The API, web
+      and mobile clients share one generated contract, so a change lands
+      everywhere or fails loudly.
+    </li>
+    <li>
+      <strong>You get the reasoning, not just the code.</strong> Specs and
+      decision records are committed alongside the implementation, so the next
+      engineer — including a future me — is not archaeology-hunting.
+    </li>
+    <li>
+      <strong>You get a pipeline you can audit.</strong> Progress is visible in
+      committed plans and test reports rather than asserted in a status update.
+    </li>
+    <li>
+      <strong>You get one person's judgement applied consistently</strong> across
+      backend, frontend, mobile and infrastructure — which is usually where
+      handoffs between specialists lose things.
+    </li>
+  </ul>
+
+  <p class="cta">
+    <a href={primaryCtaHref()}>{primaryCtaLabel()} →</a>
+  </p>
+</ProseLayout>
+
+<style>
+  .cta {
+    margin-block-start: var(--s-16);
+    font-family: var(--f-sans);
+    font-weight: 600;
+    font-size: var(--t-lg);
+  }
+</style>
