@@ -1,0 +1,86 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow?: string;
+  lede?: string;
+}
+
+const { title, description, eyebrow, lede } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} ogType="article">
+  <article class="page">
+    <header class="head">
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h1>{title}</h1>
+      {lede && <p class="lede">{lede}</p>}
+    </header>
+    <div class="prose body">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .head {
+    padding-block: var(--s-16) var(--s-8);
+    max-width: 46rem;
+  }
+
+  .eyebrow {
+    font-family: var(--f-sans);
+    font-size: var(--t-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+    margin-block-end: var(--s-4);
+  }
+
+  .lede {
+    font-size: var(--t-lg);
+    color: var(--c-muted);
+    margin-block-start: var(--s-6);
+  }
+
+  .body {
+    padding-block-end: var(--s-16);
+  }
+
+  .body :global(h2) {
+    font-size: var(--t-xl);
+    margin-block-start: var(--s-16);
+    padding-block-start: var(--s-6);
+    border-block-start: 1px solid var(--c-rule);
+  }
+
+  .body :global(h3) {
+    font-size: var(--t-lg);
+    margin-block-start: var(--s-8);
+  }
+
+  .body :global(blockquote) {
+    border-inline-start: 3px solid var(--c-accent);
+    padding-inline-start: var(--s-6);
+    color: var(--c-muted);
+    font-style: italic;
+  }
+
+  .body :global(.note) {
+    background: var(--c-surface);
+    border: 1px solid var(--c-rule);
+    border-radius: var(--radius);
+    padding: var(--s-4);
+    font-size: var(--t-sm);
+    color: var(--c-muted);
+  }
+
+  .body :global(ul),
+  .body :global(ol) {
+    padding-inline-start: var(--s-6);
+    display: grid;
+    gap: var(--s-2);
+  }
+</style>
