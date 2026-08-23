@@ -22,9 +22,10 @@ Implementation plan: `docs/superpowers/plans/2026-08-01-personal-portfolio.md`
 ## Stack
 
 Astro 7 · MDX · Vitest · GitHub Actions · GitHub Pages. No server, no database,
-no analytics. One inline script (~1.4 KB, unminified, no bundle) drives the landing
-page's process module; every other page ships zero JavaScript. Node >= 22.12.0,
-npm.
+no analytics. One inline script (~1.4 KB, unminified, no bundle) drives the
+scrollytelling modules; it is emitted on the two pages that host one (`/` and
+`/work/etp/`) and wires every module on the page. Every other page ships zero
+JavaScript. Node >= 22.12.0, npm.
 
 ## Hard constraints
 
@@ -148,10 +149,45 @@ touch both.
 Avoid teal (#64ffda) on navy (#0a0e27), animated starfields and gradient blobs;
 the previous template used that look and it reads as generic on sight.
 
-The landing page's "How I build" section is a scrollytelling module
-(`src/components/process/`): a CSS-sticky pipeline diagram whose emphasis is
-tracked by an inline IntersectionObserver. It is progressive enhancement — with
-the script absent the module renders complete and readable, stuck on step one.
+Scrollytelling is the site's signature device, and the shell is shared:
+`src/components/scrolly/Scrolly.astro` supplies the sticky layout, the
+three-tier emphasis CSS and the one IntersectionObserver. Callers pass a step
+list and slot in their own figure; the only contract is that the figure's
+elements carry `data-step="1".."N"`.
+
+| Module | Figure | Steps | Where |
+|---|---|---|---|
+| `process/ProcessScrolly` | `PipelineDiagram` | `src/data/process.ts` | `/` |
+| `etp/EtpArchitecture` | `SurfaceDiagram` | `src/data/etp.ts` | `/work/etp/` |
+
+- **The 5-step cap is real.** The tier CSS enumerates `data-active` 1..5 by
+  hand because CSS cannot compare numbers. `Scrolly.astro` throws at build if a
+  caller exceeds it, and `tests/scrolly.test.ts` asserts it. Extend the
+  past/active selector blocks before adding a sixth step.
+- **Every figure node must be claimed by exactly one step.** An unclaimed node
+  can never light up; a doubly-claimed one flickers. Enforced by
+  `tests/scrolly.test.ts` for every module at once — add a row there when
+  adding a module.
+- **`:global` on the descendant of every tier selector is load-bearing.** The
+  figure is a different component and carries a different `data-astro-cid-*`;
+  without `:global` the rules compile to something that matches nothing and the
+  figure silently never changes tier.
+- Progressive enhancement is the contract: script absent, failed or
+  unsupported, a module renders complete and readable, stuck on step one.
+
+The ETP module is bespoke to that case study and is rendered from
+`work/[...slug].astro` behind an `entry.id === 'etp'` check, into a full-width
+`lead` slot on `ProseLayout` — a two-column sticky module cannot live inside
+`.prose`'s 38rem measure. A second project wanting one would justify a schema
+flag; one does not.
+
+**Its copy is a compression of `etp.mdx`, never new claims.** In particular the
+generated TypeScript client is drawn as one node between the API and its
+consumers, not as a third surface, because the case study explicitly calls it
+"infrastructure the surfaces share, not a fourth surface in its own right". The
+dashed `gaps` node is likewise real: the case study states two such gaps
+reached production.
+
 Design: `docs/superpowers/specs/2026-08-23-process-scrollytelling-design.md`.
 Gentle reveal-on-scroll is a separate utility, `src/styles/motion.css`'s
 `.reveal`, applied to four landing sections (`ServiceList`, `FeaturedProject`,
