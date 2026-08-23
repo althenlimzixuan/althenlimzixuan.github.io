@@ -1,10 +1,16 @@
 ---
 import { primaryCtaHref, primaryCtaLabel, site } from '../data/site';
 
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
 const hasBooking = site.calBookingUrl !== null;
 ---
 
-<section class="page section" aria-labelledby="cta-heading">
+<section class:list={['page', 'section', className]} aria-labelledby="cta-heading">
   <div class="inner">
     <h2 id="cta-heading">Have something to build?</h2>
     <p>

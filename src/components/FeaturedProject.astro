@@ -1,6 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
 
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
 const featured = (await getCollection('projects'))
   .filter((p) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order)[0];
@@ -14,7 +20,7 @@ if (!featured) {
 const { data, id } = featured;
 ---
 
-<section class="page section" aria-labelledby="work-heading">
+<section class:list={['page', 'section', className]} aria-labelledby="work-heading">
   <h2 id="work-heading">Selected work</h2>
 
   <article class="feature">
