@@ -1,0 +1,9 @@
+---
+import Scrolly from '../scrolly/Scrolly.astro';
+import SurfaceDiagram from './SurfaceDiagram.astro';
+import { etpSteps } from '../../data/etp';
+---
+
+<Scrolly id="etp-architecture" heading="How it fits together" steps={etpSteps}>
+  <SurfaceDiagram slot="figure" />
+</Scrolly>

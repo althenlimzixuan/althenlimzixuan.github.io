@@ -1,0 +1,231 @@
+---
+/**
+ * The site's scrollytelling shell: a sticky figure beside stepped text, whose
+ * emphasis tracks the reader's scroll position.
+ *
+ * Extracted from ProcessScrolly when a second instance appeared on the ETP
+ * case study. The alternative was a second copy of the sticky layout, the
+ * three-tier emphasis CSS and the IntersectionObserver — and a second inline
+ * script would also have falsified CLAUDE.md's claim that the site ships one.
+ *
+ * The figure is a slot rather than a prop so each caller supplies its own
+ * drawing. The only contract between shell and figure: the figure's styleable
+ * elements carry `data-step="1".."N"`, and the shell sets the tier custom
+ * properties on them.
+ */
+
+import { MAX_SCROLLY_STEPS, type ScrollyStep } from '../../data/scrolly';
+
+interface Props {
+  /** Unique per page; the observer finds roots by [data-scrolly], not by id. */
+  id: string;
+  heading: string;
+  steps: readonly ScrollyStep[];
+  class?: string;
+}
+
+const { id, heading, steps, class: className } = Astro.props;
+const headingId = `${id}-heading`;
+
+// The tier CSS below enumerates data-active states 1..5 by hand, because CSS
+// cannot compare two numbers. More than five steps would scroll past the last
+// enumerated state and silently stop updating emphasis. tests/scrolly.test.ts
+// asserts every step list stays within the cap; this is the build-time echo of
+// that, so a new caller cannot get it wrong quietly.
+if (steps.length > MAX_SCROLLY_STEPS) {
+  throw new Error(
+    `Scrolly "${id}" has ${steps.length} steps; the tier CSS enumerates only ${MAX_SCROLLY_STEPS}. ` +
+      `Extend the past/active selector blocks in Scrolly.astro before adding more.`,
+  );
+}
+---
+
+<section
+  id={id}
+  data-scrolly
+  class:list={['page', 'section', className]}
+  data-active="1"
+  aria-labelledby={headingId}
+>
+  <h2 id={headingId}>{heading}</h2>
+
+  <div class="layout">
+    <div class="pane"><slot name="figure" /></div>
+
+    <div class="steps">
+      {
+        steps.map((s, i) => (
+          <article class="step" data-step-index={i + 1}>
+            <p class="numeral">{s.numeral}</p>
+            <h3>{s.heading}</h3>
+            <p class="body">{s.body}</p>
+          </article>
+        ))
+      }
+      <slot name="footer" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: var(--s-16);
+  }
+
+  h2 { margin-block-end: var(--s-8); }
+
+  .layout {
+    display: grid;
+    gap: var(--s-8);
+  }
+
+  .pane {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* 60rem breakpoint kept inline: custom properties are not valid inside
+     @media conditions (`@media (min-width: var(--bp))` silently never
+     matches), so this value cannot be tokenised. Below it the pin is
+     dropped entirely — a sticky half-screen on a phone is cramped and the
+     scroll story does not survive the reduced height. */
+  @media (min-width: 60rem) {
+    .layout {
+      grid-template-columns: 20rem 1fr;
+      gap: var(--s-16);
+      align-items: start;
+    }
+
+    .pane {
+      position: sticky;
+      top: var(--s-16);
+      /* Reserved height: the sticky pane must not be able to shift the steps
+         column, or CLS drops the Lighthouse score below the 95 gate. */
+      block-size: 26rem;
+      align-items: center;
+    }
+  }
+
+  .steps {
+    display: grid;
+    gap: var(--s-16);
+  }
+
+  .step { max-width: var(--w-prose); }
+
+  .numeral {
+    font-family: var(--f-mono);
+    font-size: var(--t-sm);
+    color: var(--c-muted);
+    margin-block-end: var(--s-2);
+  }
+
+  .step h3 {
+    font-size: var(--t-lg);
+    margin-block-end: var(--s-3);
+  }
+
+  .body { color: var(--c-muted); }
+
+  /* ---- Emphasis -------------------------------------------------------
+     Three tiers. "future" is each figure's own base styling, so only past
+     and active are declared here. CSS cannot compare two numbers, so the
+     past set is enumerated: for data-active=N, every step < N. Ten
+     selectors, and that is the whole of it. The 5-step cap enforced in the
+     frontmatter above is exactly this enumeration.
+
+     :global is required on the descendant [data-step='N'] part of every
+     selector below: those elements are rendered by whatever figure was
+     slotted in, a different component, so they carry a different Astro
+     scoping attribute (data-astro-cid-*) than this component's own
+     selectors compile to. Without :global these compile to a compound that
+     requires this component's cid on the [data-step] element too — which
+     never matches, and the figure would never change tier, silently. */
+
+  /* past — reached, now behind you */
+  .section[data-active='2'] :global([data-step='1']),
+  .section[data-active='3'] :global([data-step='1']),
+  .section[data-active='3'] :global([data-step='2']),
+  .section[data-active='4'] :global([data-step='1']),
+  .section[data-active='4'] :global([data-step='2']),
+  .section[data-active='4'] :global([data-step='3']),
+  .section[data-active='5'] :global([data-step='1']),
+  .section[data-active='5'] :global([data-step='2']),
+  .section[data-active='5'] :global([data-step='3']),
+  .section[data-active='5'] :global([data-step='4']) {
+    --tier-stroke: var(--c-muted);
+    --tier-width: 1;
+    --tier-text: var(--c-muted);
+  }
+
+  /* active */
+  .section[data-active='1'] :global([data-step='1']),
+  .section[data-active='2'] :global([data-step='2']),
+  .section[data-active='3'] :global([data-step='3']),
+  .section[data-active='4'] :global([data-step='4']),
+  .section[data-active='5'] :global([data-step='5']) {
+    --tier-stroke: var(--c-fg);
+    --tier-width: 2;
+    --tier-text: var(--c-accent);
+  }
+
+  /* Apply whatever tier was set. Not scoped to a particular figure class —
+     within a scrolly section, [data-step] belongs to the figure by
+     definition. */
+  .section :global(path[data-step]),
+  .section :global([data-step] rect) {
+    stroke: var(--tier-stroke, var(--c-rule));
+    stroke-width: var(--tier-width, 1);
+  }
+
+  .section :global([data-step] text) {
+    fill: var(--tier-text, var(--c-rule));
+  }
+</style>
+
+<script is:inline>
+  // Progressive enhancement only. Absent, failed or unsupported, every module
+  // stays on the data-active="1" it ships with in the markup: complete and
+  // readable, just without emphasis tracking. It never clears the active
+  // step, only sets it — so a fast scroll that leaves no step inside the band
+  // holds the last good value rather than blanking.
+  //
+  // Wires every [data-scrolly] root on the page, and guards against running
+  // twice: Astro emits an is:inline script per component instance, so a page
+  // with two modules would otherwise attach two observers to each.
+  (() => {
+    if (window.__scrollyWired) return;
+    window.__scrollyWired = true;
+    if (!('IntersectionObserver' in window)) return;
+
+    // Below 60rem the pane is not sticky (see the matching @media above), so
+    // there is nothing for the emphasis to track.
+    const wide = window.matchMedia('(min-width: 60rem)');
+
+    document.querySelectorAll('[data-scrolly]').forEach((root) => {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) root.dataset.active = e.target.dataset.stepIndex;
+          }
+        },
+        // Collapse the viewport to a narrow band across the middle: a step
+        // becomes active as it crosses the reader's line of sight.
+        { rootMargin: '-45% 0px -45% 0px' },
+      );
+
+      const steps = root.querySelectorAll('[data-step-index]');
+      const sync = () => {
+        if (wide.matches) {
+          steps.forEach((s) => io.observe(s));
+        } else {
+          io.disconnect();
+          root.dataset.active = '1';
+        }
+      };
+
+      sync();
+      wide.addEventListener('change', sync);
+    });
+  })();
+</script>
