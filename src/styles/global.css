@@ -1,3 +1,4 @@
+@import './fonts.css';
 @import './tokens.css';
 @import './motion.css';
 
@@ -26,12 +27,20 @@ body {
 }
 
 h1, h2, h3, h4 {
-  font-family: var(--f-sans);
+  font-family: var(--f-display);
   line-height: 1.15;
-  letter-spacing: -0.02em;
   text-wrap: balance;
   font-weight: 600;
 }
+
+/* Tracking is set per level, not globally. The old -0.02em suited the
+   grotesque that used to sit here; Fraunces is a wide old-style face whose
+   display optical sizes already tighten themselves, so it needs far less —
+   and none at all below display sizes, where negative tracking would close
+   up its counters. */
+h1 { letter-spacing: -0.015em; }
+h2 { letter-spacing: -0.01em; }
+h3, h4 { letter-spacing: normal; }
 
 h1 { font-size: var(--t-3xl); }
 h2 { font-size: var(--t-2xl); }

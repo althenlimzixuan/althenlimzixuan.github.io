@@ -69,6 +69,44 @@ web or mobile work. Enforced instead, on every PR:
 Owner identity, contact and CTA config: `src/data/site.ts`. When
 `calBookingUrl` is null, every primary CTA falls back to email automatically.
 
+## Typography
+
+Three faces, three jobs, and deliberately **no sans**:
+
+| Role | Face | Where |
+|---|---|---|
+| Display | Fraunces (self-hosted, variable) | `h1`–`h4` only |
+| Text | Source Serif 4 (self-hosted, variable) | all prose |
+| Utility | system mono stack | every label, eyebrow, metric, control, nav |
+
+`@font-face` blocks live in `src/styles/fonts.css`; `tokens.css` still owns the
+*values* (`--f-display`, `--f-serif`, `--f-mono`). There is no `--f-sans` — mono
+carries the utility role instead, because the artifacts of this work are specs,
+generated contracts and CI logs, and that is their vernacular. It is also what
+keeps the site off the warm-paper-plus-serif look that every portfolio in this
+palette lands on.
+
+Hard-won details, all measured rather than assumed:
+
+- **Do not add a font `<link rel="preload">`.** It was tried and measured: it
+  made the landing page worse (LCP 2.1s / perf 98, versus 1.1s / perf 100
+  without). It competes with the render-blocking stylesheet and buys nothing,
+  because the metric-matched fallbacks let text paint correctly-sized
+  immediately. Re-measure before reintroducing one.
+- **The metric-matched fallbacks in `fonts.css` are load-bearing.** Their
+  `size-adjust` / `ascent-override` numbers were extracted from the upstream
+  TTFs' `head`/`hhea`/`OS/2` tables, not guessed. They are what keeps CLS at 0
+  through the `font-display: swap`. Do not round or "tidy" them.
+- **Fraunces ships with `SOFT` and `WONK` baked at 0 and 1** — sharp terminals,
+  wonky letterforms. That is the intended voice, not the family default, and
+  pinning the axes also cut the file from 121 KB to 67 KB.
+- **No italic face ships.** A Source Serif italic costs 130 KB to style one
+  blockquote that is mostly inline code; `ProseLayout` marks blockquotes with
+  the accent rule instead. Do not add `font-style: italic` anywhere without
+  shipping the face.
+- Fonts are latin-only subsets. The `→` in CTAs is not in them — every arrow on
+  the site sits in a mono context, where the system mono supplies it.
+
 ## Visual design
 
 Token *values* (palette, type scale, spacing) live in `src/styles/tokens.css`
