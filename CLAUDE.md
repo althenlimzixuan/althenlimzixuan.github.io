@@ -97,6 +97,20 @@ Hard-won details, all measured rather than assumed:
   runs. Treat performance numbers from `npx lighthouse` here as unusable and
   read CI instead: it runs three passes per URL on a clean runner. CLS and the
   category scores are stable locally; LCP/FCP are not.
+- **`npm run verify:css` runs after every build in CI, and it exists because
+  this site once shipped four permanently invisible sections.** A reveal set
+  `opacity: 0` on `.reveal` and relied on a scroll-driven animation to undo it;
+  the minifier folded `animation-timeline: view()` into the `animation`
+  shorthand, which is invalid, so browsers dropped the declaration and the
+  static opacity stranded the content. Tests, `astro check`, lychee and
+  Lighthouse all passed — the markup was right and the page scored 100 while
+  being blank. **Source CSS being correct is not evidence; check the built
+  CSS.** Two rules follow, both enforced by that script:
+  - never put a hidden state (`opacity: 0`, `visibility: hidden`) on an element
+    and rely on an animation to reveal it — put it in `@keyframes from`, so a
+    dropped animation degrades to "visible, unanimated";
+  - never use the `animation` shorthand alongside `animation-timeline`; use
+    longhands, so there is no shorthand for a minifier to fold a timeline into.
 - **The metric-matched fallbacks in `fonts.css` are load-bearing.** Their
   `size-adjust` / `ascent-override` numbers were extracted from the upstream
   TTFs' `head`/`hhea`/`OS/2` tables, not guessed. They are what keeps CLS at 0

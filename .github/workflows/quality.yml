@@ -33,6 +33,14 @@ jobs:
       - name: Build
         run: npm run build
 
+      # Guards a class of bug that every other gate here misses: CSS that is
+      # valid in source but broken by the minifier. A scroll-driven reveal once
+      # shipped four landing sections permanently invisible this way, and
+      # tests, astro check, lychee and Lighthouse all passed on it — the markup
+      # was correct and the page still scored 100. Only the built CSS shows it.
+      - name: Verify built CSS
+        run: npm run verify:css
+
       - name: Check links
         uses: lycheeverse/lychee-action@v2.9.0
         with:
