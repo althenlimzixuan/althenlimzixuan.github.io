@@ -31,7 +31,7 @@ const { title, description, eyebrow, lede } = Astro.props;
   }
 
   .eyebrow {
-    font-family: var(--f-sans);
+    font-family: var(--f-mono);
     font-size: var(--t-sm);
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -54,11 +54,14 @@ const { title, description, eyebrow, lede } = Astro.props;
     margin-block-start: var(--s-8);
   }
 
+  /* Not italic. Shipping a Source Serif italic file costs 130 KB to style a
+     single blockquote that is mostly inline code, and a synthesised oblique
+     on a text serif looks worse than none. The accent rule and the muted
+     colour already mark the quote. */
   .body :global(blockquote) {
     border-inline-start: 3px solid var(--c-accent);
     padding-inline-start: var(--s-6);
     color: var(--c-muted);
-    font-style: italic;
   }
 
   .body :global(.note) {
