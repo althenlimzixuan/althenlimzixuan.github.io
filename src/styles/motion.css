@@ -1,23 +1,44 @@
 /* Reveal-on-scroll for landing-page sections.
  *
- * CRITICAL: the opacity:0 start state lives INSIDE @supports on purpose.
- * Moved outside, any browser lacking scroll-driven animation support would
- * render the whole landing page permanently blank. It must fail visible.
+ * THE RULE, learned the hard way: no declaration outside the keyframes may
+ * ever hide content. The hidden start state lives in `from`, so it exists
+ * only while the animation is actually running. If the animation is dropped
+ * for ANY reason — unsupported, mis-minified, mis-tuned range, a future
+ * refactor — the element simply renders normally. There is no failure mode
+ * that leaves a section blank.
  *
- * The reduced-motion gate is `no-preference` rather than a `reduce` reset for
- * the same reason: those users never get the hidden start state at all.
+ * The previous version put `opacity: 0` on `.reveal` itself and relied on the
+ * animation to undo it. That shipped blank sections to production. The
+ * `@supports` guard did not help: it only covers browsers that LACK
+ * scroll-driven animation, and the browsers that have it were the ones
+ * breaking. What actually broke it:
  *
- * Note that global.css's blanket `animation-duration: 0.01ms !important`
- * under reduced motion does NOT cover this. That neutralises time-based
- * animation; a scroll-linked animation has no meaningful duration.
+ *   The CSS minifier folded `animation-timeline: view()` into the `animation`
+ *   shorthand, emitting `animation: linear both reveal-in view()`. The
+ *   `animation` shorthand does not accept a timeline — it was removed from
+ *   the shorthand in CSS Animations 2 — so browsers rejected the whole
+ *   declaration. The static `opacity: 0` survived, the animation that would
+ *   have undone it did not, and the section stayed invisible forever.
+ *
+ * Hence two defences, not one:
+ *   1. the start state lives in the keyframes (above) — makes failure benign;
+ *   2. longhands only, never the `animation` shorthand — gives the minifier
+ *      nothing to fold a timeline into. If a build ever emits an `animation:`
+ *      shorthand containing `view()` or `scroll()` again, that is the bug.
+ *
+ * The reduced-motion gate is `no-preference` rather than a `reduce` reset, so
+ * those users never receive the animation at all. Note global.css's blanket
+ * `animation-duration: 0.01ms !important` does NOT cover this — that
+ * neutralises time-based animation, and a scroll-linked animation has no
+ * meaningful duration.
  */
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .reveal {
-      opacity: 0;
-      transform: translateY(0.75rem);
-      animation: reveal-in linear both;
+      animation-name: reveal-in;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: view();
       animation-range: entry 10% cover 22%;
     }
@@ -25,8 +46,16 @@
 }
 
 /* Transform and opacity only — never a layout-affecting property, or CLS
-   drops the Lighthouse score below the 95 gate. */
+   drops the Lighthouse score below the 95 gate.
+ *
+ * `from` carries the hidden state deliberately. Do not lift it out onto
+ * `.reveal`; that is precisely the bug described above. */
 @keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+
   to {
     opacity: 1;
     transform: none;
