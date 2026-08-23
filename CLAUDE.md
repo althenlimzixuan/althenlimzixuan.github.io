@@ -205,6 +205,6 @@ reached production.
 Design: `docs/superpowers/specs/2026-08-23-process-scrollytelling-design.md`.
 Gentle reveal-on-scroll is a separate utility, `src/styles/motion.css`'s
 `.reveal`, applied to four landing sections (`ServiceList`, `FeaturedProject`,
-`About`, `ClosingCta`); its `opacity: 0` start state lives inside
-`@supports (animation-timeline: view())` so that browsers without
-scroll-driven animation support render the page visible rather than blank.
+`About`, `ClosingCta`). Its hidden start state lives in `@keyframes from`, not
+on the element — see the `verify:css` note under Typography for why that
+distinction is the difference between a working page and a blank one.
