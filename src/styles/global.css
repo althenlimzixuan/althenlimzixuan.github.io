@@ -95,6 +95,55 @@ hr {
   max-width: var(--w-prose);
 }
 
+/* ---- The thread ------------------------------------------------------
+ * A continuous hairline down the left margin of the landing page, ticked
+ * where each section begins.
+ *
+ * It replaces the full-width horizontal rules that used to separate these
+ * sections. That swap is the whole point: a horizontal rule cuts a page into
+ * stacked boxes, which is exactly what made the landing page read as a stack
+ * rather than one document. A vertical rule connects them instead, and the
+ * ticks still mark the boundaries the horizontal rules were marking.
+ *
+ * It is also the same motif as the pipeline diagram — a vertical line with
+ * nodes on it — so the page and the diagram are one drawing in one ink.
+ *
+ * Deliberately NOT a scroll-progress indicator. A bar that fills as you
+ * scroll duplicates the scrollbar and encodes nothing new. Nothing here
+ * animates, so there is no JavaScript, no scroll-timeline, and no failure
+ * mode to degrade.
+ *
+ * Sections stack with padding and no margins, so each element's rule segment
+ * meets its neighbour's and the line reads as unbroken.
+ */
+.thread {
+  position: relative;
+}
+
+.thread::before,
+.thread::after {
+  content: '';
+  position: absolute;
+  background: var(--c-rule);
+}
+
+/* The rule itself, spanning the section's full height. Offset from the page
+   box edge so it sits in the margin rather than against the text. */
+.thread::before {
+  inset-block: 0;
+  inset-inline-start: var(--s-2);
+  inline-size: 1px;
+}
+
+/* The tick marking where this section starts. */
+.thread::after {
+  inset-block-start: 0;
+  inset-inline-start: var(--s-2);
+  inline-size: var(--s-4);
+  block-size: 1px;
+  background: var(--c-muted);
+}
+
 .prose > * + * {
   margin-block-start: var(--s-6);
 }

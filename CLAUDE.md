@@ -88,11 +88,14 @@ palette lands on.
 
 Hard-won details, all measured rather than assumed:
 
-- **Do not add a font `<link rel="preload">`.** It was tried and measured: it
-  made the landing page worse (LCP 2.1s / perf 98, versus 1.1s / perf 100
-  without). It competes with the render-blocking stylesheet and buys nothing,
-  because the metric-matched fallbacks let text paint correctly-sized
-  immediately. Re-measure before reintroducing one.
+- **No font `<link rel="preload">`, on reasoning rather than proof.** A
+  preload competes with the render-blocking stylesheet and buys little once
+  metric-matched fallbacks let text paint correctly-sized immediately. A local
+  A/B seemed to confirm it, but **local Lighthouse timing on this machine is
+  not trustworthy** — the same build measured LCP 0.9s and 2.1s on consecutive
+  runs. Treat performance numbers from `npx lighthouse` here as unusable and
+  read CI instead: it runs three passes per URL on a clean runner. CLS and the
+  category scores are stable locally; LCP/FCP are not.
 - **The metric-matched fallbacks in `fonts.css` are load-bearing.** Their
   `size-adjust` / `ascent-override` numbers were extracted from the upstream
   TTFs' `head`/`hhea`/`OS/2` tables, not guessed. They are what keeps CLS at 0
@@ -106,6 +109,30 @@ Hard-won details, all measured rather than assumed:
   shipping the face.
 - Fonts are latin-only subsets. The `→` in CTAs is not in them — every arrow on
   the site sits in a mono context, where the system mono supplies it.
+
+## Landing page structure
+
+The landing page is one continuous document, not a stack of sections. Two
+devices carry that, and they share one motif — a vertical line with nodes on
+it:
+
+- **The thread** (`.thread` in `global.css`): a hairline down the left margin,
+  ticked where each section begins. It **replaced** the full-width horizontal
+  rules that used to separate `ProcessScrolly`, `About` and `ClosingCta` — a
+  horizontal rule cuts a page into stacked boxes, a vertical one connects them.
+  Do not reintroduce `border-block-start` on a landing section; add `.thread`
+  instead. Prose pages and `/resume/` keep their horizontal rules, because they
+  are documents rather than a narrative.
+- **The hero motif** (`HeroPipeline.astro`): the same fork drawn unlabelled,
+  animating once on load. It is the only load-time animation on the site. It is
+  allowed where a hero fade-in is not, because it is additive — the hero text is
+  readable from first paint and the line draws beside it, withholding nothing.
+  Strokes use `pathLength="1"` so one dasharray pair draws every path
+  regardless of its real length.
+
+The thread is deliberately **not** a scroll-progress indicator: a bar that
+fills as you scroll duplicates the scrollbar and encodes nothing new. Nothing
+in it animates, so it needs no JavaScript and has no failure mode.
 
 ## Visual design
 

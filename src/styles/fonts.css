@@ -2,15 +2,21 @@
  * these from /fonts/, so there is no Google Fonts connection to leak visitors
  * to and nothing to go down independently of the site.
  *
- * Two files, 190 KB total, latin only. NEITHER IS PRELOADED, deliberately,
- * and that is not an oversight — it was measured. Preloading Fraunces (the
- * h1, and so the largest contentful paint) made the landing page WORSE:
- * LCP 2.1s and performance 98, against 1.1s and 100 with no preload. The
- * preload competes with the render-blocking stylesheet, and it buys nothing,
- * because the metric-matched fallbacks below let the h1 paint correctly-sized
- * immediately and swap without shifting. Preload-your-fonts is good advice
- * only when you have no metric-matched fallback. Do not add one back without
- * re-measuring.
+ * Two files, 190 KB total, latin only. NEITHER IS PRELOADED.
+ *
+ * The reasoning: a preload competes with the render-blocking stylesheet, and
+ * it buys little here because the metric-matched fallbacks below let text
+ * paint correctly-sized immediately and swap without shifting. Preload-your-
+ * fonts is advice aimed at the case where you have no metric-matched
+ * fallback.
+ *
+ * Honesty about the evidence: a local A/B appeared to show the preload
+ * costing ~1s of LCP, but local Lighthouse on the development machine is not
+ * trustworthy — the SAME build measured 0.9s and 2.1s on consecutive runs,
+ * so that A/B was inside the noise and does not support the conclusion. The
+ * argument above is reasoning, not measurement. CI runs three passes per URL
+ * on a clean runner and is the only authority on this. If you want a preload,
+ * A/B it there.
  *
  * Both are SIL Open Font Licence.
  *
