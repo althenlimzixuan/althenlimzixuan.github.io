@@ -22,7 +22,7 @@ import { site } from '../data/site';
     </header>
 
     <section aria-labelledby="profile-heading">
-      <h2 id="profile-heading">Profile</h2>
+      <h2 id="profile-heading" class="rule-head">Profile</h2>
       <p class="prose">
         Product engineer who takes systems from an empty repository to
         production. Most recently built ETP end-to-end — a Go API on Cloud Run, a
@@ -33,7 +33,7 @@ import { site } from '../data/site';
     </section>
 
     <section aria-labelledby="selected-heading">
-      <h2 id="selected-heading">Selected work</h2>
+      <h2 id="selected-heading" class="rule-head">Selected work</h2>
       <h3>ETP — Essential Traveller Planner</h3>
       <p class="prose">
         Group-trip itinerary planner. Sole engineer across API, web, mobile and
@@ -89,13 +89,6 @@ import { site } from '../data/site';
     font-size: var(--t-sm);
     color: var(--c-muted);
     margin-block-start: var(--s-6);
-  }
-
-  h2 {
-    font-size: var(--t-xl);
-    margin-block: var(--s-16) var(--s-8);
-    padding-block-start: var(--s-6);
-    border-block-start: 1px solid var(--c-rule);
   }
 
   h3 {

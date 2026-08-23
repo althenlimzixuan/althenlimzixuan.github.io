@@ -90,6 +90,25 @@ hr {
   margin-block-start: var(--s-6);
 }
 
+/* Section-heading composite. Shared by four call sites; was copy-pasted
+   across all of them before. `.rule-head` is opted into by class;
+   `.prose-body h2` is a descendant selector because ProseLayout renders
+   MDX output, whose headings carry no class of ours. */
+.rule-head,
+.prose-body h2 {
+  font-size: var(--t-xl);
+  margin-block: var(--s-16) var(--s-8);
+  padding-block-start: var(--s-6);
+  border-block-start: 1px solid var(--c-rule);
+}
+
+/* Prose supplies its own trailing rhythm via `.prose > * + *`, so the
+   composite's bottom margin is deliberately dropped here. Preserving this
+   is what keeps /how-i-build/ and /work/etp/ pixel-identical. */
+.prose-body h2 {
+  margin-block-end: 0;
+}
+
 .skip-link {
   position: absolute;
   left: -9999px;

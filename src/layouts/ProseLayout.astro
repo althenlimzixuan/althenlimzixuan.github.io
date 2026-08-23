@@ -18,7 +18,7 @@ const { title, description, eyebrow, lede } = Astro.props;
       <h1>{title}</h1>
       {lede && <p class="lede">{lede}</p>}
     </header>
-    <div class="prose body">
+    <div class="prose body prose-body">
       <slot />
     </div>
   </article>
@@ -47,13 +47,6 @@ const { title, description, eyebrow, lede } = Astro.props;
 
   .body {
     padding-block-end: var(--s-16);
-  }
-
-  .body :global(h2) {
-    font-size: var(--t-xl);
-    margin-block-start: var(--s-16);
-    padding-block-start: var(--s-6);
-    border-block-start: 1px solid var(--c-rule);
   }
 
   .body :global(h3) {
