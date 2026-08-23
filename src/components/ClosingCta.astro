@@ -1,10 +1,16 @@
 ---
 import { primaryCtaHref, primaryCtaLabel, site } from '../data/site';
 
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
 const hasBooking = site.calBookingUrl !== null;
 ---
 
-<section class="page section" aria-labelledby="cta-heading">
+<section class:list={['page', 'section', className]} aria-labelledby="cta-heading">
   <div class="inner">
     <h2 id="cta-heading">Have something to build?</h2>
     <p>
@@ -22,7 +28,6 @@ const hasBooking = site.calBookingUrl !== null;
 <style>
   .section {
     padding-block: var(--s-24);
-    border-block-start: 1px solid var(--c-rule);
   }
 
   .inner { max-width: var(--w-prose); }
@@ -37,7 +42,7 @@ const hasBooking = site.calBookingUrl !== null;
   }
 
   .btn {
-    font-family: var(--f-sans);
+    font-family: var(--f-mono);
     font-size: var(--t-sm);
     font-weight: 600;
     padding: var(--s-3) var(--s-6);

@@ -1,6 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
 
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
 const featured = (await getCollection('projects'))
   .filter((p) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order)[0];
@@ -14,7 +20,7 @@ if (!featured) {
 const { data, id } = featured;
 ---
 
-<section class="page section" aria-labelledby="work-heading">
+<section class:list={['page', 'section', className]} aria-labelledby="work-heading">
   <h2 id="work-heading">Selected work</h2>
 
   <article class="feature">
@@ -78,7 +84,7 @@ const { data, id } = featured;
   }
 
   dt {
-    font-family: var(--f-sans);
+    font-family: var(--f-mono);
     font-size: var(--t-xs);
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -86,14 +92,14 @@ const { data, id } = featured;
   }
 
   dd {
-    font-family: var(--f-sans);
+    font-family: var(--f-mono);
     font-size: var(--t-lg);
     font-weight: 600;
     margin: var(--s-1) 0 0;
   }
 
   .role {
-    font-family: var(--f-sans);
+    font-family: var(--f-mono);
     font-size: var(--t-sm);
     color: var(--c-muted);
   }
@@ -118,7 +124,7 @@ const { data, id } = featured;
 
   .more {
     margin-block-start: var(--s-8);
-    font-family: var(--f-sans);
+    font-family: var(--f-mono);
     font-weight: 600;
   }
 </style>

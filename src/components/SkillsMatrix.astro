@@ -26,7 +26,7 @@ const groups = [
 ---
 
 <section aria-labelledby="skills-heading">
-  <h2 id="skills-heading">Skills</h2>
+  <h2 id="skills-heading" class="rule-head">Skills</h2>
   <dl class="matrix">
     {
       groups.map((g) => (
@@ -40,13 +40,6 @@ const groups = [
 </section>
 
 <style>
-  h2 {
-    font-size: var(--t-xl);
-    margin-block: var(--s-16) var(--s-8);
-    padding-block-start: var(--s-6);
-    border-block-start: 1px solid var(--c-rule);
-  }
-
   .matrix {
     display: grid;
     gap: var(--s-6);
@@ -68,7 +61,7 @@ const groups = [
   }
 
   dt {
-    font-family: var(--f-sans);
+    font-family: var(--f-mono);
     font-size: var(--t-sm);
     font-weight: 600;
     color: var(--c-muted);

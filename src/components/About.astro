@@ -1,7 +1,12 @@
 ---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
 ---
 
-<section class="page section" aria-labelledby="about-heading">
+<section class:list={['page', 'section', className]} aria-labelledby="about-heading">
   <h2 id="about-heading">About</h2>
   <div class="prose">
     <p>
@@ -21,7 +26,6 @@
 <style>
   .section {
     padding-block: var(--s-16);
-    border-block-start: 1px solid var(--c-rule);
   }
 
   h2 { margin-block-end: var(--s-8); }

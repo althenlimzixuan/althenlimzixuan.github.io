@@ -1,0 +1,93 @@
+/* Self-hosted variable faces. No third-party requests: GitHub Pages serves
+ * these from /fonts/, so there is no Google Fonts connection to leak visitors
+ * to and nothing to go down independently of the site.
+ *
+ * Two files, 190 KB total, latin only. NEITHER IS PRELOADED.
+ *
+ * The reasoning: a preload competes with the render-blocking stylesheet, and
+ * it buys little here because the metric-matched fallbacks below let text
+ * paint correctly-sized immediately and swap without shifting. Preload-your-
+ * fonts is advice aimed at the case where you have no metric-matched
+ * fallback.
+ *
+ * Honesty about the evidence: a local A/B appeared to show the preload
+ * costing ~1s of LCP, but local Lighthouse on the development machine is not
+ * trustworthy — the SAME build measured 0.9s and 2.1s on consecutive runs,
+ * so that A/B was inside the noise and does not support the conclusion. The
+ * argument above is reasoning, not measurement. CI runs three passes per URL
+ * on a clean runner and is the only authority on this. If you want a preload,
+ * A/B it there.
+ *
+ * Both are SIL Open Font Licence.
+ *
+ * No unicode-range is declared. These are already latin-only subsets, so a
+ * range would only risk excluding glyphs the files actually contain. Anything
+ * missing (the → in CTAs, for one) falls back per-glyph — and every arrow on
+ * this site sits in a mono context, where the system mono supplies it.
+ */
+
+/* Fraunces — display only. SOFT and WONK are baked into the file at 0 and 1:
+ * sharp terminals, wonky letterforms. That is the deliberate setting, not the
+ * default — Fraunces at its soft, friendly defaults is the face every warm-
+ * paper portfolio is using. Pinning the two axes also cut the file from
+ * 121 KB to 67 KB, so the distinctive setting is also the cheap one.
+ */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/fraunces-latin.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Source Serif 4 — body text at every size. Replaces a system stack that
+ * rendered as Georgia on Windows and Iowan Old Style on macOS, which meant
+ * the body copy could not actually be designed, only hoped at.
+ */
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('/fonts/source-serif-4-latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---- Metric-matched fallbacks ----------------------------------------
+ * `font-display: swap` paints text in a fallback first, then replaces it.
+ * If the fallback occupies different space, the replacement reflows and
+ * layout shifts — which would cost the Lighthouse >= 95 performance gate
+ * this repo enforces.
+ *
+ * These overrides scale Georgia so it occupies the same space as the real
+ * face until it arrives. The numbers are measured, not guessed: extracted
+ * from the head/hhea/OS-2 tables of the upstream TTFs (unitsPerEm, sxHeight,
+ * hhea ascender/descender) and divided against Georgia's 986/2048 x-height
+ * ratio.
+ *
+ * Measured x-height ratios — Fraunces 0.4820, Source Serif 4 0.4750,
+ * Georgia 0.4814. Fraunces is within 0.12% of Georgia and Source Serif
+ * within 1.4%, so the swap was always going to be close; these just remove
+ * the remainder.
+ *
+ * Note the ascent/descent overrides are near-inert here on purpose: this
+ * site sets explicit unitless line-heights (1.65 body, 1.15 headings), so
+ * line-box height comes from CSS rather than font metrics. They are declared
+ * for correctness if a future rule ever relies on `line-height: normal`.
+ */
+@font-face {
+  font-family: 'Fraunces Fallback';
+  src: local('Georgia'), local('Times New Roman');
+  size-adjust: 100.12%;
+  ascent-override: 97.69%;
+  descent-override: 25.47%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Source Serif Fallback';
+  src: local('Georgia'), local('Times New Roman');
+  size-adjust: 98.66%;
+  ascent-override: 105.01%;
+  descent-override: 33.95%;
+  line-gap-override: 0%;
+}

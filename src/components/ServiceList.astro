@@ -1,12 +1,18 @@
 ---
 import { getCollection } from 'astro:content';
 
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
 const services = (await getCollection('services')).sort(
   (a, b) => a.data.order - b.data.order,
 );
 ---
 
-<section class="page section" aria-labelledby="services-heading">
+<section class:list={['page', 'section', className]} aria-labelledby="services-heading">
   <h2 id="services-heading">What I do</h2>
   <ul class="grid">
     {
@@ -54,7 +60,7 @@ const services = (await getCollection('services')).sort(
     list-style: none;
     padding: 0;
     font-size: var(--t-sm);
-    font-family: var(--f-sans);
+    font-family: var(--f-mono);
     display: grid;
     gap: var(--s-2);
   }

@@ -1,0 +1,101 @@
+---
+import { processSteps, type PipelineNodeId } from '../../data/process';
+
+/**
+ * node id -> 1-based step index, derived from the data rather than restated.
+ * tests/process.test.ts guarantees this map is total and unambiguous.
+ */
+const stepOf = Object.fromEntries(
+  processSteps.flatMap((s, i) => s.nodes.map((n) => [n, i + 1])),
+) as Record<PipelineNodeId, number>;
+
+const nodes: { id: PipelineNodeId; x: number; y: number; w: number; label: string }[] = [
+  { id: 'spec',     x: 85,  y: 20,  w: 110, label: 'spec' },
+  { id: 'contract', x: 85,  y: 86,  w: 110, label: 'contract' },
+  { id: 'api',      x: 5,   y: 170, w: 70,  label: 'API' },
+  { id: 'web',      x: 105, y: 170, w: 70,  label: 'web' },
+  { id: 'mobile',   x: 205, y: 170, w: 70,  label: 'mobile' },
+  { id: 'tests',    x: 85,  y: 254, w: 110, label: 'tests' },
+  { id: 'ci',       x: 85,  y: 320, w: 110, label: 'CI' },
+];
+
+const H = 34; // node height, uniform
+---
+
+<svg
+  class="pipeline"
+  viewBox="0 0 280 374"
+  role="presentation"
+  aria-hidden="true"
+  focusable="false"
+>
+  <g class="edges" fill="none" stroke-linecap="square">
+    <!-- spec -> contract -->
+    <path data-step={stepOf.contract} d="M140 54 V86" />
+
+    <!-- contract -> fork -> three surfaces -->
+    <path data-step={stepOf.api} d="M140 120 V150 M40 150 H240 M40 150 V170" />
+    <path data-step={stepOf.web} d="M140 150 V170" />
+    <path data-step={stepOf.mobile} d="M240 150 V170" />
+
+    <!-- three surfaces -> converge -> tests -->
+    <path data-step={stepOf.tests} d="M40 204 V234 M140 204 V234 M240 204 V234 M40 234 H240 M140 234 V254" />
+
+    <!-- tests -> CI -->
+    <path data-step={stepOf.ci} d="M140 288 V320" />
+  </g>
+
+  <g class="nodes">
+    {
+      nodes.map((n) => (
+        <g data-step={stepOf[n.id]}>
+          <rect x={n.x} y={n.y} width={n.w} height={H} rx="3" />
+          <text x={n.x + n.w / 2} y={n.y + H / 2} dominant-baseline="central" text-anchor="middle">
+            {n.label}
+          </text>
+        </g>
+      ))
+    }
+  </g>
+</svg>
+
+<style>
+  .pipeline {
+    inline-size: 100%;
+    block-size: auto;
+    max-inline-size: 20rem;
+  }
+
+  /* Base tier is "future": the faintest. ProcessScrolly promotes elements to
+     past/active via [data-active] rules. Ink on paper — no fills, no
+     gradients, no glow. */
+  .edges path {
+    stroke: var(--c-rule);
+    stroke-width: 1;
+    transition: stroke 200ms ease, stroke-width 200ms ease;
+  }
+
+  .nodes rect {
+    fill: none;
+    stroke: var(--c-rule);
+    stroke-width: 1;
+    transition: stroke 200ms ease, stroke-width 200ms ease;
+  }
+
+  .nodes text {
+    fill: var(--c-rule);
+    font-family: var(--f-mono);
+    font-size: 11px;
+    transition: fill 200ms ease;
+  }
+
+  /* Emphasis is a discrete state change, not vestibular motion, so it is
+     kept under reduced motion — only the easing between states goes. */
+  @media (prefers-reduced-motion: reduce) {
+    .edges path,
+    .nodes rect,
+    .nodes text {
+      transition: none;
+    }
+  }
+</style>

@@ -1,18 +1,25 @@
 ---
+import HeroPipeline from './HeroPipeline.astro';
 import { primaryCtaHref, primaryCtaLabel, site } from '../data/site';
 ---
 
 <section class="hero page">
-  <p class="eyebrow">{site.role} · {site.location}</p>
-  <h1>{site.tagline}</h1>
-  <p class="lede">
-    Most teams can find someone to write code. Fewer can find one person who
-    will take a product from an empty repository to something running in
-    production — API, web, mobile and the pipeline that ships them.
-  </p>
-  <div class="actions">
-    <a class="btn btn-primary" href={primaryCtaHref()}>{primaryCtaLabel()}</a>
-    <a class="btn" href="/work/etp/">See the work</a>
+  <div class="inner">
+    <div class="text">
+      <p class="eyebrow">{site.role} · {site.location}</p>
+      <h1>{site.tagline}</h1>
+      <p class="lede">
+        Most teams can find someone to write code. Fewer can find one person who
+        will take a product from an empty repository to something running in
+        production — API, web, mobile and the pipeline that ships them.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" href={primaryCtaHref()}>{primaryCtaLabel()}</a>
+        <a class="btn" href="/work/etp/">See the work</a>
+      </div>
+    </div>
+
+    <div class="motif"><HeroPipeline /></div>
   </div>
 </section>
 
@@ -24,16 +31,40 @@ import { primaryCtaHref, primaryCtaLabel, site } from '../data/site';
     padding-inline: var(--s-6);
   }
 
-  /* 72rem breakpoint kept inline: custom properties are not valid inside
-     @media conditions (`@media (min-width: var(--bp-wide))` silently never
-     matches), so this value cannot be tokenised. It mirrors --w-page (68rem)
-     plus a little headroom before the hero centres itself. */
-  @media (min-width: 72rem) {
-    .hero { margin-inline: auto; }
+  /* The motif is reinforcement, not information — the hero reads complete
+     without it, so narrow viewports simply do not get it rather than being
+     made to stack it. */
+  .motif { display: none; }
+
+  /* 60rem breakpoint kept inline: custom properties are not valid inside
+     @media conditions (`@media (min-width: var(--bp))` silently never
+     matches), so this value cannot be tokenised.
+
+     Above it the hero widens to --w-page and centres, which also fixes a
+     long-standing misalignment: the hero previously capped at --w-hero and
+     only centred from 72rem, so between 68rem and 72rem its left edge sat
+     56px left of every other section's. It now shares the page column, which
+     is what lets the marginal rule in global.css run straight past it. */
+  @media (min-width: 60rem) {
+    .hero {
+      max-width: var(--w-page);
+      margin-inline: auto;
+    }
+
+    .inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 8rem;
+      gap: var(--s-16);
+      align-items: center;
+    }
+
+    .text { max-width: var(--w-hero); }
+
+    .motif { display: block; }
   }
 
   .eyebrow {
-    font-family: var(--f-sans);
+    font-family: var(--f-mono);
     font-size: var(--t-sm);
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -57,7 +88,7 @@ import { primaryCtaHref, primaryCtaLabel, site } from '../data/site';
   }
 
   .btn {
-    font-family: var(--f-sans);
+    font-family: var(--f-mono);
     font-size: var(--t-sm);
     font-weight: 600;
     padding: var(--s-3) var(--s-6);

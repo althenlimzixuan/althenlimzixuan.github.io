@@ -1,0 +1,197 @@
+---
+import PipelineDiagram from './PipelineDiagram.astro';
+import { processSteps } from '../../data/process';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<section
+  id="process-scrolly"
+  class:list={['page', 'section', className]}
+  data-active="1"
+  aria-labelledby="process-heading"
+>
+  <h2 id="process-heading">How I build</h2>
+
+  <div class="layout">
+    <div class="pane">
+      <PipelineDiagram />
+    </div>
+
+    <div class="steps">
+      {
+        processSteps.map((s, i) => (
+          <article class="step" data-step-index={i + 1}>
+            <p class="numeral">{s.numeral}</p>
+            <h3>{s.heading}</h3>
+            <p class="body">{s.body}</p>
+          </article>
+        ))
+      }
+      <p class="more"><a href="/how-i-build/">See the full process →</a></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: var(--s-16);
+  }
+
+  h2 { margin-block-end: var(--s-8); }
+
+  .layout {
+    display: grid;
+    gap: var(--s-8);
+  }
+
+  .pane {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* 60rem breakpoint kept inline: custom properties are not valid inside
+     @media conditions (`@media (min-width: var(--bp))` silently never
+     matches), so this value cannot be tokenised. Below it the pin is
+     dropped entirely — a sticky half-screen on a phone is cramped and the
+     scroll story does not survive the reduced height. */
+  @media (min-width: 60rem) {
+    .layout {
+      grid-template-columns: 20rem 1fr;
+      gap: var(--s-16);
+      align-items: start;
+    }
+
+    .pane {
+      position: sticky;
+      top: var(--s-16);
+      /* Reserved height: the sticky pane must not be able to shift the steps
+         column, or CLS drops the Lighthouse score below the 95 gate. */
+      block-size: 26rem;
+      align-items: center;
+    }
+  }
+
+  .steps {
+    display: grid;
+    gap: var(--s-16);
+  }
+
+  .step { max-width: var(--w-prose); }
+
+  .numeral {
+    font-family: var(--f-mono);
+    font-size: var(--t-sm);
+    color: var(--c-muted);
+    margin-block-end: var(--s-2);
+  }
+
+  .step h3 {
+    font-size: var(--t-lg);
+    margin-block-end: var(--s-3);
+  }
+
+  .body { color: var(--c-muted); }
+
+  .more {
+    font-family: var(--f-mono);
+    font-weight: 600;
+  }
+
+  /* ---- Emphasis -------------------------------------------------------
+     Three tiers. "future" is the components' own base styling, so only
+     past and active are declared here. CSS cannot compare two numbers, so
+     the past set is enumerated: for data-active=N, every step < N. Ten
+     selectors, and that is the whole of it.
+
+     :global is required on the descendant [data-step='N'] part of every
+     selector below: those elements are rendered by PipelineDiagram, a
+     child component, so they carry a different Astro scoping attribute
+     (data-astro-cid-*) than this component's own selectors compile to.
+     Without :global these selectors compile to a compound selector that
+     requires this component's cid on the [data-step] element too — which
+     never matches, and the diagram would never change tier, silently. */
+
+  /* past — reached, now behind you */
+  .section[data-active='2'] :global([data-step='1']),
+  .section[data-active='3'] :global([data-step='1']),
+  .section[data-active='3'] :global([data-step='2']),
+  .section[data-active='4'] :global([data-step='1']),
+  .section[data-active='4'] :global([data-step='2']),
+  .section[data-active='4'] :global([data-step='3']),
+  .section[data-active='5'] :global([data-step='1']),
+  .section[data-active='5'] :global([data-step='2']),
+  .section[data-active='5'] :global([data-step='3']),
+  .section[data-active='5'] :global([data-step='4']) {
+    --tier-stroke: var(--c-muted);
+    --tier-width: 1;
+    --tier-text: var(--c-muted);
+  }
+
+  /* active */
+  .section[data-active='1'] :global([data-step='1']),
+  .section[data-active='2'] :global([data-step='2']),
+  .section[data-active='3'] :global([data-step='3']),
+  .section[data-active='4'] :global([data-step='4']),
+  .section[data-active='5'] :global([data-step='5']) {
+    --tier-stroke: var(--c-fg);
+    --tier-width: 2;
+    --tier-text: var(--c-accent);
+  }
+
+  /* Apply whatever tier was set. */
+  .section :global(.pipeline path[data-step]),
+  .section :global(.pipeline [data-step] rect) {
+    stroke: var(--tier-stroke, var(--c-rule));
+    stroke-width: var(--tier-width, 1);
+  }
+
+  .section :global(.pipeline [data-step] text) {
+    fill: var(--tier-text, var(--c-rule));
+  }
+
+</style>
+
+<script is:inline>
+  // Progressive enhancement only. Absent, failed or unsupported, the module
+  // stays on the data-active="1" it ships with in the markup: complete and
+  // readable, just without emphasis tracking. It never clears the active
+  // step, only sets it — so a fast scroll that leaves no step inside the
+  // band holds the last good value rather than blanking.
+  (() => {
+    const root = document.getElementById('process-scrolly');
+    if (!root || !('IntersectionObserver' in window)) return;
+
+    // Below 60rem the pane is not sticky (see the matching @media in this
+    // component), so there is nothing for the emphasis to track.
+    const wide = window.matchMedia('(min-width: 60rem)');
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) root.dataset.active = e.target.dataset.stepIndex;
+        }
+      },
+      // Collapse the viewport to a narrow band across the middle: a step
+      // becomes active as it crosses the reader's line of sight.
+      { rootMargin: '-45% 0px -45% 0px' },
+    );
+
+    const steps = root.querySelectorAll('[data-step-index]');
+    const sync = () => {
+      if (wide.matches) {
+        steps.forEach((s) => io.observe(s));
+      } else {
+        io.disconnect();
+        root.dataset.active = '1';
+      }
+    };
+
+    sync();
+    wide.addEventListener('change', sync);
+  })();
+</script>

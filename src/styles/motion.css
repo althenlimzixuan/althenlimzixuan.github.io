@@ -1,0 +1,34 @@
+/* Reveal-on-scroll for landing-page sections.
+ *
+ * CRITICAL: the opacity:0 start state lives INSIDE @supports on purpose.
+ * Moved outside, any browser lacking scroll-driven animation support would
+ * render the whole landing page permanently blank. It must fail visible.
+ *
+ * The reduced-motion gate is `no-preference` rather than a `reduce` reset for
+ * the same reason: those users never get the hidden start state at all.
+ *
+ * Note that global.css's blanket `animation-duration: 0.01ms !important`
+ * under reduced motion does NOT cover this. That neutralises time-based
+ * animation; a scroll-linked animation has no meaningful duration.
+ */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(0.75rem);
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 22%;
+    }
+  }
+}
+
+/* Transform and opacity only — never a layout-affecting property, or CLS
+   drops the Lighthouse score below the 95 gate. */
+@keyframes reveal-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

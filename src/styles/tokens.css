@@ -10,9 +10,21 @@
   --c-accent: #7a2e1e;
   --c-accent-fg: #fbfaf8;
 
-  /* Type */
-  --f-serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
-  --f-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Type — three faces, three jobs. @font-face lives in fonts.css; these
+     are the values. Display sets headings, serif sets prose, mono sets every
+     label, metric and control.
+
+     There is deliberately no sans. Mono carries the utility role instead:
+     the artifacts of this work are specs, generated contracts and CI logs,
+     and mono is that vernacular. It is also what keeps the page off the
+     warm-paper-plus-serif look every other portfolio in this palette lands
+     on.
+
+     Mono stays a system stack. It is small utility text where per-platform
+     variance costs little, and a third font file would not earn its bytes
+     against the Lighthouse budget. */
+  --f-display: 'Fraunces', 'Fraunces Fallback', Georgia, serif;
+  --f-serif: 'Source Serif 4', 'Source Serif Fallback', Georgia, serif;
   --f-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, monospace;
 
   /* Type scale — fluid, 1.25 ratio */
@@ -51,8 +63,10 @@
 }
 
 /* Palette — dark. Driven by the OS preference alone: there is no theme
-   toggle, so the site ships with zero JavaScript. Adding a toggle later
-   means adding `:root[data-theme='dark']` overrides here plus a control. */
+   toggle. The site ships one inline script (~1.4 KB, unminified) for the
+   landing page's process module and nothing else, so adding a toggle later
+   still means adding `:root[data-theme='dark']` overrides here plus a
+   control. */
 @media (prefers-color-scheme: dark) {
   :root {
     --c-bg: #14140f;

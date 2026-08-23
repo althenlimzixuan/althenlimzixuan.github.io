@@ -1,4 +1,6 @@
+@import './fonts.css';
 @import './tokens.css';
+@import './motion.css';
 
 *,
 *::before,
@@ -25,12 +27,20 @@ body {
 }
 
 h1, h2, h3, h4 {
-  font-family: var(--f-sans);
+  font-family: var(--f-display);
   line-height: 1.15;
-  letter-spacing: -0.02em;
   text-wrap: balance;
   font-weight: 600;
 }
+
+/* Tracking is set per level, not globally. The old -0.02em suited the
+   grotesque that used to sit here; Fraunces is a wide old-style face whose
+   display optical sizes already tighten themselves, so it needs far less —
+   and none at all below display sizes, where negative tracking would close
+   up its counters. */
+h1 { letter-spacing: -0.015em; }
+h2 { letter-spacing: -0.01em; }
+h3, h4 { letter-spacing: normal; }
 
 h1 { font-size: var(--t-3xl); }
 h2 { font-size: var(--t-2xl); }
@@ -85,8 +95,76 @@ hr {
   max-width: var(--w-prose);
 }
 
+/* ---- The thread ------------------------------------------------------
+ * A continuous hairline down the left margin of the landing page, ticked
+ * where each section begins.
+ *
+ * It replaces the full-width horizontal rules that used to separate these
+ * sections. That swap is the whole point: a horizontal rule cuts a page into
+ * stacked boxes, which is exactly what made the landing page read as a stack
+ * rather than one document. A vertical rule connects them instead, and the
+ * ticks still mark the boundaries the horizontal rules were marking.
+ *
+ * It is also the same motif as the pipeline diagram — a vertical line with
+ * nodes on it — so the page and the diagram are one drawing in one ink.
+ *
+ * Deliberately NOT a scroll-progress indicator. A bar that fills as you
+ * scroll duplicates the scrollbar and encodes nothing new. Nothing here
+ * animates, so there is no JavaScript, no scroll-timeline, and no failure
+ * mode to degrade.
+ *
+ * Sections stack with padding and no margins, so each element's rule segment
+ * meets its neighbour's and the line reads as unbroken.
+ */
+.thread {
+  position: relative;
+}
+
+.thread::before,
+.thread::after {
+  content: '';
+  position: absolute;
+  background: var(--c-rule);
+}
+
+/* The rule itself, spanning the section's full height. Offset from the page
+   box edge so it sits in the margin rather than against the text. */
+.thread::before {
+  inset-block: 0;
+  inset-inline-start: var(--s-2);
+  inline-size: 1px;
+}
+
+/* The tick marking where this section starts. */
+.thread::after {
+  inset-block-start: 0;
+  inset-inline-start: var(--s-2);
+  inline-size: var(--s-4);
+  block-size: 1px;
+  background: var(--c-muted);
+}
+
 .prose > * + * {
   margin-block-start: var(--s-6);
+}
+
+/* Section-heading composite. Shared by four call sites; was copy-pasted
+   across all of them before. `.rule-head` is opted into by class;
+   `.prose-body h2` is a descendant selector because ProseLayout renders
+   MDX output, whose headings carry no class of ours. */
+.rule-head,
+.prose-body h2 {
+  font-size: var(--t-xl);
+  margin-block: var(--s-16) var(--s-8);
+  padding-block-start: var(--s-6);
+  border-block-start: 1px solid var(--c-rule);
+}
+
+/* Prose supplies its own trailing rhythm via `.prose > * + *`, so the
+   composite's bottom margin is deliberately dropped here. Preserving this
+   is what keeps /how-i-build/ and /work/etp/ pixel-identical. */
+.prose-body h2 {
+  margin-block-end: 0;
 }
 
 .skip-link {
