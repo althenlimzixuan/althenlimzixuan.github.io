@@ -84,8 +84,10 @@ export interface ProcessStep {
 **The pin is CSS.** `position: sticky` on the diagram column. Universal
 support, no script.
 
-**The emphasis is JavaScript.** One inline `IntersectionObserver`, budgeted at
-under 1 KB, no bundle, no framework, no hydration. It observes the five step
+**The emphasis is JavaScript.** One inline `IntersectionObserver`, ~1.4 KB
+unminified (an earlier ~1 KB figure here was an unmeasured estimate,
+superseded by measurement of the built output), no bundle, no framework, no
+hydration. It observes the five step
 blocks with `rootMargin` collapsing the viewport to a narrow middle band, and
 writes `data-active="<n>"` on the module root. All visible change is CSS
 reacting to that attribute.
@@ -113,7 +115,8 @@ rather than a static one.
 
 `src/styles/tokens.css` and `CLAUDE.md` both currently state the site ships
 zero JavaScript. Both must be amended in the same pull request to state: one
-inline progressive-enhancement script on the landing page, ~1 KB, no bundle.
+inline progressive-enhancement script on the landing page, ~1.4 KB unminified,
+no bundle.
 Leaving a now-false claim in the repo is worse than the script.
 
 ## 6. Diagram

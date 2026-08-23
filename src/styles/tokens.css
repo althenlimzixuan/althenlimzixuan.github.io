@@ -51,7 +51,7 @@
 }
 
 /* Palette — dark. Driven by the OS preference alone: there is no theme
-   toggle. The site ships one inline script (~450 bytes, no bundle) for the
+   toggle. The site ships one inline script (~1.4 KB, unminified) for the
    landing page's process module and nothing else, so adding a toggle later
    still means adding `:root[data-theme='dark']` overrides here plus a
    control. */

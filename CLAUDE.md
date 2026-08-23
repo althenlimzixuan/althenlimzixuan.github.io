@@ -22,7 +22,7 @@ Implementation plan: `docs/superpowers/plans/2026-08-01-personal-portfolio.md`
 ## Stack
 
 Astro 7 · MDX · Vitest · GitHub Actions · GitHub Pages. No server, no database,
-no analytics. One inline script (~450 bytes, no bundle) drives the landing
+no analytics. One inline script (~1.4 KB, unminified, no bundle) drives the landing
 page's process module; every other page ships zero JavaScript. Node >= 22.12.0,
 npm.
 
