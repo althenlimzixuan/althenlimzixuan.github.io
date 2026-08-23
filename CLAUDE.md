@@ -22,7 +22,9 @@ Implementation plan: `docs/superpowers/plans/2026-08-01-personal-portfolio.md`
 ## Stack
 
 Astro 7 · MDX · Vitest · GitHub Actions · GitHub Pages. No server, no database,
-no analytics. Node >= 22.12.0, npm.
+no analytics. One inline script (~450 bytes, no bundle) drives the landing
+page's process module; every other page ships zero JavaScript. Node >= 22.12.0,
+npm.
 
 ## Hard constraints
 
@@ -79,3 +81,9 @@ is duplicated in `Hero.astro` and `ClosingCta.astro`. A redesign that changes
 one of those composites, not just token values, has to touch each copy.
 Avoid teal (#64ffda) on navy (#0a0e27), animated starfields and gradient blobs;
 the previous template used that look and it reads as generic on sight.
+
+The landing page's "How I build" section is a scrollytelling module
+(`src/components/process/`): a CSS-sticky pipeline diagram whose emphasis is
+tracked by an inline IntersectionObserver. It is progressive enhancement — with
+the script absent the module renders complete and readable, stuck on step one.
+Design: `docs/superpowers/specs/2026-08-23-process-scrollytelling-design.md`.

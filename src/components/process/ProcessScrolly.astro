@@ -162,3 +162,43 @@ import { processSteps } from '../../data/process';
     .step { transition: none; }
   }
 </style>
+
+<script is:inline>
+  // Progressive enhancement only. Absent, failed or unsupported, the module
+  // stays on the data-active="1" it ships with in the markup: complete and
+  // readable, just without emphasis tracking. It never clears the active
+  // step, only sets it — so a fast scroll that leaves no step inside the
+  // band holds the last good value rather than blanking.
+  (() => {
+    const root = document.getElementById('process-scrolly');
+    if (!root || !('IntersectionObserver' in window)) return;
+
+    // Below 60rem the pane is not sticky (see the matching @media in this
+    // component), so there is nothing for the emphasis to track.
+    const wide = window.matchMedia('(min-width: 60rem)');
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) root.dataset.active = e.target.dataset.stepIndex;
+        }
+      },
+      // Collapse the viewport to a narrow band across the middle: a step
+      // becomes active as it crosses the reader's line of sight.
+      { rootMargin: '-45% 0px -45% 0px' },
+    );
+
+    const steps = root.querySelectorAll('[data-step-index]');
+    const sync = () => {
+      if (wide.matches) {
+        steps.forEach((s) => io.observe(s));
+      } else {
+        io.disconnect();
+        root.dataset.active = '1';
+      }
+    };
+
+    sync();
+    wide.addEventListener('change', sync);
+  })();
+</script>
