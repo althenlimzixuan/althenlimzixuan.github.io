@@ -18,6 +18,11 @@ const { title, description, eyebrow, lede } = Astro.props;
       <h1>{title}</h1>
       {lede && <p class="lede">{lede}</p>}
     </header>
+    <!-- Full-width, outside .prose's 38rem measure. A two-column sticky
+         module cannot live inside the prose column, and widening the prose
+         to fit one would wreck the reading measure of every prose page. -->
+    <slot name="lead" />
+
     <div class="prose body prose-body">
       <slot />
     </div>

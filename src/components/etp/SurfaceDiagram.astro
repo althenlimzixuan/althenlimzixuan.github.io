@@ -1,0 +1,120 @@
+---
+/**
+ * ETP's architecture: one Go API, one generated client, two consuming
+ * surfaces — and, drawn dashed and hanging off to the side, the concepts the
+ * generated contract does not carry.
+ *
+ * That dashed node is the point of the drawing. A diagram that showed only the
+ * tidy part would be marketing; the case study is explicit that two such gaps
+ * reached production, so the shape that failed is on the page too.
+ *
+ * The generated client is one node between the API and its consumers, not a
+ * third surface alongside them — the case study says so directly, and drawing
+ * it otherwise would contradict the text it sits beside.
+ */
+import { etpSteps, type SurfaceNodeId } from '../../data/etp';
+
+const stepOf = Object.fromEntries(
+  etpSteps.flatMap((s, i) => s.nodes.map((n) => [n, i + 1])),
+) as Record<SurfaceNodeId, number>;
+
+const nodes: {
+  id: SurfaceNodeId;
+  x: number;
+  y: number;
+  w: number;
+  label: string;
+}[] = [
+  { id: 'api',      x: 40,  y: 20,  w: 110, label: 'Go API' },
+  { id: 'contract', x: 30,  y: 86,  w: 130, label: 'generated' },
+  { id: 'gaps',     x: 178, y: 86,  w: 58,  label: 'gaps' },
+  { id: 'web',      x: 10,  y: 170, w: 60,  label: 'web' },
+  { id: 'mobile',   x: 120, y: 170, w: 60,  label: 'mobile' },
+];
+
+const H = 34;
+---
+
+<svg
+  class="surfaces"
+  viewBox="0 0 240 220"
+  role="presentation"
+  aria-hidden="true"
+  focusable="false"
+>
+  <g class="edges" fill="none" stroke-linecap="square">
+    <!-- API -> generated client -->
+    <path data-step={stepOf.contract} d="M95 54 V86" />
+
+    <!-- generated client -> fork -> the two consuming surfaces -->
+    <path data-step={stepOf.web} d="M95 120 V150 M40 150 H150 M40 150 V170" />
+    <path data-step={stepOf.mobile} d="M150 150 V170" />
+
+    <!-- generated client -> what it does not carry. Dashed, and it leads off
+         the side rather than down into the surfaces, because these concepts
+         never reach them. -->
+    <path class="dashed" data-step={stepOf.gaps} d="M160 103 H178" />
+  </g>
+
+  <g class="nodes">
+    {
+      nodes.map((n) => (
+        <g data-step={stepOf[n.id]} class={n.id === 'gaps' ? 'dashed' : undefined}>
+          <rect x={n.x} y={n.y} width={n.w} height={H} rx="3" />
+          <text
+            x={n.x + n.w / 2}
+            y={n.y + H / 2}
+            dominant-baseline="central"
+            text-anchor="middle"
+          >
+            {n.label}
+          </text>
+        </g>
+      ))
+    }
+  </g>
+</svg>
+
+<style>
+  .surfaces {
+    inline-size: 100%;
+    block-size: auto;
+    max-inline-size: 20rem;
+  }
+
+  /* Base tier is "future": the faintest. Scrolly promotes elements to
+     past/active via its [data-active] rules. Ink on paper — no fills. */
+  .edges path,
+  .nodes rect {
+    stroke: var(--c-rule);
+    stroke-width: 1;
+    fill: none;
+    transition: stroke 200ms ease, stroke-width 200ms ease;
+  }
+
+  .nodes text {
+    fill: var(--c-rule);
+    font-family: var(--f-mono);
+    font-size: 11px;
+    transition: fill 200ms ease;
+  }
+
+  /* Dashing is set here rather than by the tier rules, so it survives every
+     tier — what the contract cannot carry stays provisional whether or not
+     the reader has reached it. */
+  .dashed path,
+  .dashed rect,
+  path.dashed {
+    stroke-dasharray: 4 3;
+  }
+
+  /* Emphasis is a discrete state change, not vestibular motion, so it is kept
+     under reduced motion — only the easing between states goes. */
+  @media (prefers-reduced-motion: reduce) {
+    .edges path,
+    .nodes rect,
+    .nodes text {
+      transition: none;
+    }
+  }
+</style>

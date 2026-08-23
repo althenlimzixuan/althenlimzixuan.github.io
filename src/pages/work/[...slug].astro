@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import ProseLayout from '../../layouts/ProseLayout.astro';
+import EtpArchitecture from '../../components/etp/EtpArchitecture.astro';
 import { primaryCtaHref, primaryCtaLabel } from '../../data/site';
 
 export async function getStaticPaths() {
@@ -22,6 +23,11 @@ const { data } = entry;
   eyebrow={`${data.role} · ${data.period}`}
   lede={data.tagline}
 >
+  {/* Bespoke to this one case study: the architecture module is built from
+      ETP's own copy and diagram, not from anything generic in the schema. A
+      second project wanting one would justify a schema flag; one does not. */}
+  {entry.id === 'etp' && <EtpArchitecture slot="lead" />}
+
   <Content />
   <p class="cta">
     <a href={primaryCtaHref()}>{primaryCtaLabel()} →</a>
