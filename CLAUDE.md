@@ -88,3 +88,8 @@ The landing page's "How I build" section is a scrollytelling module
 tracked by an inline IntersectionObserver. It is progressive enhancement — with
 the script absent the module renders complete and readable, stuck on step one.
 Design: `docs/superpowers/specs/2026-08-23-process-scrollytelling-design.md`.
+Gentle reveal-on-scroll is a separate utility, `src/styles/motion.css`'s
+`.reveal`, applied to four landing sections (`ServiceList`, `FeaturedProject`,
+`About`, `ClosingCta`); its `opacity: 0` start state lives inside
+`@supports (animation-timeline: view())` so that browsers without
+scroll-driven animation support render the page visible rather than blank.

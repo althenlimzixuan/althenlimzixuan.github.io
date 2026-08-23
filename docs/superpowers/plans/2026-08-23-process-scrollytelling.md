@@ -617,7 +617,7 @@ Adds the only JavaScript on the site. Because this spends a property the repo do
 
 Append to `src/components/process/ProcessScrolly.astro`, after the `<style>` block.
 
-`is:inline` is required: it stops Astro bundling this into a separate module request. At ~450 bytes the request would cost more than the bytes.
+`is:inline` is required: it stops Astro bundling this into a separate module request. At ~1.4 KB, unminified, the request would cost more than the bytes.
 
 ```astro
 <script is:inline>
@@ -667,8 +667,8 @@ Modify `src/styles/tokens.css`. The dark-palette comment currently claims the si
 
 ```css
 /* Palette — dark. Driven by the OS preference alone: there is no theme
-   toggle. The site ships one inline script (~450 bytes, no bundle) for the
-   landing page's process module and nothing else, so adding a toggle later
+   toggle. The site ships one inline script (~1.4 KB, unminified, no bundle)
+   for the landing page's process module and nothing else, so adding a toggle later
    still means adding `:root[data-theme='dark']` overrides here plus a
    control. */
 ```
@@ -681,7 +681,7 @@ Under **Stack**, replace the `No server, no database, no analytics.` sentence wi
 
 ```markdown
 Astro 7 · MDX · Vitest · GitHub Actions · GitHub Pages. No server, no database,
-no analytics. One inline script (~450 bytes, no bundle) drives the landing
+no analytics. One inline script (~1.4 KB, unminified, no bundle) drives the landing
 page's process module; every other page ships zero JavaScript. Node >= 22.12.0,
 npm.
 ```
@@ -1055,7 +1055,7 @@ Plan: `docs/superpowers/plans/2026-08-23-process-scrollytelling.md`
 ## Notable
 
 - **Spends the zero-JavaScript property**, deliberately, for this one section.
-  ~450 bytes inline, no bundle. `tokens.css` and `CLAUDE.md` amended in the
+  ~1.4 KB, unminified, inline, no bundle. `tokens.css` and `CLAUDE.md` amended in the
   same change rather than left claiming something untrue.
 - **Progressive enhancement is the contract.** Script absent, failed or
   unsupported all land on the same result: the module renders complete and

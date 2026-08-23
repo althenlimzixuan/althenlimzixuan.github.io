@@ -9,7 +9,7 @@ import { processSteps } from '../../data/process';
   data-active="1"
   aria-labelledby="process-heading"
 >
-  <h2 id="process-heading" class="rule-head">How I build</h2>
+  <h2 id="process-heading">How I build</h2>
 
   <div class="layout">
     <div class="pane">
@@ -32,7 +32,12 @@ import { processSteps } from '../../data/process';
 </section>
 
 <style>
-  .section { padding-block-end: var(--s-16); }
+  .section {
+    padding-block: var(--s-16);
+    border-block-start: 1px solid var(--c-rule);
+  }
+
+  h2 { margin-block-end: var(--s-8); }
 
   .layout {
     display: grid;
@@ -144,23 +149,6 @@ import { processSteps } from '../../data/process';
     fill: var(--tier-text, var(--c-rule));
   }
 
-  /* Steps themselves dim when not active, so the reader's eye is where the
-     diagram's emphasis is. */
-  .step { transition: opacity 200ms ease; }
-
-  @media (min-width: 60rem) {
-    .section[data-active='1'] .step:not([data-step-index='1']),
-    .section[data-active='2'] .step:not([data-step-index='2']),
-    .section[data-active='3'] .step:not([data-step-index='3']),
-    .section[data-active='4'] .step:not([data-step-index='4']),
-    .section[data-active='5'] .step:not([data-step-index='5']) {
-      opacity: 0.55;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .step { transition: none; }
-  }
 </style>
 
 <script is:inline>

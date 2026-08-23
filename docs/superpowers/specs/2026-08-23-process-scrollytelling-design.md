@@ -173,7 +173,7 @@ diagram.
 | `src/components/process/PipelineDiagram.astro` | New. The SVG. |
 | `src/styles/motion.css` | New. Reveal utility + reduced-motion resets. |
 | `src/components/ProcessTeaser.astro` | Deleted. Superseded; used only by `index.astro`. |
-| `src/pages/index.astro` | Swap import; add `reveal` to the five other sections. |
+| `src/pages/index.astro` | Swap import; add `reveal` to four other sections (`ServiceList`, `FeaturedProject`, `About`, `ClosingCta`). `Hero` is excluded as above the fold; `ProcessScrolly` is excluded because `.reveal` animates `transform`, and an animating transformed ancestor of a `position: sticky` element risks jank. |
 | `src/styles/global.css` | Import `motion.css`; own the heading composite. |
 | `src/components/ExperienceTimeline.astro` | Drop local `h2` composite; use shared. |
 | `src/components/SkillsMatrix.astro` | Drop local `h2` composite; use shared. |
