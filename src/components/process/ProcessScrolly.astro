@@ -1,11 +1,17 @@
 ---
 import PipelineDiagram from './PipelineDiagram.astro';
 import { processSteps } from '../../data/process';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
 ---
 
 <section
   id="process-scrolly"
-  class="page section"
+  class:list={['page', 'section', className]}
   data-active="1"
   aria-labelledby="process-heading"
 >
@@ -34,7 +40,6 @@ import { processSteps } from '../../data/process';
 <style>
   .section {
     padding-block: var(--s-16);
-    border-block-start: 1px solid var(--c-rule);
   }
 
   h2 { margin-block-end: var(--s-8); }
