@@ -47,6 +47,18 @@
        is expressed as overlapping animation-ranges, not animation-delay:
        delay has no meaning on a scroll-driven timeline.
      *
+     * USE `cover`, NOT `entry`. An `entry` range is measured against the
+     * ANIMATED ELEMENT'S OWN HEIGHT, not its section's. The first version of
+     * this file used `entry` for all three, which meant:
+     *
+     *   .thread::after  is 1px tall  -> entry range = 1px of scroll
+     *   .thread h2      is ~55px     -> entry range = 55px of scroll
+     *
+     * so the tick animated across 0.2px of scrolling and the heading across
+     * ~38px. Both completed faster than a human can see, and the page looked
+     * completely static. `cover` spans viewport + element instead, so even a
+     * 1px element gets a full screen of scroll distance to animate over.
+     *
      * NO RANGE MAY END AT `<name> 100%`. The minifier drops such an end as if
      * it were the default, and what survives (`animation-range: entry 5%`)
      * parses as start-only with the end falling back to `normal` — which is
@@ -61,7 +73,7 @@
       animation-timing-function: ease-out;
       animation-fill-mode: both;
       animation-timeline: view();
-      animation-range: entry 0% entry 20%;
+      animation-range: cover 0% cover 12%;
     }
 
     .thread::before {
@@ -70,7 +82,7 @@
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-timeline: view();
-      animation-range: entry 5% entry 90%;
+      animation-range: cover 2% cover 45%;
     }
 
     /* Descendant, not child: ClosingCta nests its h2 inside .inner. `.thread`
@@ -80,7 +92,7 @@
       animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
       animation-fill-mode: both;
       animation-timeline: view();
-      animation-range: entry 25% entry 95%;
+      animation-range: cover 8% cover 28%;
     }
   }
 }
@@ -116,7 +128,7 @@
 @keyframes type-wipe {
   from {
     clip-path: inset(100% 0 0 0);
-    transform: translateY(0.25em);
+    transform: translateY(0.4em);
   }
 
   to {

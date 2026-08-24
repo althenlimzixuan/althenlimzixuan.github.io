@@ -227,3 +227,10 @@ taxes exactly the reader this site is for.
 Every hidden start state lives in `@keyframes from`, never on the element — see
 the `verify:css` rules under Typography for why that distinction is the
 difference between a working page and a blank one.
+
+**Use `cover` ranges, not `entry`.** An `entry` range is measured against the
+animated element's *own* height, not its section's. The first version used
+`entry` throughout, which gave a 1px tick 0.2px of scroll to animate over and a
+55px heading about 38px — both faster than a human can perceive, so the page
+looked entirely static. `cover` spans viewport + element, so even a 1px element
+gets a screen's worth of scroll distance.
