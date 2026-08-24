@@ -1,63 +1,126 @@
-/* Reveal-on-scroll for landing-page sections.
+/* Section entrance for the landing page.
  *
- * THE RULE, learned the hard way: no declaration outside the keyframes may
- * ever hide content. The hidden start state lives in `from`, so it exists
- * only while the animation is actually running. If the animation is dropped
- * for ANY reason — unsupported, mis-minified, mis-tuned range, a future
- * refactor — the element simply renders normally. There is no failure mode
- * that leaves a section blank.
+ * THE RULE, learned the hard way: no declaration outside `@keyframes` may ever
+ * hide content. Every hidden or collapsed start state below lives in a `from`
+ * block, so it exists only while its animation is actually running. If an
+ * animation is dropped for ANY reason — unsupported, mis-minified, mis-tuned
+ * range, a careless refactor — the element renders normally. There is no
+ * failure mode that leaves anything blank.
  *
- * The previous version put `opacity: 0` on `.reveal` itself and relied on the
- * animation to undo it. That shipped blank sections to production. The
- * `@supports` guard did not help: it only covers browsers that LACK
- * scroll-driven animation, and the browsers that have it were the ones
- * breaking. What actually broke it:
+ * That rule exists because the previous version of this file put `opacity: 0`
+ * on `.reveal` and relied on a scroll-driven animation to undo it. The
+ * minifier folded `animation-timeline: view()` into the `animation` shorthand,
+ * emitting `animation: linear both reveal-in view()` — invalid, since the
+ * shorthand does not accept a timeline — so browsers dropped the declaration,
+ * the static opacity survived, and four sections shipped permanently
+ * invisible. Hence also: longhands only, never the `animation` shorthand, so
+ * there is nothing for a minifier to fold a timeline into. `npm run
+ * verify:css` enforces both rules against the built output.
  *
- *   The CSS minifier folded `animation-timeline: view()` into the `animation`
- *   shorthand, emitting `animation: linear both reveal-in view()`. The
- *   `animation` shorthand does not accept a timeline — it was removed from
- *   the shorthand in CSS Animations 2 — so browsers rejected the whole
- *   declaration. The static `opacity: 0` survived, the animation that would
- *   have undone it did not, and the section stayed invisible forever.
+ * WHAT MOVES, AND WHY IT IS NOT THE TEXT
  *
- * Hence two defences, not one:
- *   1. the start state lives in the keyframes (above) — makes failure benign;
- *   2. longhands only, never the `animation` shorthand — gives the minifier
- *      nothing to fold a timeline into. If a build ever emits an `animation:`
- *      shorthand containing `view()` or `scroll()` again, that is the bug.
+ * The body copy does not animate at all. It is simply there, readable from
+ * first paint. Motion is confined to two things:
+ *
+ *   1. the thread — the marginal rule and its tick draw themselves, like ink
+ *      being laid on the page. This animates the site's own signature device
+ *      rather than applying a borrowed effect, and it cannot cost a reader
+ *      anything, because it is ornament.
+ *   2. the section heading — Fraunces wipes up under a mask, the way type
+ *      appears when it is being set. Confined to one short line, so nothing a
+ *      skimmer wants is ever withheld.
+ *
+ * The earlier whole-section fade was deliberately removed rather than stacked
+ * on top of these. Three simultaneous effects would read as a template; and
+ * fading a block of body copy taxes exactly the reader this site is for.
  *
  * The reduced-motion gate is `no-preference` rather than a `reduce` reset, so
- * those users never receive the animation at all. Note global.css's blanket
- * `animation-duration: 0.01ms !important` does NOT cover this — that
+ * those users never receive the animations at all. global.css's blanket
+ * `animation-duration: 0.01ms !important` does NOT cover these — that
  * neutralises time-based animation, and a scroll-linked animation has no
  * meaningful duration.
  */
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .reveal {
-      animation-name: reveal-in;
+    /* The tick strikes first, then the rule draws down from it. The stagger
+       is expressed as overlapping animation-ranges, not animation-delay:
+       delay has no meaning on a scroll-driven timeline.
+     *
+     * NO RANGE MAY END AT `<name> 100%`. The minifier drops such an end as if
+     * it were the default, and what survives (`animation-range: entry 5%`)
+     * parses as start-only with the end falling back to `normal` — which is
+     * `cover 100%`, not `entry 100%`. An entrance animation silently becomes a
+     * scroll-through one: the heading would sit half-wiped for as long as it
+     * was on screen. Hence 90% and 95% below, which are visually identical and
+     * survive minification intact. `verify:css` asserts every emitted range
+     * still carries both a start and an end. */
+    .thread::after {
+      transform-origin: left center;
+      animation-name: tick-strike;
+      animation-timing-function: ease-out;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 20%;
+    }
+
+    .thread::before {
+      transform-origin: top center;
+      animation-name: rule-draw;
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-timeline: view();
-      animation-range: entry 10% cover 22%;
+      animation-range: entry 5% entry 90%;
+    }
+
+    /* Descendant, not child: ClosingCta nests its h2 inside .inner. `.thread`
+       is landing-page-only, so this cannot reach prose or resume headings. */
+    .thread h2 {
+      animation-name: type-wipe;
+      animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 25% entry 95%;
     }
   }
 }
 
-/* Transform and opacity only — never a layout-affecting property, or CLS
-   drops the Lighthouse score below the 95 gate.
- *
- * `from` carries the hidden state deliberately. Do not lift it out onto
- * `.reveal`; that is precisely the bug described above. */
-@keyframes reveal-in {
+/* Transform and clip-path only — never a layout-affecting property, or CLS
+   drops the Lighthouse score below the 95 gate. */
+
+@keyframes tick-strike {
   from {
-    opacity: 0;
-    transform: translateY(0.75rem);
+    transform: scaleX(0);
   }
 
   to {
-    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rule-draw {
+  from {
+    transform: scaleY(0);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+/* Reveals from the bottom edge upward while the type rises to meet it.
+ *
+ * Mid-animation the clip can cross a descender, which is the intended wipe.
+ * The END state is `inset(0 0 0 0)` — no clipping at all — so nothing is ever
+ * cut at rest, however tight the line-height gets. */
+@keyframes type-wipe {
+  from {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(0.25em);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
     transform: none;
   }
 }

@@ -52,11 +52,43 @@ for (const file of files) {
 
   // 2. Nothing scroll-animated may depend on a static hidden state. If the
   //    animation is ever dropped, the element must still be visible.
-  for (const m of css.matchAll(/\.reveal\{[^}]*\}/g)) {
-    if (/opacity:\s*0(?![.\d])/.test(m[0])) {
+  //
+  //    Stated generally rather than against one class name: ANY declaration
+  //    block that sets a scroll/view timeline must not also hide its element.
+  //    The hidden state belongs in @keyframes, where it exists only while the
+  //    animation actually runs.
+  for (const m of css.matchAll(/\{[^{}]*\}/g)) {
+    const block = m[0];
+    if (!/animation-timeline:\s*(view|scroll)\(/.test(block)) continue;
+    const hidden = block.match(
+      /(opacity:\s*0(?![.\d])|visibility:\s*hidden|transform:\s*scale[XY]?\(\s*0\s*\)|clip-path:\s*inset\(\s*100%)/,
+    );
+    if (hidden) {
       failures.push(
-        `${file}: static opacity:0 on .reveal — the hidden state belongs in ` +
-          `@keyframes so a dropped animation cannot strand it: "${m[0].slice(0, 120)}"`,
+        `${file}: a scroll-timeline rule also sets a static hidden state ` +
+          `(${hidden[0]}) — put it in @keyframes so a dropped animation cannot ` +
+          `strand the element: "${block.slice(0, 140)}"`,
+      );
+    }
+  }
+
+  // 3. An `animation-range` must keep BOTH a start and an end. The minifier
+  //    drops any end written as `<name> 100%`, treating it as the default —
+  //    correct for `cover 100%`, wrong for `entry 100%`. What is left,
+  //    e.g. `animation-range: entry 5%`, parses as start-only with the end
+  //    falling back to `normal` (= cover 100%), so an entrance animation
+  //    silently becomes a scroll-through progress animation: the element sits
+  //    half-animated for as long as it is on screen.
+  //
+  //    Two tokens means start-only. Write ends as `entry 90%` etc. rather than
+  //    `entry 100%`, and this stays intact.
+  for (const m of css.matchAll(/animation-range:\s*([^;}]+)/g)) {
+    const tokens = m[1].trim().split(/\s+/);
+    if (tokens.length < 3) {
+      failures.push(
+        `${file}: animation-range lost its end — "${m[1].trim()}" is start-only, ` +
+          `so the end defaults to \`normal\` (cover 100%) and the animation runs ` +
+          `for as long as the element is on screen. Avoid \`<name> 100%\` ends.`,
       );
     }
   }
