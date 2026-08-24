@@ -195,6 +195,15 @@ elements carry `data-step="1".."N"`.
   figure is a different component and carries a different `data-astro-cid-*`;
   without `:global` the rules compile to something that matches nothing and the
   figure silently never changes tier.
+- **So is `[data-active]` on the tier *apply* rules**, and not for matching —
+  the root always has it. It is there to win on specificity. Without it those
+  rules are `(0,3,1)`, exactly tying the figure's own base stroke rule, and the
+  tie is broken by source order — **which differs between dev and production**.
+  Vite serves a child component's styles after the parent's; the production
+  bundler emits them before. That shipped a diagram which highlighted correctly
+  on the deployed site and not at all under `npm run dev`, and which would have
+  broken in production the first time bundling order shifted. With
+  `[data-active]` the apply rules are `(0,4,1)` and win regardless of order.
 - Progressive enhancement is the contract: script absent, failed or
   unsupported, a module renders complete and readable, stuck on step one.
 
@@ -227,3 +236,10 @@ taxes exactly the reader this site is for.
 Every hidden start state lives in `@keyframes from`, never on the element — see
 the `verify:css` rules under Typography for why that distinction is the
 difference between a working page and a blank one.
+
+**Use `cover` ranges, not `entry`.** An `entry` range is measured against the
+animated element's *own* height, not its section's. The first version used
+`entry` throughout, which gave a 1px tick 0.2px of scroll to animate over and a
+55px heading about 38px — both faster than a human can perceive, so the page
+looked entirely static. `cover` spans viewport + element, so even a 1px element
+gets a screen's worth of scroll distance.
