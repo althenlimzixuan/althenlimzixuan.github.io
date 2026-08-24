@@ -110,7 +110,16 @@ Hard-won details, all measured rather than assumed:
     and rely on an animation to reveal it — put it in `@keyframes from`, so a
     dropped animation degrades to "visible, unanimated";
   - never use the `animation` shorthand alongside `animation-timeline`; use
-    longhands, so there is no shorthand for a minifier to fold a timeline into.
+    longhands, so there is no shorthand for a minifier to fold a timeline into;
+  - never end an `animation-range` at `<name> 100%`. The minifier drops that
+    end as though it were the default, leaving a start-only range whose end
+    falls back to `normal` (= `cover 100%`) — turning an entrance animation
+    into one that runs for as long as the element is on screen. Write `entry
+    90%` instead of `entry 100%`.
+
+  All three are asserted against `dist/` by `scripts/verify-built-css.mjs`, and
+  each assertion was verified by reintroducing the exact broken CSS and
+  watching it fail.
 - **The metric-matched fallbacks in `fonts.css` are load-bearing.** Their
   `size-adjust` / `ascent-override` numbers were extracted from the upstream
   TTFs' `head`/`hhea`/`OS/2` tables, not guessed. They are what keeps CLS at 0
@@ -203,8 +212,18 @@ dashed `gaps` node is likewise real: the case study states two such gaps
 reached production.
 
 Design: `docs/superpowers/specs/2026-08-23-process-scrollytelling-design.md`.
-Gentle reveal-on-scroll is a separate utility, `src/styles/motion.css`'s
-`.reveal`, applied to four landing sections (`ServiceList`, `FeaturedProject`,
-`About`, `ClosingCta`). Its hidden start state lives in `@keyframes from`, not
-on the element — see the `verify:css` note under Typography for why that
-distinction is the difference between a working page and a blank one.
+Section entrance lives in `src/styles/motion.css` and animates **only the
+thread and the heading — never the body copy**:
+
+- `.thread::after` — the tick strikes out from the rule
+- `.thread::before` — the rule draws downward behind it, ink onto paper
+- `.thread h2` — Fraunces wipes up under a `clip-path` mask
+
+Body text does not animate at all; it is readable from first paint. An earlier
+whole-section opacity fade was removed rather than stacked on top of these:
+three simultaneous effects read as a template, and fading a block of body copy
+taxes exactly the reader this site is for.
+
+Every hidden start state lives in `@keyframes from`, never on the element — see
+the `verify:css` rules under Typography for why that distinction is the
+difference between a working page and a blank one.
