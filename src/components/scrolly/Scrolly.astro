@@ -170,15 +170,29 @@ if (steps.length > MAX_SCROLLY_STEPS) {
   }
 
   /* Apply whatever tier was set. Not scoped to a particular figure class —
-     within a scrolly section, [data-step] belongs to the figure by
-     definition. */
-  .section :global(path[data-step]),
-  .section :global([data-step] rect) {
+     within a scrolly section, [data-step] belongs to the figure by definition.
+   *
+   * `[data-active]` IS LOAD-BEARING, and not for matching: the root always has
+   * it. It is there to win on specificity.
+   *
+   * Without it these compile to `.section[cid] path[data-step]` — one class
+   * and two attributes, (0,3,1). The figure's own base rule compiles to
+   * `.edges[cid] path[cid]`, also (0,3,1). An exact tie, decided by source
+   * order, which DIFFERS BETWEEN DEV AND PRODUCTION: Vite serves the child
+   * component's styles after the parent's, while the production bundler emits
+   * them before. The result was a diagram that highlighted correctly on the
+   * deployed site and not at all under `npm run dev` — and which would have
+   * broken in production too, silently, the first time bundling order shifted.
+   *
+   * With `[data-active]` these are (0,4,1) and beat the base rule regardless
+   * of order. Do not remove it to "simplify" the selector. */
+  .section[data-active] :global(path[data-step]),
+  .section[data-active] :global([data-step] rect) {
     stroke: var(--tier-stroke, var(--c-rule));
     stroke-width: var(--tier-width, 1);
   }
 
-  .section :global([data-step] text) {
+  .section[data-active] :global([data-step] text) {
     fill: var(--tier-text, var(--c-rule));
   }
 </style>
