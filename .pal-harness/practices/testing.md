@@ -1,0 +1,144 @@
+# Universal Testing Philosophy
+
+## Principles
+
+- **TDD-first**: Write the failing test before the implementation. Always.
+- **Fixtures over inline data**: Test cases live in `tests/{test_type}/{use_case}.json`. Never hardcode inputs or expected values inline.
+- **Error-path fixtures are real**: a 422, 409 or 503 body in a fixture is copied from a real response (a handler test's output or the `openapi` example), never written by hand: a made-up body hides the real one's bug.
+- **Test behaviour, not implementation**: If refactoring internals breaks tests, the tests are wrong.
+- **Coverage gate**: 80% minimum, enforced in CI. Coverage is a floor, not a target.
+- Tests are documentation. A test that requires comments to understand is a bad test.
+- **Startup waits**: a test that waits for a server's health or startup reads its limit from one
+  CI-scaled constant per repo (longer when `CI` is set or on the self-hosted runner), never a
+  literal such as 15 seconds.
+
+## Test Fixture Format
+
+```json
+{
+  "description": "creates a user with valid input",
+  "input": { ... },
+  "expected": { ... },
+  "mocks": { ... }
+}
+```
+
+Load fixtures via a shared helper:
+- Go: `testhelper.LoadFixture(t, "tests/unit_test/create_user.json")`
+- Next.js / RN: `loadFixture('tests/unit_test/create_user.json')`
+
+## Test Layers
+
+| Layer | Tag / Config | Scope | Dependencies |
+|---|---|---|---|
+| Unit | (default, no tag) | Single function or component | All I/O mocked |
+| Integration | `//go:build integration` / `jest.config.integration.ts` | Multiple layers together | Real DB + cache via testcontainers or docker-compose |
+| E2E | `//go:build e2e` / Playwright | Full user journey | Full stack running |
+
+Run in CI in this order: unit → integration → E2E. Never skip unit if integration passes.
+
+## Go-Specific
+
+- Mocks generated via `mockery --all --output mocks` (`make mock`, same settings in
+  `.mockery.yaml`): flat, in a top-level `mocks/` folder, package `mocks`. Interface names are unique
+  across the module (`go_api.md`, Make Targets). Never hand-write mocks.
+- Integration tests use `testcontainers-go` for MySQL + Redis — no shared test DB.
+- Table-driven test pattern is the default: `[]struct{ name, input, expected }`.
+- `//go:build integration` tag keeps unit test runs fast.
+- **Local runs use less memory.** Every local Go test run, by a session or a subagent, sets
+  `GOFLAGS=-p=1` and `GOMEMLIMIT=2GiB` in the command's environment
+  (`GOFLAGS=-p=1 GOMEMLIMIT=2GiB make test`), so `make test` follows them with no Makefile change:
+  one package at a time, under a 2 GiB soft limit, so low memory does not kill the run. CI never sets them.
+
+## Windows security tests
+
+Tests of ACLs, accounts, tokens, privileges, window stations, services or named pipes must pass in
+the owner's interactive session and as the self-hosted runner's standard user in session 0.
+
+- **Compare SIDs and rights, ACE by ACE:** the ACE type, the trustee's SID (compared as a SID, with
+  `EqualSid` or its `S-1-…` string), the access mask and the inheritance flags. Never compare a security descriptor's `String()`
+  (x/sys prints the owner and the group too), a whole SDDL string or an account name: the owner,
+  the group and the names change with the account, the machine and the language.
+- **Every precondition is explicit.** What a test relies on (a folder exists or not, inheritance on
+  or off, the caller's groups, a privilege) is set up by the test and asserted before the step under test,
+  never left to how the machine happens to be.
+- **What session 0 lacks is checked, not assumed.** A test that needs an interactive window station
+  or desktop checks for it and skips with the reason
+  (`t.Skip("needs an interactive window station; session 0 has none")`). The skip is listed in `summary.md`.
+- **Session-0 run:** a phase that touches these tests runs them once as the runner's account before
+  its PR (the phase's `references/build.md`, section 6).
+
+## Next.js / React-Specific
+
+- React Testing Library: query by role and label, not by CSS class or test ID.
+- MSW (Mock Service Worker) for API mocking — no `jest.mock('fetch')` or axios mock adapters.
+- Playwright for E2E: test critical user journeys, not every UI state.
+- Snapshot tests are discouraged — they break on styling changes and don't verify behaviour.
+- A new npm advisory in test tooling goes through `audit-ci.jsonc` as `devops_cicd.md` (Security in CI) says.
+- **Jest shims** for native modules export only what the native module exports. A parity test
+  compares the shim's export list with the native module's, so a shim cannot hide a call the
+  device does not have.
+
+## What Not to Test
+
+- Framework internals (Gin routing, GORM query building, Next.js rendering)
+- Generated code (wire_gen.go, swaggo docs, shadcn/ui components)
+- One-line utility functions with no branching logic
+- Third-party library behaviour
+
+## Test reports
+
+- **One run, on the final commit.** CI runs the tests once on each PR's final commit; that run makes
+  the reports, except the staging reports (regression, and the load test when requested), which come
+  from the staging deploy of the merged sign-off. A job whose fingerprint already passed (the CI gate, `devops_cicd.md`) skips its tests, so a
+  promotion only builds and deploys. Reports live in the SSOT repo, so committing them never changes the code
+  under test. In a single-repo project the final commit is the last commit that changes code;
+  report, review and state commits after it do not make a report stale. Until CI has report jobs, the session runs the reports once, locally, on the final commit.
+- **One report command.** Each project has one (`make reports`, or `npm run reports` in a Node-only
+  repo) that writes every report the phase needs on the final commit into the phase's `_test_reports/`
+  folder (regression and the load test come from staging once it exists). Until CI has report jobs
+  (CI's report jobs run the same command), the session runs it once, after the last review fix, on
+  the final commit: not before the fixes, and not per reviewer.
+- **The report command starts with a preflight** that fails in seconds, with the fix in one line:
+  `go version` against `go.mod` (run with `GOTOOLCHAIN=local`, so no toolchain is downloaded
+  mid-run), bash on the PATH (on Windows, pass Windows paths into bash through `cygpath -u`), and the
+  dependencies installed.
+- **One report at a time:** the command runs the components' reports one after another. Two Jest
+  processes never run at once (on Windows they collide on the transform cache with EPERM); if EPERM
+  still appears, that run uses `--no-cache`. Jest full runs and the report command pass
+  `--maxWorkers=2`, after `pal-harness mem` (`devops_cicd.md`, **Free memory before heavy runs**).
+- **Location:** `_test_reports/<component>/<YYYY-MM-DD-HH>-<NNN-slug>/` in the SSOT repo, committed.
+- **Every phase:** `unit_test.html`, `test_coverage.html`, `regression.html`,
+  `profiling.html`, and a numbered `summary.md` (pass/fail counts, coverage %, slowest calls, the paired speed check
+  against the base commit, verdict against the thresholds below).
+- **Regression timing:** once the project has staging, regression (and the opted-in load test) runs on
+  staging after the sign-off PR merges, and its report joins the phase folder before the owner's staging
+  test. Until the project has staging, regression runs with the other reports on the final commit,
+  before the sign-off PR.
+- **On request only:** `load_test.html`, a load test against staging. The owner asks by adding
+  "include load test" to the spec reply.
+- **Blocking problems:** coverage under 80%; a failing test; an API call's p95 more than 20% slower,
+  or a web page's Lighthouse performance score 5 points or more lower, than the previous code (the
+  first phase sets the baseline). Claude gets 3 fix rounds, then the session asks the owner (a "needs you" notification).
+- **The paired speed check:** the previous code (the phase's base on `origin/dev`) and the new code
+  run in paired, alternating runs on the same machine in one sitting (old, new, old, new; 10 pairs
+  by default and at least 5
+  pairs), and the medians are compared. A slowdown counts only when the p95 is
+  both more than 20% and over 2 ms slower: Windows timers step in about 1 ms, so a 3 ms call can
+  read 33% slower with nothing changed. `summary.md` records the base commit, the number of pairs
+  and both medians. The earlier report's numbers are context only, never the comparison.
+- A missing, empty or stale report is a review finding. Staging reports must match the tree hash of
+  the staging deploy; every other report must come from the PR's final commit.
+- **A report the project cannot make yet.** One that does not apply to the stack (Lighthouse with no web
+  surface) is recorded as "n/a" with the reason. One that applies but has no tooling becomes a task in
+  the project's first plan; until it ships, the report is a recorded skip, not a blocker.
+- **Suggested tools:** gotestsum and Go's cover tool, `jest-html-reporter` (not `jest-html-reporters`)
+  and Istanbul, pytest-html, Playwright's HTML report, pprof, Lighthouse, k6 (load).
+- A report that shows results other than this run's (demo data, a template placeholder) is a
+  stale-report finding. Its pass and fail counts must match `summary.md`.
+- **Screenshots:** a project with a web or desktop UI keeps a copy of
+  `.pal-harness/templates/screens.spec.ts` in its e2e folder, with its pages listed. It runs on the
+  project's own Playwright set-up and saves every page in light and dark, at the default width and the
+  narrowest supported one. The first UI phase without a copy adds a task for it. The review stage runs
+  it when screens changed (the phase's `references/review.md`, section 1). React Native apps have no
+  screenshot file yet.

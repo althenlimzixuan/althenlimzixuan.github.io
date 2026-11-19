@@ -23,11 +23,23 @@ npm run check    # astro check
 
 Requires Node >= 22.12.0.
 
+## Components
+
+<!-- pal:begin components (generated from project.yaml; do not edit) -->
+| Folder | Role | Rank | Stack | Repo | Status |
+|---|---|---|---|---|---|
+| `site/` | consumer | 2 | tbd | https://github.com/althenlimzixuan/althenlimzixuan.github.io | active |
+<!-- pal:end components -->
+
+The site is a single-repo project: its code lives at the root of this repo, not in a `site/`
+folder.
+
 ## Deploy
 
-Push to `main`. The `Deploy to GitHub Pages` workflow builds and publishes.
-Pull requests run the `Quality` workflow (tests, `astro check`, link check,
-Lighthouse) but do not deploy.
+Branches: work branches come from `dev` and return to `dev` by PR; `dev` → `staging` → `main`
+promote with merge commits. Only a push to `main` deploys: the `Deploy to GitHub Pages` workflow
+builds and publishes. The `Quality` workflow (tests, `astro check`, link check, Lighthouse) runs
+on every push and PR to `dev`, `staging` and `main`, and never deploys.
 
 ## Editing content
 

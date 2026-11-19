@@ -1,0 +1,86 @@
+- id: F-001
+  name: Landing page
+  label: need
+  why: A technical stranger on `/` sees what the owner builds and how to get in touch.
+  use_case: Open `/` and read down from the hero to the closing call to action.
+  status: passed
+  phase: ""
+  test_script:
+    - {step: 1, do: "Open /", expect: "The hero shows the owner's name, role and a call-to-action button"}
+    - {step: 2, do: "Scroll down the page", expect: "Services, the featured ETP project, the process walkthrough, About and the closing call to action follow in that order, joined by the thread on the left"}
+    - {step: 3, do: "Scroll through the process walkthrough", expect: "Each step lights up its part of the pipeline diagram"}
+    - {step: 4, do: "Open / with JavaScript turned off", expect: "Every section is readable; the walkthrough stays on step one"}
+  results: []
+- id: F-002
+  name: ETP case study
+  label: need
+  why: Shows a real production product in depth while its repos stay private.
+  use_case: Open the ETP case study from the landing page and read how it was built.
+  status: passed
+  phase: ""
+  test_script:
+    - {step: 1, do: "On /, open the featured ETP project", expect: "/work/etp/ opens with the case study"}
+    - {step: 2, do: "Scroll through the architecture walkthrough", expect: "Each step lights up its part of the surface diagram"}
+    - {step: 3, do: "Look for a live-demo link", expect: "There is none, because ETP sits behind a sign-in"}
+  results: []
+- id: F-003
+  name: How I build
+  label: need
+  why: The owner's delivery pipeline is real and sets them apart, and needs no new build to show.
+  use_case: Open /how-i-build/ and read the delivery-pipeline exhibit.
+  status: passed
+  phase: ""
+  test_script:
+    - {step: 1, do: "Open /how-i-build/", expect: "The delivery-pipeline page opens with its sections"}
+    - {step: 2, do: "Follow each link on the page", expect: "None is broken"}
+  results: []
+- id: F-004
+  name: Resume page
+  label: need
+  why: Employers and clients need a current, presentable resume.
+  use_case: Open /resume/ and read it, or print it.
+  status: passed
+  phase: ""
+  test_script:
+    - {step: 1, do: "Open /resume/", expect: "The resume page opens"}
+    - {step: 2, do: "Check the employment timeline", expect: "It is hidden while src/data/experience.yaml is empty, with no empty heading left behind"}
+  results: []
+- id: F-005
+  name: Get in touch by email
+  label: need
+  why: A static site has no form backend; every call to action must still reach the owner.
+  use_case: Click any call to action and write to the owner.
+  status: passed
+  phase: ""
+  test_script:
+    - {step: 1, do: "On /, click the hero's call to action", expect: "It reads 'Get in touch' and opens an email to the owner"}
+    - {step: 2, do: "Click the closing call to action", expect: "It opens the same email"}
+  results: []
+- id: F-006
+  name: Not-found page
+  label: need
+  why: A wrong link should still lead somewhere useful.
+  use_case: Open a page that does not exist.
+  status: passed
+  phase: ""
+  test_script:
+    - {step: 1, do: "Open /no-such-page/", expect: "The site's 404 page shows, styled, with a way back to /"}
+  results: []
+- id: F-007
+  name: Book a call
+  label: might
+  why: Booking converts better than email (design D6), once the owner has a Cal.com link.
+  use_case: Click a call to action and book a slot.
+  status: todo
+  phase: ""
+  test_script: []
+  results: []
+- id: F-008
+  name: Employment history
+  label: need
+  why: The resume is incomplete without it; it ships empty because nothing may be made up.
+  use_case: Read the owner's past roles on /resume/.
+  status: todo
+  phase: ""
+  test_script: []
+  results: []
