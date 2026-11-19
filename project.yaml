@@ -1,0 +1,29 @@
+version: 1
+key: pf
+name: Personal Portfolio
+summary: Freelance portfolio / resume site (Astro → GitHub Pages)
+status: active
+ssot:
+  repo: https://github.com/althenlimzixuan/althenlimzixuan.github.io
+components:
+  - folder: site
+    repo: https://github.com/althenlimzixuan/althenlimzixuan.github.io
+    role: consumer
+    rank: 2
+    stack: [tbd]
+    status: active
+boards:
+  backlog: { owner: althenlimzixuan, number: 0 }
+  roadmap: { owner: althenlimzixuan, number: 19 }
+  feedback: { owner: althenlimzixuan, number: 0 }
+postman:
+  workspace: null
+inbox:
+  slack_prefix: pf
+harness:
+  version: 1.8.0
+  overrides:
+    - item: "testing.md: 80% coverage gate"
+      source: docs/superpowers/specs/2026-08-01-personal-portfolio-design.md
+      reason: "Static content site: schema tests, astro check, built-CSS check, lychee and Lighthouse >= 95 instead (design D7, section 9)"
+      since: "2026-08-01"

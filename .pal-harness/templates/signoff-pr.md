@@ -1,0 +1,66 @@
+[HUMAN GATE] Phase <NNN> — <Title>
+
+(With the `auto-promote` override, drop the `[HUMAN GATE] ` prefix from the title above, and this
+PR merges on its own once CI and the reviews pass.)
+
+> Reads in about 10 minutes. Merging this PR is your approval for the whole phase.
+
+## Summary
+
+1. (What was built, in one sentence.)
+2. (Features covered, by id and name.)
+3. (Which of your answers shaped it.)
+4. (Review and test verdict in one line: clean, or what is left. If GitHub's spending limit blocked
+   CI on any PR, say so here: "CI did not run on <repo>#<n>; local CI green: [report](link)".)
+5. (What you do next: merge, then run the test scripts on staging. With `auto-promote`: nothing,
+   it merges on its own. With `no-owner-test`: read the What to expect now list; there is no test.)
+6. Plan: [plan.md](link)
+
+## Calls I made
+
+1. (A small call made without asking, and why.)
+
+## Review results
+
+| Reviewer | Found | Fixed | Left over, and where it went |
+|---|---|---|---|
+| (name) | 0 | 0 | none |
+
+## Test reports
+
+1. Unit tests: (passed / total). [report](link)
+2. Coverage: (percent), minimum 80. [report](link)
+3. Speed: (slowest call; paired medians against the base commit, +/- percent). [report](link)
+4. Regression: (result). [report](link)
+
+(With the `ci-test-summary` override, replace the list with the final commit's CI run: tests passed
+and failed and coverage per component, the contract drift check, and the run's link.)
+
+## Screens
+
+(When the review stage took screenshots: each page's light and dark PNG at the default width, as
+images from `docs/NNN-slug`, and the folder's link for the rest. Delete this section when no screen
+changed.)
+
+![(page), light](https://github.com/(owner)/(repo)/blob/docs/NNN-slug/specs/NNN-slug/screens/(page)-light-wide.png?raw=true)
+![(page), dark](https://github.com/(owner)/(repo)/blob/docs/NNN-slug/specs/NNN-slug/screens/(page)-dark-wide.png?raw=true)
+
+All screens: [specs/NNN-slug/screens/](link)
+
+## When you merge
+
+1. Staging is built fresh, with test accounts and sample data (never production data).
+2. Regression runs (and the load test, if you asked for it).
+3. You get a "ready for your test" message.
+
+(With `auto-promote` the PR merges on its own once CI passes. With `no-owner-test` there is no staging
+test: say what ships next and where the What to expect now list is.)
+
+## Your test scripts
+
+1. F-000 — (name): [test script](link)
+
+Not tested before sign-off (`unverified` steps, hardware you can't reach yet): (each step and its
+reason, or "none").
+
+(With the `no-owner-test` override, link each feature's What to expect now list instead.)
