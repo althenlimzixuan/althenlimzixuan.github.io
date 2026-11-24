@@ -32,7 +32,7 @@ not in a `site/` folder.
 Work runs through the phase flow: `/pm` chooses it, `/phase` runs it
 (`.pal-harness/skills/phase/SKILL.md`, **Single-repo projects**), `/quick-fix` handles small fixes.
 Each phase lives in `specs/NNN-slug/` on the branch `docs/NNN-slug`; the phase skill starts one
-with `go run github.com/althenlimzixuan/pal-harness/cmd/pal-harness@v1.9.0 spec new <slug>`.
+with `go run github.com/althenlimzixuan/pal-harness/cmd/pal-harness@v1.11.1 spec new <slug>`.
 Sessions work in a worktree set under `<workspace>\.pal-worktrees\` and never switch branches in
 the owner's checkout. The designs and plans under `docs/superpowers/` are history from before the
 phase flow; new work does not add to them.

@@ -137,7 +137,11 @@ Numbered, about ten lines, phone-readable:
 
 1. Propose the next phase as a **bundle**: one roadmap feature plus the backlog fixes that touch the
    same area, sized to **about one working day**. Too big → split the feature; too small → add the
-   nearest fixes.
+   nearest fixes. **Done work drops out first:** check each backlog issue against a `done` feature in
+   `doc/features.yaml`, `gh pr list -R <owner/repo> --state merged --search "<key words>"` and
+   `gh issue list -R <owner/repo> --state closed --search "<key words>"`. A done one is closed
+   (`gh issue close <n> -R <owner/repo> --comment "Done in <link>"`), its card goes to `Done`, and the
+   note gives the count closed. The bundle holds only open work.
 2. Set the **vehicle**, each with a one-line reason:
    - `phase` — the full flow: any roadmap feature, any API change, anything over a small fix;
    - `quick-fix` — no spec or plan, still reviewed, adds a test step for the owner: a small change
@@ -220,7 +224,8 @@ reason in one line ("rung 4: needs a contract change").
    "nothing approved".
 1. **Chores.** A due chore in the Roadmap board's `Chores (Active)` column runs first, by
    `.pal-harness/skills/pm/references/chores.md`; a chore may run beside a phase. A card with
-   `Action: harness notes` is Pal Center's and is left alone.
+   `Action: harness notes` is Pal Center's and is left alone. A card with `After run: off` goes back
+   to `Chores` after its run (`chores.md`, section 2 step 4).
 2. **Approved card.** A card in `Approved to run` is the owner's approval. Claim it first: move it to
    `In flight` before any other work; if that write fails, stop. Re-read the truth from the files,
    never the card, then route by vehicle (**Bundle and vehicle** step 4). No vehicle on the card →
@@ -240,4 +245,6 @@ reason in one line ("rung 4: needs a contract change").
    and you take the next. An open issue may still be delivered: check the source before starting.
    Take the top item that needs no new spend, no credential, no contract change and no product
    decision; run it as a `quick-fix` and stop where its gates stop it.
-5. Nothing qualifies → say so and stop. An idle morning honestly reported is a fine outcome.
+5. Nothing qualifies → when `doc/releases/held.md` has rows, run the phase skill's **Held store
+   releases** check (`references/ship.md`, section 8: `Release reason` (a)); then say so and stop.
+   An idle morning honestly reported is a fine outcome.

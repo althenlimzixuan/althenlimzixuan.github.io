@@ -1,7 +1,10 @@
 # Stage: review (`code-review`)
 
 One whole-branch review over every `feature/NNN-slug` branch (base `origin/dev`) and the
-`docs/NNN-slug` branch, then the test reports from the final commit.
+`docs/NNN-slug` branch, then the test reports from the final commit. **Merge check first:** before the
+reviewers, `pal-harness merge-check` in every repo. On a conflict (exit 1) merge `origin/dev` in now,
+a bookkeeping file (`doc/decisions.md`, `doc/later.md`, `doc/features.yaml`) keeping both sides'
+entries, run the full check and push; not a fix round. Exit 2: log the reason and go on.
 
 ## 1. The test reports
 
@@ -10,10 +13,10 @@ fixes, and not per reviewer. `pal-review-tests` then checks them (`testing.md` h
 thresholds and the tools).
 
 1. Until CI has report jobs, run `pal-harness mem` (`devops_cicd.md`, **Free memory before heavy
-   runs**), then the project's one report command (`make reports`, or
-   `npm run reports` in a Node-only repo) once, locally, on each branch's head. It writes them to
-   `_test_reports/<component>/<YYYY-MM-DD-HH>-<NNN-slug>/` on `docs/NNN-slug`, with a numbered
-   `summary.md` from `.pal-harness/templates/test-summary.md`.
+   runs**), then the one report command (`make reports`, or `npm run reports` in a Node-only repo)
+   once, locally, on each branch's head, into `_test_reports/<component>/<YYYY-MM-DD-HH>-<NNN-slug>/`
+   on `docs/NNN-slug`, with a numbered `summary.md` (`.pal-harness/templates/test-summary.md`). Read
+   each claim against its source (`testing.md`, **Every claim cites its source**) before reviewers.
 2. Every phase: `unit_test.html`, `test_coverage.html`, `profiling.html`, `summary.md`. Regression:
    here with the others until the project has staging; once it has staging, regression (and the
    load test when `load_test: true`) runs on staging after the sign-off PR merges
@@ -58,10 +61,11 @@ Run them in parallel.
    run from the set's root. With Pal Center older than 0.4.0, `pal-review` cannot run from the set:
    add `<kind>: not available (worktree set)` to `codex.skipped` and go on. Never run it from the
    owner's checkout for a phase; it would review the owner's code, not the phase's.
-2. **Claude's reviewers**, each a subagent by its agent name, given the spec, the plan, the branch
-   list with base `origin/dev`, and, once the reports exist (section 4 step 4), the report folder
-   (under `ci-test-summary`, the CI summary file, with a line saying it replaces `_test_reports/`).
-   Before that, tell `pal-review-tests` "reports not made yet: skip the report checks (3–7)":
+2. **Claude's reviewers**, each a subagent by its agent name (a type that can't be dispatched:
+   `subagents.md` section 5), given the spec, the plan, the branch list with base `origin/dev`,
+   and, once the reports exist (section 4 step 4), the report folder
+   (under `ci-test-summary`, the CI summary file, saying it replaces `_test_reports/`). Before
+   that, tell `pal-review-tests` "reports not made yet: skip the report checks (3–7)":
 
    | Agent | When |
    |---|---|
@@ -74,7 +78,6 @@ Run them in parallel.
 
    In a larger build, `pal-review-code` also gets the path of the ledger sdd keeps, to check that each parked
    finding was carried (`build.md`, section 6, **Deferred minors**).
-
 3. Each reviewer writes its own report: give it the absolute path
    `<set>/specs/NNN-slug/reviews/<agent>-YYYY-MM-DD-HHmm.md`. It writes that one file and returns a
    short verdict. When the reviewers finish, check that `git status` in every worktree shows no change except
@@ -88,8 +91,8 @@ The severity table in `workflow.md` applies to every finding, Codex's and Claude
 - **none:** nothing to do.
 - **minor:** Claude decides: fix it, or dismiss it with a one-line reason in the report.
 - **major** and **critical:** one numbered batch to the owner (an owner stop, `kind: findings`,
-  written to `reviews/owner-YYYY-MM-DD-HHmm.md`), critical first, each with its reason, impact and
-  a recommended action, so "accept all" works.
+  `reviews/owner-YYYY-MM-DD-HHmm.md` by `.pal-harness/templates/owner-stop.md`), critical first,
+  each with its reason, impact, options with what else each stops or hides, and a recommended one.
 
 Arguing a finding up or down a level is allowed; a downgrade from major or critical is written in the
 report with the reason, and the owner still sees it.
@@ -106,9 +109,13 @@ report with the reason, and the owner still sees it.
      without that red run goes back to the fixer, and that counts as a fix round (build.md, section 3).
    - A contrast fix is measured again with `pal-harness contrast '<foreground>' '<background>'` (or the
      rendered colours), and the new ratio goes in the fix's log entry. An estimate is not evidence.
-   - A fix that changes behaviour the owner sees re-reads the affected features' test scripts in the
-     spec and in `doc/features.yaml`. A step whose expected result no longer holds is updated in
-     both, and the sign-off PR lists the change in Calls I made.
+   - A fix changes behaviour the owner sees or reaches only as far as its finding says (`subagents.md`
+     section 1 item 6). A fixer's **New question** joins a coming findings stop, or else becomes a
+     backlog issue with a recommended answer and `Why: a fix needs an owner-facing change`, listed in
+     the sign-off PR's review table; the finding is partly fixed, with that link. The re-check treats
+     owner-facing change beyond the finding as a new finding. A fix that changes what the owner sees
+     re-reads the affected features' test scripts (spec, `doc/features.yaml`) and updates a step that
+     no longer holds in both; the sign-off PR lists it in Calls I made.
    - After each fix round, the reviewer re-checks the failure path and the retry of what was fixed:
      the fix fails part-way, then the owner tries again (a failed Stop then Start, a failed restore
      then a second restore).

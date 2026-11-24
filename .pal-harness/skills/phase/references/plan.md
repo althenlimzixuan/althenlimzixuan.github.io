@@ -12,7 +12,8 @@ passes, building starts.
 2. Every task names:
    1. its repo and the files it creates or changes;
    2. **the test to write first:** the test file and its JSON fixture
-      `tests/{test_type}/{use_case}.json` (`testing.md`);
+      `tests/{test_type}/{use_case}.json` (`testing.md`); its RED evidence is the failing test
+      names from the run's own output, never a count;
    3. the code that makes the test pass, in a line or two;
    4. the commands that prove it, and the result to expect;
    5. the commit message.
@@ -64,8 +65,27 @@ passes, building starts.
 15. **Owner-run commands.** Every command only the owner can run (a production `terraform apply`,
     `gh workflow run` on a protected workflow, `eas submit`, a store or console step, anything auto
     mode refuses) is listed under the plan's **Owner-run commands**, with its exact text and where to
-    run it, in the order ship needs them. A first store release copies
-    `.pal-harness/templates/runbook-android-release.md` (or the project's runbook) in a task.
+    run it, in the order ship needs them, and the exact format of every value it asks for, with an
+    example (`user:<email>`, a project ID, not its name). A Terraform step lists the login, `init`
+    and apply in order, with the GCP project ID (`devops_cicd.md`, **gcloud and Terraform**). A first
+    store release copies `.pal-harness/templates/runbook-android-release.md` (or the project's
+    runbook) in a task.
+16. **Look up every command and path** a task names, once, before the review: each existing file or
+    folder; the folder and naming of each new file (a fixture beside the real fixtures); each make
+    target, npm script and generator flag; each file the spec names as a behaviour's origin. Fix the
+    task when one is not there.
+17. **QA seeds.** A QA seed in the spec's UX outline that the project's QA sample data lacks gets a
+    task that adds it there, with a test that the seeder loads it.
+18. **Other operating systems.** A task that touches code for one OS (an OS file suffix or build tag
+    in Go; `cfg(target_os …)`, `cfg(unix)` or `cfg(windows)` in Rust) adds to **Prove it** the check
+    for each other OS it builds on: `GOOS=linux go vet ./...` and `GOOS=darwin go vet ./...` for Go;
+    `cargo clippy --target <triple> --all-targets -- -D warnings` (after `rustup target add`) for a
+    Rust crate with no system libraries; for one with them (Tauri, GTK, WebKit) the Docker run in
+    `references/linux-check.md`, and `macOS proof: CI's macOS job`.
+19. **Pixel values and saves.** A UI task whose spec gives pixel values (a grid size, a row height, a
+    width) has a **Render check:** (the template's task block): one screenshot with sample data that
+    fills them, looked at before the task is done. A screen with several independent save buttons
+    says "saves per item" in its **Code:** line, and its test saves two items close together.
 
 ## 2. The summary
 
