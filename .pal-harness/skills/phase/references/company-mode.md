@@ -12,8 +12,13 @@ gives the path of `pal-work`.
    the session.
 2. The output is the only truth about Company mode. Never trust a note, a memory, a spec or a seed
    that says the mode is on or off.
-3. Exit 5, no `Work CLI:` line, or a `Pal Center version:` older than 0.21.0: the mode is unknown.
-   Every stop then waits for the owner, as written in SKILL.md, **Owner stops**.
+3. Exit 4 (failed), exit 5 (not running), no `Work CLI:` line, or a `Pal Center version:` older
+   than 0.21.0: the mode is unknown. On exit 4, run `mode` once more first; a second exit 4 is
+   unknown. Every stop then waits for the owner, as written in SKILL.md, **Owner stops**.
+4. **Said once.** An unknown mode is written to the log once, at the start, with the CLI's own
+   message: `mode: unknown (exit 4: <its message>); every stop waits for the owner` (or `exit 5`,
+   `no Work CLI line`, `Pal Center X`). The first owner-stop message carries the same line. Later
+   stops do not repeat it.
 
 ## 2. At a spec-review or findings stop
 
@@ -42,6 +47,11 @@ A stop whose questions involve money, a password or key, or anything public (a s
 public post, a domain, anything a stranger could see) is held before waiting:
 `pal-work hold --phase NNN --reason "<why, in one line>"`. A held decision never passes by default;
 the session waits for the owner's own answer.
+
+**A held store release.** Under Company mode, or when the mode is unknown, a phase's app store
+release or OTA update is held in `doc/releases/held.md` and goes out once, when all approved work is
+finished or when the owner asks (`references/ship.md`, section 8). Publishing it is public, so it is
+never by default.
 
 ## 4. Recording
 

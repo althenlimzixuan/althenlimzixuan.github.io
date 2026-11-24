@@ -9,11 +9,10 @@ Read-only, from the SSOT worktree:
 
 1. `doc/north-star.md`, the lead card, and each bundle feature's `why` and `use_case` in
    `doc/features.yaml`.
-2. Each bundle issue (`gh issue view <n> -R <owner/repo>`).
-3. `doc/decisions.md`: past owner answers. A question answered there is never asked again; it
-   becomes a call.
-4. When the API may change: `doc/API.md` and `doc/openapi.yaml`. Code in the component repos as
-   needed, read-only.
+2. Each bundle issue (`gh issue view <n> -R <owner/repo>`). One already done is closed with its link
+   and left out (`/pm` **Bundle and vehicle** step 1); the summary gives the count closed.
+3. `doc/decisions.md`: past owner answers. A question answered there is never asked again; it is a call.
+4. When the API may change: `doc/API.md`, `doc/openapi.yaml`, and the component code as needed, read-only.
 
 ## 2. Draft
 
@@ -50,8 +49,8 @@ for the owner (`workflow.md`, **Plain English.**): diagrams, test steps and repo
    Under `no-owner-test` (SKILL.md, **Flow overrides**) the test section is a
    **What to expect now** list instead: what behaves differently and where to see it, one line
    each, with nothing to run.
-5. **UX outline:** screens or steps in plain words; delete it when nothing on screen changes.
-   **Data sources:** when the spec says, or relies on, a screen's data already being served, list
+5. **UX outline:** screens or steps in plain words; delete it when nothing on screen changes. It ends
+   with **QA seeds:** the records each changed screen needs to look filled in QA, or `none`. **Data sources:** when the spec says, or relies on, a screen's data already being served, list
    each figure, list or badge with the endpoint and field that serves it and where you checked it
    (the `doc/openapi.yaml` line, or the handler's file and line) in the template's **Data sources**
    table, before the Codex review. A figure nothing serves becomes a row in **Contract** (the phase
@@ -91,9 +90,8 @@ for the owner (`workflow.md`, **Plain English.**): diagrams, test steps and repo
 
 ## 4. Codex reviews the spec
 
-Run it before the owner sees the spec. `pal-review` is the absolute path from the session-start
-line `Codex review CLI: "<path>\pal-review.exe"`; run each command with a Bash timeout of
-600000 ms.
+Run it before the owner sees the spec. `pal-review` is the absolute path from the session-start line
+`Codex review CLI: "<path>\pal-review.exe"`; run each command with a Bash timeout of 600000 ms.
 
 1. **Not available:** no CLI path in the session-start context, or Pal Center older than 0.4.0 (the
    `Pal Center version:` line): it has no `doc` kind and cannot resolve a worktree set to its
@@ -108,7 +106,9 @@ line `Codex review CLI: "<path>\pal-review.exe"`; run each command with a Bash t
    - 4: failed. Record it in the log, retry once; failed again → add `doc: failed (<reason>)` to
      `codex.skipped` and go on with a note in Calls I made.
    - 5: skipped. Add `doc: skipped (<reason>)` to `codex.skipped` and go on.
-3. Minor findings: fix them in the spec first. Major and critical findings join the questions for
+3. Minor findings: fix them in the spec first. A wording-only finding (its fix changes no behaviour,
+   contract, data or test script) is minor at most: fix it, and list it in Calls I made as
+   `Codex doc <id>: wording only, rated minor (<one line>)`. Other majors and criticals join the questions for
    the owner, each with its reason, impact and a recommended answer (critical first).
 
 Codex never reviews the plan.
