@@ -1,6 +1,6 @@
 ---
 name: pal-retro
-description: Writes the short phase retro (Went well, Went badly, Ideas) and files each idea as a harness capture. The phase skill dispatches it in the ship stage, given the phase folder.
+description: Writes the short phase retro (Expected vs got, Went well, Went badly, Ideas) and files each idea as a harness capture. The phase skill dispatches it in the ship stage, given the phase folder.
 tools: Read, Grep, Glob, Bash, Write
 model: sonnet
 ---
