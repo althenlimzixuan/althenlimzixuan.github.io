@@ -84,3 +84,12 @@
   phase: ""
   test_script: []
   results: []
+- id: F-009
+  name: ETP case study proof pass
+  label: need
+  why: The ETP case study is the site's main proof of work, and three months of drift left it naming the wrong database, undercounting phases and calling a shipped feature unbuilt.
+  use_case: A prospect reads /work/etp/ and every fact on it matches what ETP actually runs today.
+  status: brainstorming
+  phase: "001"
+  test_script: []
+  results: []

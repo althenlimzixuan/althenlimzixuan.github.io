@@ -1,0 +1,16 @@
+phase: "001"
+slug: etp-proof-pass
+title: ETP case study proof pass
+vehicle: phase
+bundle: {features: [F-009], issues: ["althenlimzixuan/althenlimzixuan.github.io#35"]}
+stage: spec
+waiting_on_owner: null
+approach: inline
+session: "PF-work-HDJQBE"
+tasks: {done: 0, total: 0}
+ci: none
+load_test: false
+codex: {spec: 0, code: 0, uiux: 0, skipped: []}
+gates: {spec_approved: null, plan_approved: null, signoff_merged: null, staging_test_done: null}
+last_progress_at: 2026-11-25T21:45:01+08:00
+notes: []
