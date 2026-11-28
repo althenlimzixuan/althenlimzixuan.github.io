@@ -1,6 +1,6 @@
 # 001 — ETP case study proof pass: plan
 
-- **Status:** Draft
+- **Status:** Auto-approved (2026-11-28) — no plan stop
 - **Spec:** `spec.md` (approved on 2026-11-28)
 
 > Reads in about 8 minutes. There is no plan stop: building starts once Claude's plan review passes.
@@ -101,7 +101,8 @@ none. Ship is the `staging` → `main` PR you merge, which deploys as today.
 **Files:**
 - Create: `tests/helpers/loadFixture.ts`, `tests/unit_test/etp_facts.json`, `tests/facts.test.ts`
 - Modify: `src/content/projects/etp.mdx`, `src/components/About.astro:19-21`,
-  `src/pages/resume.astro:37-44`, `src/components/SkillsMatrix.astro:5`, `src/data/services.yaml:9`
+  `src/pages/resume.astro:27-44`, `src/components/SkillsMatrix.astro:5`, `src/data/services.yaml:9`
+- Read only (by the facts test): `src/pages/work/[...slug].astro`, `src/components/FeaturedProject.astro`
 
 **Interfaces:**
 - Produces: `loadFixture<T>(relativePath: string): T` in `tests/helpers/loadFixture.ts`, reading a
@@ -204,9 +205,11 @@ none. Ship is the `staging` → `main` PR you merge, which deploys as today.
   `{api: {x: 40, y: 20}, contract: {x: 30, y: 86}, gaps: {x: 178, y: 86}}`). Add to
   `etp_facts.json` `absent`: `PostgreSQL`, `fourth surface` and `Two clients consume` in
   `src/data/etp.ts`; `fourth surface` and `third surface` in `CLAUDE.md` and
-  `SurfaceDiagram.astro`.
-- [ ] **Step 2: Run it and see it fail.** `npx vitest run tests/scrolly.test.ts`. Expected: FAIL on
-  the three new tests (names in the log). The existing per-module tests still pass.
+  `SurfaceDiagram.astro`; and to `present`: `aria-hidden="true"` and
+  `prefers-reduced-motion: reduce` in `SurfaceDiagram.astro` (the Existing behaviour rows).
+- [ ] **Step 2: Run it and see it fail.** `npx vitest run tests/scrolly.test.ts tests/facts.test.ts`.
+  Expected: FAIL on the four new scrolly tests and Task 2's new `absent` rows (names in the log).
+  The existing per-module tests and Task 1's rows still pass.
 - [ ] **Step 3: Make it pass.**
   - `src/data/etp.ts`: add `'admin'` to `SURFACE_NODE_IDS`. Step 1 body: "GORM over MySQL on
     Cloud SQL". Step 2 body ends "not a fifth surface". Step 3 heading "Three clients consume one
@@ -269,7 +272,7 @@ string); page size (`fs.statSync().size`, number, shown in KB); Vitest fields
   `refuses an out dir outside _test_reports` (`resolveOutDir('_test_reports/../x', root)` throws).
 - [ ] **Step 2: Run it and see it fail.** `npx vitest run tests/reports.test.ts` → FAIL (module not
   found); test names in the log.
-- [ ] **Step 3: Make it pass.** `report-lib.mjs` implements the two functions. `reports.mjs <out dir>`:
+- [ ] **Step 3: Make it pass.** `report-lib.mjs` implements the four functions. `reports.mjs <out dir>`:
   1. Preflight, failing in seconds with a one-line fix: Node at least 22.12.0 ("install Node
      22.12 or later"), `node_modules` present ("run npm ci").
   2. Runs, one after another, each through `child_process.spawnSync` with `shell: true` (Windows

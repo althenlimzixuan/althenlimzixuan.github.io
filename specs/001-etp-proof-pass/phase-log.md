@@ -31,3 +31,7 @@ Plan drafted: 3 tasks, inline. Sent to pal-review-plan.
 ## 2026-11-28 18:23 — Plan review round 1 fixed
 
 pal-review-plan round 1: 2 major, 12 minor, 0 critical. Neither major changes what gets built (Existing behaviour list for the diagram; the read-only check before the scratch delete). All 14 fixed in plan.md; round 2 dispatched.
+
+## 2026-11-28 18:24 — Plan approved, building starts
+
+pal-review-plan round 2: 0 critical, 0 major, 4 minor. Minors applied, no re-review. Plan auto-approved (no plan stop). Stage: building.

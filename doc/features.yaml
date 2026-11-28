@@ -89,7 +89,7 @@
   label: need
   why: The ETP case study is the site's main proof of work, and three months of drift left it naming the wrong database, undercounting phases and calling a shipped feature unbuilt.
   use_case: A prospect reads /work/etp/ and every fact on it matches what ETP actually runs today.
-  status: planning
+  status: building
   phase: "001"
   test_script:
     - {step: 1, do: "Open /work/etp/ and read the facts strip under the title.", expect: "Surfaces shipped reads \"API, web, mobile, admin\" and Delivery phases reads \"90+\"."}
