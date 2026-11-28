@@ -137,3 +137,7 @@ Owner raised two things during the staging test.
 Fix now (rename, decision 6): fix/001-ellovia-name from origin/staging; facts test red first (4 rows), then green (93 passed); check, build, verify:css exit 0. pal-review-code: none. Codex code: failed twice (HTTP 403 outage). PR 39 merged into staging, PR 40 merged into dev, after CI and the merge guard. Preview rebuilt from the fixed code. F-009: retest (step 9).
 Hero width (decision 7): own card F-011, next phase, margins instead of caps via the ui-ux-pro-max skill.
 WhatsApp and LinkedIn: new card F-012 (todo); asked the owner for the values and whether it joins now.
+
+## 2026-11-28 19:41 — F-009 back to not-tested
+
+Owner cannot see the test steps. F-009 set back to not-tested (no step had a result yet, so retest was wrong). Walking the owner through the steps in the session meanwhile.
