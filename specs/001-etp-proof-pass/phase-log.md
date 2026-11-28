@@ -154,3 +154,7 @@ Ship: no runbooks, no owner-run commands; reader check passed. Production gate o
 
 Owner merged PR 41 (staging -> main). Deploy to GitHub Pages run 46142282008 succeeded at c26122f. Smoke check on the live site: /, /work/etp/, /resume/ answer 200; title "ETP — Ellovia Trip Planner"; "GORM over MySQL", "Three clients consume one definition" and Delivery phases "90+" present; "Essential Traveller" absent. Staging: local preview already stopped. Issue 35 already closed.
 Owner answers (decision 8): F-013 Ellovia Vault case study added as todo (later); F-014 Mention the Ellovia brand added as todo; F-012 card holds the owner's LinkedIn URL and WhatsApp number.
+
+## 2026-11-28 20:03 — Phase done, close-out
+
+Retro written by pal-retro (specs/001-etp-proof-pass/retro.md); 4 harness ideas filed as captures. Stage: done. Close-out PR next.
