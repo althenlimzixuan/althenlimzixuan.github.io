@@ -107,3 +107,54 @@ low memory: 1.9 GiB free before the reports.
 ## 2026-11-28 18:57 — Report citations fixed
 
 Tests reviewer on the reports: 3 minor citation findings in summary.md, applied (lighthouse.md added, line range fixed, final CI commit explained); minors applied, no re-review.
+
+## 2026-11-28 19:01 — Code PR merged, sign-off next
+
+Code PR 36 merged into dev (merge commit 51e0521) after CI green and the merge guard. Stage: signoff.
+
+## 2026-11-28 19:02 — Sign-off PR opened
+
+Sign-off PR 38 opened (dev -> staging, [HUMAN GATE]). Waiting for the owner to merge it.
+
+## 2026-11-28 19:09 — Sign-off merged, staging test next
+
+Owner merged sign-off PR 38 (merge 2ed1afb). Single-repo: no component promotions. No qa_command: no QA pass. Stage: staging-test (local preview of origin/staging; GitHub Pages has no staging site).
+
+## 2026-11-28 19:12 — Ready for the owner test
+
+Pre-flight: origin/staging (2ed1afb) built in the set (build exit 0, verify:css ok), then the set switched back to docs/001-etp-proof-pass; astro preview serves the staging build at localhost:4321; /, /work/etp/ and /resume/ answer 200. low memory: 1.9 GiB free.
+Each test step checked against the built pages: steps 1 and 2 pointed at /work/etp/, but the facts strip and stack list render on the landing page's featured ETP card. Steps corrected in spec.md (Calls I made 13) and doc/features.yaml; nothing built changed. Spec page republished.
+Waiting for the owner's staging test (8 steps).
+
+## 2026-11-28 19:16 — Owner requests during staging test
+
+Owner raised two things during the staging test.
+1. Rename ETP to Ellovia Trip Planner: fix now (small, words only, within F-009 pages). Decision 6; spec step 9 added; F-009 fixing. Fix branches from origin/staging as fix/001-ellovia-name.
+2. Hero max-width: asked the owner (own card F-011 recommended, keep readable paragraph width); waiting for the answer.
+
+## 2026-11-28 19:27 — Rename fixed on staging, retest
+
+Fix now (rename, decision 6): fix/001-ellovia-name from origin/staging; facts test red first (4 rows), then green (93 passed); check, build, verify:css exit 0. pal-review-code: none. Codex code: failed twice (HTTP 403 outage). PR 39 merged into staging, PR 40 merged into dev, after CI and the merge guard. Preview rebuilt from the fixed code. F-009: retest (step 9).
+Hero width (decision 7): own card F-011, next phase, margins instead of caps via the ui-ux-pro-max skill.
+WhatsApp and LinkedIn: new card F-012 (todo); asked the owner for the values and whether it joins now.
+
+## 2026-11-28 19:41 — F-009 back to not-tested
+
+Owner cannot see the test steps. F-009 set back to not-tested (no step had a result yet, so retest was wrong). Walking the owner through the steps in the session meanwhile.
+
+## 2026-11-28 19:53 — Staging test passed
+
+Staging test done on the local preview (env: local): step 1 pass in the session; owner passed steps 2 to 9 together ("lets pass all"). Pal Center results: none. F-009 passed. Stage: shipping.
+
+## 2026-11-28 19:54 — Promotion PR to main opened
+
+Ship: no runbooks, no owner-run commands; reader check passed. Production gate on main (Workflow Overrides): [HUMAN GATE] PR 41 staging -> main opened; waiting for the owner. Local staging preview stopped (teardown; nothing else was started).
+
+## 2026-11-28 20:02 — Live on main, smoke check passed
+
+Owner merged PR 41 (staging -> main). Deploy to GitHub Pages run 46142282008 succeeded at c26122f. Smoke check on the live site: /, /work/etp/, /resume/ answer 200; title "ETP — Ellovia Trip Planner"; "GORM over MySQL", "Three clients consume one definition" and Delivery phases "90+" present; "Essential Traveller" absent. Staging: local preview already stopped. Issue 35 already closed.
+Owner answers (decision 8): F-013 Ellovia Vault case study added as todo (later); F-014 Mention the Ellovia brand added as todo; F-012 card holds the owner's LinkedIn URL and WhatsApp number.
+
+## 2026-11-28 20:03 — Phase done, close-out
+
+Retro written by pal-retro (specs/001-etp-proof-pass/retro.md); 4 harness ideas filed as captures. Stage: done. Close-out PR next.
