@@ -1,0 +1,91 @@
+{
+  "description": "summarises a real vitest --reporter=json run (trimmed) and runs the report commands with one failing",
+  "input": {
+    "vitest": {
+      "numTotalTests": 4,
+      "numPassedTests": 3,
+      "numFailedTests": 1,
+      "success": false,
+      "testResults": [
+        {
+          "name": "tests/a.test.js",
+          "status": "passed",
+          "assertionResults": [
+            {
+              "title": "adds",
+              "fullName": "adds",
+              "status": "passed",
+              "failureMessages": []
+            },
+            {
+              "title": "joins",
+              "fullName": "joins",
+              "status": "passed",
+              "failureMessages": []
+            }
+          ]
+        },
+        {
+          "name": "tests/b.test.js",
+          "status": "failed",
+          "assertionResults": [
+            {
+              "title": "passes",
+              "fullName": "passes",
+              "status": "passed",
+              "failureMessages": []
+            },
+            {
+              "title": "fails",
+              "fullName": "fails",
+              "status": "failed",
+              "failureMessages": [
+                "AssertionError: expected 1 to be 2 // Object.is equality"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "runs": [
+      {
+        "command": "npx vitest run",
+        "status": 0
+      },
+      {
+        "command": "npm run check",
+        "status": 0
+      },
+      {
+        "command": "npm run build",
+        "status": 1
+      },
+      {
+        "command": "npm run verify:css",
+        "status": 0
+      }
+    ]
+  },
+  "expected": {
+    "passed": 3,
+    "failed": 1,
+    "files": [
+      {
+        "name": "tests/a.test.js",
+        "passed": 2,
+        "failed": 0
+      },
+      {
+        "name": "tests/b.test.js",
+        "passed": 1,
+        "failed": 1
+      }
+    ],
+    "exitCode": 1,
+    "pages": [
+      "unit_test.html",
+      "regression.html",
+      "profiling.html"
+    ]
+  }
+}
