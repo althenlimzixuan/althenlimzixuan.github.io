@@ -149,3 +149,8 @@ Staging test done on the local preview (env: local): step 1 pass in the session;
 ## 2026-11-28 19:54 — Promotion PR to main opened
 
 Ship: no runbooks, no owner-run commands; reader check passed. Production gate on main (Workflow Overrides): [HUMAN GATE] PR 41 staging -> main opened; waiting for the owner. Local staging preview stopped (teardown; nothing else was started).
+
+## 2026-11-28 20:02 — Live on main, smoke check passed
+
+Owner merged PR 41 (staging -> main). Deploy to GitHub Pages run 46142282008 succeeded at c26122f. Smoke check on the live site: /, /work/etp/, /resume/ answer 200; title "ETP — Ellovia Trip Planner"; "GORM over MySQL", "Three clients consume one definition" and Delivery phases "90+" present; "Essential Traveller" absent. Staging: local preview already stopped. Issue 35 already closed.
+Owner answers (decision 8): F-013 Ellovia Vault case study added as todo (later); F-014 Mention the Ellovia brand added as todo; F-012 card holds the owner's LinkedIn URL and WhatsApp number.

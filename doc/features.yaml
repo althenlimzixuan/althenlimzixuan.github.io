@@ -138,3 +138,21 @@
   phase: ""
   test_script: []
   results: []
+- id: F-013
+  name: Ellovia Vault case study
+  label: need
+  why: Ellovia Vault is the second Ellovia product and the site shows only ETP; a second case study is proof the owner ships more than one product.
+  use_case: A prospect opens the Ellovia Vault case study and reads how it was built, with no live link until its store listing is public.
+  status: todo
+  phase: ""
+  test_script: []
+  results: []
+- id: F-014
+  name: Mention the Ellovia brand
+  label: need
+  why: ETP and Ellovia Vault sit under one master brand, Ellovia; the portfolio should say so, so a prospect sees one product family, not unrelated projects.
+  use_case: A visitor reads on the site that the owner builds the Ellovia products, and which products are part of it.
+  status: todo
+  phase: ""
+  test_script: []
+  results: []
