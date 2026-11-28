@@ -10,3 +10,9 @@ mode: Company mode off for Pal Center (PF on); owner stops wait for the owner.
 Pickup session PF-pickup-2026-11-28 resumed phase 001 at stage spec (spec drafted, Codex review not yet run).
 mode: Company mode on for Pal Center and PF; veto window 1 hour; owner stops run wait-decision.
 reader check: Pal Center 0.35.0 reads harness 1.9.0; check --reader passed.
+
+## 2026-11-28 17:58 — Spec sent for owner review
+
+Codex doc review: verdict major, one finding (F1, test script missed the Postgres check on the resume skills list and the services section). Fixed with test step 8 and a check in step 4; rated minor with the reason in reviews/codex-doc-2026-11-28-1756.md and in Calls I made item 12.
+Spec rendered and published: https://claude.ai/artifact/8cCa5CDPa6YYUDb7g1BuhG
+Owner stop: spec-review, 2 questions. Both questions set what the public site claims, so the decision is held (never by default); waiting for the owner's own answer.

@@ -68,6 +68,11 @@ Reply in one line, like "accept all" or "accept all except 2: B".
     re-checked. Its facts are quoted in the Appendix.
 11. **The `/work/etp/` address, the `etp` file names and the `components/etp` folder stay**, per
     your note, so the Ellovia rename later changes words only.
+12. **Codex spec review: one finding, fixed, rated minor rather than major** (F1: the test script
+    did not check the skills list and the services section for the Postgres change). Its fix is
+    one more test step (step 8) and a check of the API step's text in step 4; it changes no
+    journey, contract or data. Precondition: the build edits the case study but misses
+    `SkillsMatrix` or `services.yaml`; likelihood: low, and now caught by step 8.
 
 ## Features
 
@@ -89,8 +94,9 @@ matches what ETP runs today.
 3. Do: read "What I built" → Expect: four surfaces, the admin one included; a short paragraph
    names auto-plan, the assistant, receipt scanning and the other shipped features; no sentence
    says auto-plan or bookings do not exist.
-4. Do: scroll through the architecture walkthrough → Expect: step 3 reads "Three clients consume
-   one definition", and its diagram lights up three boxes: web, mobile and admin.
+4. Do: scroll through the architecture walkthrough → Expect: the API step says "GORM over
+   MySQL"; step 3 reads "Three clients consume one definition", and its diagram lights up three
+   boxes: web, mobile and admin.
 5. Do: read "Honest limitations" → Expect: travel time and "no public demo" are still there;
    bookings say ETP records them but does not book; there is no "assisted scheduling is not
    shipped" line.
@@ -98,6 +104,9 @@ matches what ETP runs today.
    says four surfaces; the resume says "90+ delivery phases" and four surfaces.
 7. Do: the case study's address → Expect: it is still `/work/etp/`, and the landing page's
    featured project still opens it.
+8. Do: on `/resume/`, read the Skills list; then on `/`, open the "Backend APIs in Go" service →
+   Expect: both say MySQL, and neither says PostgreSQL or Postgres (with answer 2: B, both list
+   Postgres and MySQL side by side instead).
 
 ## UX outline
 
