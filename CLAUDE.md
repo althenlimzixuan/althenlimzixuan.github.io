@@ -259,8 +259,8 @@ flag; one does not.
 
 **Its copy is a compression of `etp.mdx`, never new claims.** In particular the
 generated TypeScript client is drawn as one node between the API and its
-consumers, not as a third surface, because the case study explicitly calls it
-"infrastructure the surfaces share, not a fourth surface in its own right". The
+consumers, not as an extra surface, because the case study explicitly calls it
+"infrastructure the surfaces share, not a fifth surface in its own right". The
 dashed `gaps` node is likewise real: the case study states two such gaps
 reached production.
 

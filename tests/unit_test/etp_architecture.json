@@ -1,0 +1,17 @@
+{
+  "description": "the ETP architecture walkthrough draws three clients and names MySQL (spec 001, test step 4)",
+  "input": {},
+  "expected": {
+    "clients": {
+      "heading": "Three clients consume one definition",
+      "nodes": ["web", "mobile", "admin"]
+    },
+    "api": { "bodyContains": "GORM over MySQL" },
+    "contract": { "bodyContains": "not a fifth surface" },
+    "layout": {
+      "api": { "x": 40, "y": 20 },
+      "contract": { "x": 30, "y": 86 },
+      "gaps": { "x": 178, "y": 86 }
+    }
+  }
+}

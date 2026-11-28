@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { MAX_SCROLLY_STEPS } from '../src/data/scrolly';
 import { PIPELINE_NODE_IDS, processSteps } from '../src/data/process';
-import { SURFACE_NODE_IDS, etpSteps } from '../src/data/etp';
+import { SURFACE_LAYOUT, SURFACE_NODE_IDS, etpSteps } from '../src/data/etp';
+import { loadFixture } from './helpers/loadFixture';
 
 // Every scrollytelling module on the site, checked by the same rules. Adding
 // a module means adding a row here.
@@ -52,5 +53,44 @@ describe.each(modules)('$name scrolly', ({ steps, nodeIds }) => {
       for (const n of s.nodes) claims.set(n, (claims.get(n) ?? 0) + 1);
     }
     for (const id of nodeIds) expect(claims.get(id) ?? 0).toBe(1);
+  });
+});
+
+interface ArchitectureFixture {
+  description: string;
+  expected: {
+    clients: { heading: string; nodes: string[] };
+    api: { bodyContains: string };
+    contract: { bodyContains: string };
+    layout: Record<string, { x: number; y: number }>;
+  };
+}
+
+describe('etp architecture copy', () => {
+  const { expected } = loadFixture<ArchitectureFixture>(
+    'tests/unit_test/etp_architecture.json',
+  );
+  const step = (id: string) => etpSteps.find((s) => s.id === id);
+
+  it('lights web, mobile and admin in the clients step', () => {
+    expect(step('clients')?.heading).toBe(expected.clients.heading);
+    expect(step('clients')?.nodes).toEqual(expected.clients.nodes);
+  });
+
+  it('names MySQL in the API step', () => {
+    expect(step('api')?.body).toContain(expected.api.bodyContains);
+  });
+
+  it('calls the client shared infrastructure, not a fifth surface', () => {
+    expect(step('contract')?.body).toContain(expected.contract.bodyContains);
+  });
+
+  // The diagram was re-laid-out to fit a third client; the boxes above the
+  // fork keep their places so the drawing reads as before.
+  it('keeps the api, contract and gaps boxes where they were', () => {
+    for (const [id, at] of Object.entries(expected.layout)) {
+      const node = SURFACE_LAYOUT.find((n) => n.id === id);
+      expect(node && { x: node.x, y: node.y }).toEqual(at);
+    }
   });
 });
