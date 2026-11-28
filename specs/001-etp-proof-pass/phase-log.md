@@ -75,3 +75,7 @@ Calls: runReports takes readVitest (reads the JSON the test command wrote) inste
 ## 2026-11-28 18:35 — Code PR opened
 
 Full check green locally. merge-check clean. Code PR #36 opened (docs/001-etp-proof-pass -> dev). ci: running. Session-0 run: not applicable (no Windows security).
+
+## 2026-11-28 18:38 — CI green, code review starts
+
+CI green on PR 36 (quality 2m38s, ssot check). Stage: code-review.
