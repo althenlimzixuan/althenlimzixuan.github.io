@@ -111,3 +111,7 @@ Tests reviewer on the reports: 3 minor citation findings in summary.md, applied 
 ## 2026-11-28 19:01 — Code PR merged, sign-off next
 
 Code PR 36 merged into dev (merge commit 51e0521) after CI green and the merge guard. Stage: signoff.
+
+## 2026-11-28 19:02 — Sign-off PR opened
+
+Sign-off PR 38 opened (dev -> staging, [HUMAN GATE]). Waiting for the owner to merge it.
