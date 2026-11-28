@@ -63,3 +63,11 @@ RED: npx vitest run tests/scrolly.test.ts tests/facts.test.ts, exit 1, 10 failed
      × keeps the api, contract and gaps boxes where they were 1ms
 GREEN: npm test exit 0 (77 passed); npm run check exit 0; npm run build exit 0; npm run verify:css exit 0.
 Render check: reviews/screens/etp-architecture-step3-1280.png (three boxes lit together, gaps dashed, no overlap) and etp-architecture-diagram-390.png (fits, 279 px of 390, no sideways scroll; below 60rem the figure is static by design). screens.spec.ts: recorded skip, the repo has no Playwright.
+
+## 2026-11-28 18:34 — Task 3 done
+
+RED: npx vitest run tests/reports.test.ts, exit 1: "Cannot find module '../scripts/report-lib.mjs'" (no tests ran).
+GREEN: npx vitest run tests/reports.test.ts, 4 passed; npm test exit 0 (81 passed); npm run check exit 0.
+npm run reports -- _test_reports/site/scratch: exit 0, wrote unit_test.html, regression.html, profiling.html (repo-relative paths only). npm run reports -- _test_reports/../x: exit 1, refused.
+Scratch folder deleted after the read-only check (git status showed only the four untracked files the run wrote; nothing tracked).
+Calls: runReports takes readVitest (reads the JSON the test command wrote) instead of repoRoot; paths shown in the pages are repo-relative so no machine folder lands in the public repo; the output path is quoted, since the worktree path has a space.

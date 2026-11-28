@@ -7,12 +7,12 @@ stage: building
 waiting_on_owner: null
 approach: inline
 session: "PF-pickup-2026-11-28"
-tasks: {done: 2, total: 3}
+tasks: {done: 3, total: 3}
 ci: none
 load_test: false
 codex: {spec: 1, code: 0, uiux: 0, skipped: []}
 gates: {spec_approved: "2026-11-28", plan_approved: "2026-11-28", signoff_merged: null, staging_test_done: null}
-last_progress_at: 2026-11-28T18:30:18+08:00
+last_progress_at: 2026-11-28T18:34:54+08:00
 owner_stops:
   - {kind: spec-review, since: "2026-11-28T17:57:34+08:00", answered: "2026-11-28T18:10:26+08:00", could_decide: false, via: owner}
 notes: []
