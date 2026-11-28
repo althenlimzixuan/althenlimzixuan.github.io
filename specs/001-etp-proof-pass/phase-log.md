@@ -89,3 +89,11 @@ Bug-fix tests ran red first: 5 failed in tests/reports.test.ts before the fix, 8
 Dismissed: ui 2 (four surfaces = API plus three clients, consistent); code 4 (F-009 status moves at staging test by the flow); tests 4 (accepted manual render check).
 Parked in doc/later.md: ui 1 (faint future-tier contrast, existing design); tests 3 (reports.mjs wiring proved by a real run).
 low memory: 853 MiB free before the full check. Full check: npm test exit 0 (88 passed); npm run reports (check, build, verify:css) exit 0.
+
+## 2026-11-28 18:50 — Review round 2 fixed
+
+Review round 2. code: none. tests: none. errors: 2 new minor.
+Fixed: errors 1 (built CSS check skipped after a failed build; test "skips the built CSS check after a failed build" ran red first, then 89 passed).
+Dismissed: errors 2 (vitest.json freshness by mtime: NTFS stamps are far finer than a run, and a misjudged file fails loudly with exit 1; the timeout reaching only the direct node child is acceptable for a hand-run local tool).
+Codex code re-check: failed (HTTP 403 from the Codex service, an outage); one retry follows.
+npm test exit 0 (89 passed); npm run check exit 0.

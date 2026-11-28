@@ -12,7 +12,7 @@ ci: green
 load_test: false
 codex: {spec: 1, code: 1, uiux: 0, skipped: ["uiux: failed (Codex service returned HTTP 403 on both tries)"]}
 gates: {spec_approved: "2026-11-28", plan_approved: "2026-11-28", signoff_merged: null, staging_test_done: null}
-last_progress_at: 2026-11-28T18:46:57+08:00
+last_progress_at: 2026-11-28T18:50:33+08:00
 owner_stops:
   - {kind: spec-review, since: "2026-11-28T17:57:34+08:00", answered: "2026-11-28T18:10:26+08:00", could_decide: false, via: owner}
 notes: []
