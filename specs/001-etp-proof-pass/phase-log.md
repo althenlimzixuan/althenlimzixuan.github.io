@@ -97,3 +97,9 @@ Fixed: errors 1 (built CSS check skipped after a failed build; test "skips the b
 Dismissed: errors 2 (vitest.json freshness by mtime: NTFS stamps are far finer than a run, and a misjudged file fails loudly with exit 1; the timeout reaching only the direct node child is acceptable for a hand-run local tool).
 Codex code re-check: failed (HTTP 403 from the Codex service, an outage); one retry follows.
 npm test exit 0 (89 passed); npm run check exit 0.
+
+## 2026-11-28 18:55 — Test reports made
+
+Reports made on the final code commit c429ee3 (npm run reports, exit 0): 89 of 89 tests passed; regression passed; CI Lighthouse unchanged from dev (97 to 98 performance, 100 accessibility). Coverage n/a (project override). Raw vitest.json not committed (machine paths).
+Review round 3: errors none. Codex code re-check failed twice (HTTP 403 outage), recorded in codex.skipped; its round-1 finding is fixed and tested.
+low memory: 1.9 GiB free before the reports.

@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Regression</title>
+<style>body{font:14px/1.5 system-ui,sans-serif;margin:2rem}table{border-collapse:collapse}th,td{border:1px solid #ccc;padding:.3rem .6rem;text-align:left}</style>
+</head><body><h1>Regression</h1>
+<table><thead><tr><th>Check</th><th>Command</th><th>Exit code</th><th>Seconds</th><th>Error</th></tr></thead><tbody>
+<tr><td>Unit tests</td><td>node node_modules/vitest/vitest.mjs run --reporter=json --outputFile=_test_reports/site/2026-11-28-18-001-etp-proof-pass/vitest.json</td><td>0</td><td>17.0</td><td></td></tr>
+<tr><td>Type and content check</td><td>node node_modules/astro/bin/astro.mjs check</td><td>0</td><td>78.5</td><td></td></tr>
+<tr><td>Build</td><td>node node_modules/astro/bin/astro.mjs build</td><td>0</td><td>19.8</td><td></td></tr>
+<tr><td>Built CSS check</td><td>node scripts/verify-built-css.mjs</td><td>0</td><td>0.1</td><td></td></tr>
+</tbody></table></body></html>
