@@ -47,3 +47,19 @@ RED: npx vitest run tests/facts.test.ts, exit 1, 34 failed; for example:
      × states "'- Django'" in 'src/content/projects/etp.mdx' 1ms
 (the 3 address checks passed, as expected: nothing is renamed)
 GREEN: npx vitest run tests/facts.test.ts, 37 passed; npm test exit 0 (64 passed); npm run check exit 0 (0 errors). No lint script in this repo.
+
+## 2026-11-28 18:30 — Task 2 done
+
+RED: npx vitest run tests/scrolly.test.ts tests/facts.test.ts, exit 1, 10 failed:
+     × no longer states "'PostgreSQL'" in 'src/data/etp.ts' 10ms
+     × no longer states "'fourth surface'" in 'src/data/etp.ts' 4ms
+     × no longer states "'Two clients consume'" in 'src/data/etp.ts' 2ms
+     × no longer states "'fourth surface'" in 'CLAUDE.md' 3ms
+     × no longer states "'third surface'" in 'CLAUDE.md' 4ms
+     × no longer states "'third surface'" in 'src/components/etp/SurfaceDiagram.ast…' 3ms
+     × lights web, mobile and admin in the clients step 10ms
+     × names MySQL in the API step 4ms
+     × calls the client shared infrastructure, not a fifth surface 2ms
+     × keeps the api, contract and gaps boxes where they were 1ms
+GREEN: npm test exit 0 (77 passed); npm run check exit 0; npm run build exit 0; npm run verify:css exit 0.
+Render check: reviews/screens/etp-architecture-step3-1280.png (three boxes lit together, gaps dashed, no overlap) and etp-architecture-diagram-390.png (fits, 279 px of 390, no sideways scroll; below 60rem the figure is static by design). screens.spec.ts: recorded skip, the repo has no Playwright.
