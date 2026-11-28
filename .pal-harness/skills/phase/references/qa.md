@@ -1,0 +1,62 @@
+# The QA pass
+
+Before the owner is asked to test, the session checks the build itself in the project's QA
+environment, so the owner only tests a build that already passed. It runs only when `project.yaml`
+sets `harness.qa_command`; with it unset, nothing here runs and `qa:` stays `none`.
+
+## 1. When it runs
+
+- After the sign-off merge and the promotion to `staging` (`references/signoff.md`, section 5),
+  before the staging test.
+- Under `no-owner-test`: after the sign-off merge, before ship.
+- Under `uat-queue`: once per phase, before that phase joins the queue.
+- A quick fix runs it too, for its one test step.
+
+## 2. Run it
+
+1. Set `qa: running` in `phase-state.yaml`, write the log entry, commit and push.
+2. Free memory first (`devops_cicd.md`, **Free memory before heavy runs**). Start the environment
+   with `harness.qa_command` from the SSOT worktree, from `origin/staging` of each repo (as
+   `references/staging-test.md` section 1 step 2 checks it out). It runs with fakes, so it never
+   needs the owner's accounts or real data.
+3. **The warm-up.** Before the first step, load the app's first page once and wait for it to render,
+   with no screenshot: a dev server (Vite, Next.js, Metro) compiles on its first load, and that cold
+   start can outlast a step's timeout. A step whose first page load still times out is retried once,
+   and `summary.md` notes `cold start: retried` on that row; a second timeout fails the step.
+4. Follow each bundle feature's test script in the spec (under `no-owner-test`, each What to expect
+   now line). For each step: do it, compare with its expected result, and save a screenshot. Each
+   changed screen is screenshotted in its seeded state (the spec's **QA seeds**), and its
+   `summary.md` row names the seed it showed. A screen that comes up empty when its seed exists is a
+   failed step.
+   **First message steps.** A step whose expected result is what a started session receives first
+   (its first message, the notes it is handed) passes on the session's seed file when the QA copy
+   cannot open the session (its folders are untrusted, or Claude Code is not signed in there). Read
+   the seed file the QA copy wrote (Pal Center: `%APPDATA%\PalCenter\sessions\<session>.txt`, or the
+   QA copy's own data folder) and compare its text with the expected result. The row says
+   `evidence: seed file <path>` and quotes the matching lines; it is a pass, never a skip. The step
+   stays in the owner's staging test, where sessions open for real.
+5. Record the run in `specs/NNN-slug/qa/`:
+   - `summary.md`: one row per step (feature, step, pass or fail, a one-line note, the screenshot);
+     the date, the commit of each repo and the command used at the top;
+   - `screens/`: one PNG per step, named `F-012-step-3.png`.
+6. **Evidence pages.** To look at a page in the browser tools (`summary.md` rendered by
+   `pal-harness render`, the `screens/` folder), serve its folder with `pal-harness serve <folder>`
+   and open the URL it prints: the browser tools refuse `file:` URLs. It is the one command started
+   with `run_in_background`, since it stops by itself (`--for`, 30 minutes by default); read the URL
+   from its output.
+7. Stop the environment and everything it started, `pal-harness serve` included.
+
+## 3. The result
+
+- **Every step passed:** `qa: passed`. Commit and push the `qa/` folder on `docs/NNN-slug`, then go
+  on to the staging test (or ship). The staging-test message links the QA summary.
+- **A step failed:** `qa: failed`. It is a fix round, handled like a failed staging step under fix
+  now (`references/staging-test.md`, section 5): a `fix/NNN-<short>` branch from `origin/staging`,
+  test first, one review, the PR into `staging`, then into `dev`. Then run the QA pass again from
+  section 2.
+- **3 fix rounds and still failing:** an owner stop with `kind: findings`: the note
+  (`reviews/owner-YYYY-MM-DD-HHmm.md`) gives the failing steps, their screenshots, what was tried,
+  and options with a recommended one.
+
+A QA failure never reaches the owner's test: the owner is asked to test only after `qa: passed`, or
+after the findings stop's answer.

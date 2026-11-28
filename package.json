@@ -12,7 +12,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run",
-    "verify:css": "node scripts/verify-built-css.mjs"
+    "verify:css": "node scripts/verify-built-css.mjs",
+    "reports": "node scripts/reports.mjs"
   },
   "dependencies": {
     "astro": "7.1.6",

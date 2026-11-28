@@ -1,14 +1,58 @@
 # Personal Portfolio — althenlimzixuan.github.io
 
-@C:\Users\zixua\.claude\practices\workflow.md
-@C:\Users\zixua\.claude\practices\testing.md
-@C:\Users\zixua\.claude\practices\devops_cicd.md
+@.pal-harness/practices/ssot_standard.md
+@.pal-harness/practices/conflict_protocol.md
+@.pal-harness/practices/workflow.md
+@.pal-harness/practices/testing.md
+@.pal-harness/practices/devops_cicd.md
 
-<!-- Shape B — Single Service. This file is the git root, so it must import
-     everything the session needs; nothing above it loads. -->
+<!-- Single-repo SSOT root: this repo is the project root, the git root and the site's code.
+     It must import everything the session needs. The harness is a pinned copy in .pal-harness/
+     (project.yaml -> harness.version). No REST API, so product_docs.md is not imported, and no
+     stack practice fits Astro, so the component's stack is `tbd`. -->
 
 <!-- testing.md's "80% minimum, enforced in CI" coverage gate does not apply
-     here — see "Quality gates" below for what this repo actually enforces. -->
+     here — see "Quality gates" below for what this repo actually enforces
+     (project.yaml harness.overrides). -->
+
+## Components
+
+The table below is generated from `project.yaml`. Change the manifest, then run
+`pal-harness generate`; never edit between the markers. The site's code lives at the repo root,
+not in a `site/` folder.
+
+<!-- pal:begin components (generated from project.yaml; do not edit) -->
+| Folder | Role | Rank | Stack | Repo | Status |
+|---|---|---|---|---|---|
+| `site/` | consumer | 2 | tbd | https://github.com/althenlimzixuan/althenlimzixuan.github.io | active |
+<!-- pal:end components -->
+
+## Specs and plans
+
+Work runs through the phase flow: `/pm` chooses it, `/phase` runs it
+(`.pal-harness/skills/phase/SKILL.md`, **Single-repo projects**), `/quick-fix` handles small fixes.
+Each phase lives in `specs/NNN-slug/` on the branch `docs/NNN-slug`; the phase skill starts one
+with `go run github.com/althenlimzixuan/pal-harness/cmd/pal-harness@v1.12.1 spec new <slug>`.
+Sessions work in a worktree set under `<workspace>\.pal-worktrees\` and never switch branches in
+the owner's checkout. The designs and plans under `docs/superpowers/` are history from before the
+phase flow; new work does not add to them.
+
+| Path | Purpose |
+|---|---|
+| `project.yaml` | Manifest — the truth for project facts |
+| `doc/north-star.md` | Who it is for, the problem, what success looks like; reviewed every 5 phases |
+| `doc/features.yaml` | The feature list — the truth for features |
+| `doc/decisions.md` | The owner's answers to phase questions |
+| `doc/later.md` | Parked review findings |
+| `specs/NNN-slug/` | One phase: spec, plan, `phase-state.yaml`, reviews, retro |
+| `_feedbacks/` | Raw feedback notes, `YYYY-MM-DD-HHmm.md` |
+
+## Workflow Overrides
+
+- **Production gate on `main`.** The site is live: a push to `main` deploys to GitHub Pages, so
+  `staging` → `main` is a `[HUMAN GATE]` PR the owner merges.
+- **Staging test on a local preview.** GitHub Pages has no staging site. The owner's staging test
+  runs on `npm run build && npm run preview` from the `staging` branch.
 
 ## What this is
 
@@ -16,8 +60,8 @@ A freelancer-first personal portfolio site. Serves three audiences from one
 content base: freelance clients (leading), employers, and anyone wanting a
 resume. Static Astro site on GitHub Pages.
 
-Design spec: `docs/superpowers/specs/2026-08-01-personal-portfolio-design.md`
-Implementation plan: `docs/superpowers/plans/2026-08-01-personal-portfolio.md`
+Design spec (history): `docs/superpowers/specs/2026-08-01-personal-portfolio-design.md`
+Implementation plan (history): `docs/superpowers/plans/2026-08-01-personal-portfolio.md`
 
 ## Stack
 
@@ -215,8 +259,8 @@ flag; one does not.
 
 **Its copy is a compression of `etp.mdx`, never new claims.** In particular the
 generated TypeScript client is drawn as one node between the API and its
-consumers, not as a third surface, because the case study explicitly calls it
-"infrastructure the surfaces share, not a fourth surface in its own right". The
+consumers, not as an extra surface, because the case study explicitly calls it
+"infrastructure the surfaces share, not a fifth surface in its own right". The
 dashed `gaps` node is likewise real: the case study states two such gaps
 reached production.
 

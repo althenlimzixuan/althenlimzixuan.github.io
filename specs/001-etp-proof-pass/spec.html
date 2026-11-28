@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>001 — ETP case study proof pass</title>
+<style>
+:root{color-scheme:light dark;--bg:#fff;--fg:#1f2328;--muted:#59636e;--border:#d1d9e0;--code:#f6f8fa;--link:#0969da}
+@media (prefers-color-scheme: dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--border:#3d444d;--code:#151b23;--link:#4493f8}}
+*{box-sizing:border-box}
+body{margin:0;padding:1rem;background:var(--bg);color:var(--fg);font:1rem/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;overflow-wrap:break-word}
+a{color:var(--link)}
+h1,h2,h3{line-height:1.25}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}
+pre{background:var(--code);padding:.75rem;border-radius:6px;overflow-x:auto}
+code{background:var(--code);padding:.1em .3em;border-radius:4px}
+pre code{background:none;padding:0}
+table{display:block;overflow-x:auto;border-collapse:collapse;max-width:100%}
+th,td{border:1px solid var(--border);padding:.35rem .6rem}
+blockquote{margin:1rem 0;padding:0 1rem;border-left:4px solid var(--border);color:var(--muted)}
+figure{margin:1rem 0;overflow-x:auto}
+figure pre.mermaid{background:none;text-align:center}
+figcaption{color:var(--muted);font-size:.9em;text-align:center}
+details{margin:1rem 0;border-top:1px solid var(--border)}
+summary{cursor:pointer;font-weight:600;font-size:1.25rem;padding:.5rem 0}
+img{max-width:100%}
+</style>
+</head>
+<body>
+<h1>001 — ETP case study proof pass</h1>
+<ul>
+<li><strong>Status:</strong> Approved (2026-11-28)</li>
+<li><strong>Roadmap card:</strong> F-009 — ETP case study proof pass (closes althenlimzixuan/althenlimzixuan.github.io#35)</li>
+<li><strong>Vehicle:</strong> phase</li>
+</ul>
+<blockquote>
+<p>Reads in about 8 minutes. Written in plain English for you; detail sits in the Appendix.</p>
+</blockquote>
+<h2>Summary</h2>
+<ol>
+<li>This phase makes every fact the site states about ETP true again: the database, the phase
+count, the number of surfaces, and what ETP can and cannot do today.</li>
+<li>It covers one feature: <strong>F-009 — ETP case study proof pass</strong>, from your note #35.</li>
+<li>At the end, a prospect who reads <code>/work/etp/</code>, the landing page's About section or <code>/resume/</code>
+sees only facts that match ETP's own code as of 25 Nov 2026. The address <code>/work/etp/</code> does not
+change, so the later Ellovia rename touches words only.</li>
+<li>The biggest call: I re-checked every claim against ETP's code today instead of trusting the
+August audit, and it found one more stale claim: <strong>bookings now exist</strong> (shipped 30 Sep, phase
+084), and the case study still says they do not. The phase count has also moved on, from 47 in
+August to 90 today.</li>
+<li>Questions for you: <strong>2</strong>, answered 28 Nov: 1: A, 2: B (<code>doc/decisions.md</code> 4 and 5).</li>
+</ol>
+<h2>Questions for the owner</h2>
+<p>Answered 28 Nov 2026: <strong>1: A</strong> (one short paragraph), <strong>2: B</strong> (Postgres and MySQL side by
+side; Ellovia Vault's API runs on Postgres, checked in its <code>api/go.mod</code>).</p>
+<ol>
+<li><strong>How much of ETP's newer work should the case study mention?</strong> It describes a much smaller
+product than exists: the in-app assistant (Tripie), auto-plan, receipt scanning, daily exchange
+rates, packing lists, budget vs actual with export, booking records and the admin surface are
+all shipped and unmentioned. Options: A) fix the wrong facts, and add <strong>one short paragraph</strong>
+naming what else shipped, keeping the &quot;four decisions&quot; as the spine; B) fix the wrong facts
+only. <strong>Recommended: A</strong> — the case study's job is to show depth; one paragraph does that
+without turning it into a feature list.</li>
+<li><strong>The skills list and the services section say &quot;PostgreSQL&quot; / &quot;Postgres&quot;.</strong> Nothing on the site
+shows Postgres work, and the claim most likely came from the same wrong ETP fact. Options:
+A) replace with MySQL in both places; B) keep Postgres and add MySQL beside it (choose this only
+if you have real Postgres work to stand behind). <strong>Recommended: A</strong> — the site never states a
+skill it cannot point to.</li>
+</ol>
+<h2>Calls I made</h2>
+<ol>
+<li><strong>Phase count shown as &quot;90+&quot;.</strong> ETP has shipped phases 008 to 097, which is 90 (the same way the
+August audit counted 47). A floor stays true as ETP keeps shipping; an exact number goes stale
+again, which is how this happened.</li>
+<li><strong>Surfaces: four</strong> — API, web, mobile and admin. The generated TypeScript client is still
+described as shared plumbing, not a fifth surface, as the case study already says.</li>
+<li><strong>The admin dashboard joins the architecture diagram</strong> on <code>/work/etp/</code> as a third client box,
+beside web and mobile, so the picture matches the words &quot;three clients&quot;. The step heading
+becomes &quot;Three clients consume one definition&quot;.</li>
+<li><strong>Stack list:</strong> PostgreSQL becomes MySQL, and I add Cloud SQL, Terraform and Django (the admin
+portal), all checked in ETP's code. AI vendors are not added: the paragraph names features,
+not suppliers.</li>
+<li><strong>&quot;Assisted scheduling is not shipped&quot; leaves the limitations list.</strong> Auto-plan (shipped 18 Jul)
+is described where the case study lists what was built. Travel time stays a stated limitation:
+it is still an estimate from coordinates, and auto-plan uses the same estimate.</li>
+<li><strong>The bookings limitation is rewritten</strong>, not removed: ETP now records bookings made elsewhere
+(where it was booked, a masked confirmation code), but it does not book anything itself.</li>
+<li><strong>About and Resume are fixed too</strong>, because they repeat ETP facts: &quot;three surfaces&quot; becomes
+four, and the resume's &quot;23 delivery phases&quot; becomes &quot;90+&quot;.</li>
+<li><strong>Left alone on purpose:</strong> &quot;three surfaces&quot; on the How I build page, the hero line and the
+process diagram. They describe your method (one contract, API, web and mobile built in
+parallel), not ETP's surface count.</li>
+<li><strong>No new diagram ships.</strong> <code>docs/diagrams/</code> (the ETP infrastructure diagram) stays uncommitted in
+your checkout; it is milestone M2. The one diagram this phase touches gets box labels only
+(API, web, mobile, admin), so the scrubbing rule (no project ids, hostnames or client ids) holds.</li>
+<li><strong>The audit file <code>docs/etp-case-study-corrections.md</code> is not committed</strong> to the site repo: the
+repo's own rules keep people-written docs under <code>doc/</code>, and this spec now holds its findings,
+re-checked. Its facts are quoted in the Appendix.</li>
+<li><strong>The <code>/work/etp/</code> address, the <code>etp</code> file names and the <code>components/etp</code> folder stay</strong>, per
+your note, so the Ellovia rename later changes words only.</li>
+<li><strong>Codex spec review: one finding, fixed, rated minor rather than major</strong> (F1: the test script
+did not check the skills list and the services section for the Postgres change). Its fix is
+one more test step (step 8) and a check of the API step's text in step 4; it changes no
+journey, contract or data. Precondition: the build edits the case study but misses
+<code>SkillsMatrix</code> or <code>services.yaml</code>; likelihood: low, and now caught by step 8.</li>
+</ol>
+<h2>Features</h2>
+<h3>F-009 — ETP case study proof pass</h3>
+<p><strong>Why:</strong> The ETP case study is the site's main proof of work. Three months of drift left it naming
+the wrong database, undercounting phases by half, and telling prospects that ETP's core
+differentiator was never built.</p>
+<p><strong>Use case:</strong> A prospect reads <code>/work/etp/</code> (and the About and Resume summaries) and every fact
+matches what ETP runs today.</p>
+<p><strong>Test script</strong> (on the local preview: <code>npm run build &amp;&amp; npm run preview</code> from <code>staging</code>):</p>
+<ol>
+<li>Do: open <code>/work/etp/</code> and read the facts strip under the title → Expect: Surfaces shipped reads
+&quot;API, web, mobile, admin&quot; and Delivery phases reads &quot;90+&quot;.</li>
+<li>Do: read the stack list on the same page → Expect: MySQL, Cloud SQL, Terraform and Django are
+listed; PostgreSQL is not.</li>
+<li>Do: read &quot;What I built&quot; → Expect: four surfaces, the admin one included; a short paragraph
+names auto-plan, the assistant, receipt scanning and the other shipped features; no sentence
+says auto-plan or bookings do not exist.</li>
+<li>Do: scroll through the architecture walkthrough → Expect: the API step says &quot;GORM over
+MySQL&quot;; step 3 reads &quot;Three clients consume one definition&quot;, and its diagram lights up three
+boxes: web, mobile and admin.</li>
+<li>Do: read &quot;Honest limitations&quot; → Expect: travel time and &quot;no public demo&quot; are still there;
+bookings say ETP records them but does not book; there is no &quot;assisted scheduling is not
+shipped&quot; line.</li>
+<li>Do: on <code>/</code>, read the About section; then open <code>/resume/</code> and read Selected work → Expect: About
+says four surfaces; the resume says &quot;90+ delivery phases&quot; and four surfaces.</li>
+<li>Do: the case study's address → Expect: it is still <code>/work/etp/</code>, and the landing page's
+featured project still opens it.</li>
+<li>Do: on <code>/resume/</code>, read the Skills list; then on <code>/</code>, open the &quot;Backend APIs in Go&quot; service →
+Expect: both list PostgreSQL and MySQL side by side (by design: answer 2: B, since Ellovia
+Vault runs on Postgres and ETP on MySQL).</li>
+</ol>
+<h2>UX outline</h2>
+<ol>
+<li><code>/work/etp/</code>: same layout; new words in the facts strip, stack list, two paragraphs and the
+limitations list.</li>
+<li>The architecture diagram on <code>/work/etp/</code>: one more box (admin) beside web and mobile, under the
+generated client.</li>
+<li><code>/</code> About section and <code>/resume/</code> Selected work: one sentence each.</li>
+</ol>
+<p><strong>QA seeds:</strong> none (static content).</p>
+<h2>Infrastructure</h2>
+<figure><pre class="mermaid">flowchart LR
+    %% doc/infra.mmd: every runtime part of the project and how they connect.
+    %% Hygiene: names and kinds only; never project ids, hostnames, client ids, keys or URLs.
+    visitor([Visitor])
+    site[&#34;Static site (Astro build, plain HTML and CSS)&#34;]
+    pages[&#34;GitHub Pages hosting&#34;]
+    ci[&#34;GitHub Actions (quality checks and deploy)&#34;]
+    mail[&#34;Visitor&#39;s own email app&#34;]
+
+    visitor --&gt; pages
+    pages --&gt; site
+    site --&gt;|mailto link| mail
+    ci -.-&gt;|deploys from main| pages</pre><figcaption>Infrastructure</figcaption></figure>
+<p>No change. (<code>doc/infra.mmd</code> is drafted in this phase, since the project had none.)</p>
+<h2>Out of scope</h2>
+<ul>
+<li>The Ellovia rename of ETP: it happens in ETP's own launch phase, maybe months away.</li>
+<li>Ellovia Vault or Ellovia Accounts on the site: a later call, when there is something public.</li>
+<li>Links to the Ellovia Trip and Ellovia Vault websites or Play Store pages: asked for at spec
+review, now its own card, F-010.</li>
+<li>The ETP infrastructure diagram (milestone M2) and the screenshots in your checkout.</li>
+<li>A walkthrough video or screenshots on the case study.</li>
+</ul>
+<details><summary>Appendix</summary>
+</h2>
+<!-- raw HTML omitted -->
+<table>
+<thead>
+<tr>
+<th>Claim on the site today</th>
+<th>True today</th>
+<th>Checked in ETP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Database PostgreSQL</td>
+<td>MySQL 8.0 on Cloud SQL</td>
+<td><code>api/infra/sql.tf</code> (<code>MYSQL_8_0</code>); <code>api/go.mod</code> (<code>gorm.io/driver/mysql</code>)</td>
+</tr>
+<tr>
+<td>23 delivery phases</td>
+<td>90 (008 to 097, all shipped)</td>
+<td><code>CompleteRoadmap.md</code> progress ledger (008–096 shipped); <code>specs/097-mobile-trust-foundations/phase-state.yaml</code> (<code>stage: done</code>)</td>
+</tr>
+<tr>
+<td>Surfaces: API, web, mobile</td>
+<td>plus admin (Django portal and Next.js dashboard)</td>
+<td><code>project.yaml</code> (<code>admin</code> component); <code>admin/dashboard/package.json</code></td>
+</tr>
+<tr>
+<td>Two clients use the generated client</td>
+<td>three: web, mobile, admin dashboard</td>
+<td><code>admin/dashboard/package.json</code> (<code>@etp/api-client</code> 0.53.0)</td>
+</tr>
+<tr>
+<td>Assisted scheduling not shipped</td>
+<td>auto-plan shipped 18 Jul (phase 019)</td>
+<td><code>api/internal/usecase/auto_plan.go</code>; <code>POST …/itinerary/auto-plan</code> and <code>…/accept</code></td>
+</tr>
+<tr>
+<td>Bookings do not exist</td>
+<td>booking records shipped 30 Sep (phase 084); no booking agent</td>
+<td><code>api/internal/domain/booking.go</code>; roadmap PL1 (booking agent) not started</td>
+</tr>
+<tr>
+<td>Travel time is a heuristic</td>
+<td>still true</td>
+<td><code>api/internal/usecase/validator.go</code> <code>estimateTravelMinutes</code>; no use of the distance-matrix code outside its own package</td>
+</tr>
+<tr>
+<td>One blocking rule of five</td>
+<td>still true</td>
+<td><code>validator.go</code> <code>ruleSeverity</code> (out of range blocks; four warn)</td>
+</tr>
+<tr>
+<td>No public demo</td>
+<td>true in August; not re-checked today</td>
+<td>the site keeps hiding the live link either way (<code>livePubliclyBrowsable: false</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Unchanged, and verified in August: money as integer minor units, the generated contract chain,
+derive-on-read balances, Redis for rate limits and spend caps.</p>
+<!-- raw HTML omitted -->
+</details>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad: true, theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default'});</script>
+</body>
+</html>

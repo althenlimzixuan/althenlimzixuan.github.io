@@ -1,0 +1,150 @@
+# Stage: review (`code-review`)
+
+One whole-branch review over every `feature/NNN-slug` branch (base `origin/dev`) and the
+`docs/NNN-slug` branch, then the test reports from the final commit. **Merge check first:** before the
+reviewers, `pal-harness merge-check` in every repo. On a conflict (exit 1) merge `origin/dev` in now,
+a bookkeeping file (`doc/decisions.md`, `doc/later.md`, `doc/features.yaml`) keeping both sides'
+entries, run the full check and push; not a fix round. Exit 2: log the reason and go on.
+
+## 1. The test reports
+
+Make them once, on the final commit after the last review fix (section 4 step 4), not per reviewer;
+`pal-review-tests` then checks them (`testing.md` has the files, the thresholds and the tools).
+
+1. Until CI has report jobs, run `pal-harness mem` (`devops_cicd.md`, **Free memory before heavy
+   runs**), then the one report command (`make reports`, or `npm run reports` in a Node-only repo)
+   once, locally, on each branch's head, into `_test_reports/<component>/<YYYY-MM-DD-HH>-<NNN-slug>/`
+   on `docs/NNN-slug`, with a numbered `summary.md` (`.pal-harness/templates/test-summary.md`). Read
+   each claim against its source (`testing.md`, **Every claim cites its source**) before reviewers.
+2. Every phase: `unit_test.html`, `test_coverage.html`, `profiling.html`, `summary.md`. Regression:
+   here with the others until the project has staging; once it has staging, regression (and the
+   load test when `load_test: true`) runs on staging after the sign-off PR merges
+   (`.pal-harness/skills/phase/references/staging-test.md`).
+3. A report that does not apply is "n/a" with the reason; one with no tooling is a recorded skip.
+4. Blocking: coverage under 80%; a failing test; an API call's p95 more than 20% slower, or a web
+   page's Lighthouse performance score 5 points or more lower, than the previous code, measured by
+   the paired speed check in `testing.md` (old and new code alternating on this machine, at least 5
+   pairs; the first phase sets the baseline). Fix it, up to 3 rounds, then ask the owner ("needs
+   you"). After each fix, make the reports again on the new final commit.
+5. Under `ci-test-summary` (SKILL.md, **Flow overrides**) make no report files. Once CI is green
+   on the final commit, take its test summary (tests passed and failed, and coverage, per
+   component; the contract drift check) from the run (`gh run view <id> -R <owner/repo>`) and save
+   it as `specs/NNN-slug/reviews/ci-summary-YYYY-MM-DD-HHmm.md`. The tests reviewer checks that
+   summary instead of the report files. Coverage under 80% and a failing test still block.
+6. **Screenshots.** When the phase changed something on screen and the project has its copy of
+   `screens.spec.ts` (`testing.md`, **Screenshots**), run it on the branch head before the reviewers
+   (section 2), and again on the final commit when a fix changed a screen:
+   `SCREENS_DIR=<set>/specs/NNN-slug/screens npx playwright test <e2e folder>/screens.spec.ts`.
+   Commit the PNGs on `docs/NNN-slug`. A failed run is fixed like a failing test. No copy, and no task
+   adding one: a recorded skip in the log and in the sign-off PR.
+
+## 2. The reviewers
+
+Run them in parallel.
+
+1. **Codex** (`pal-review` by the path in the session-start context, Bash timeout 600000 ms, from the
+   set's root, `--repo <component path>` per repo, `--spec specs/NNN-slug` for `--kind code` and `uiux`):
+   `run --kind code` every phase; `run --kind uiux` only when the phase changed something on screen
+   (the spec folder holds `screens/`). **Before each code run**, end spec.md's `## Out of scope` with
+   `### Settled by the owner`: the phase's `doc/decisions.md` entries and older ones the spec cites,
+   one line each, `Decision N: <question> → <answer>`, led by "Decided by the owner
+   (`doc/decisions.md`): not findings unless the code breaks one"; commit and push it first. Exit codes:
+   - 0: the report is printed. Save it as `specs/NNN-slug/reviews/codex-<kind>-YYYY-MM-DD-HHmm.md`;
+     add 1 to `codex.code` or `codex.uiux`.
+   - 3: still running. `pal-review wait <id>` (same Bash timeout) until it ends.
+   - 4: failed. Record it in the log, retry once; failed again → add `<kind>: failed (<reason>)` to
+     `codex.skipped` and go on with a note for the sign-off PR.
+   - 5: skipped. Add `<kind>: skipped (<reason>)` to `codex.skipped`. When the reason says auto
+     review is off, add "turn it on in Pal Center at Projects → <project> → Reviews" to that entry;
+     the sign-off PR's review table and the next owner message carry the same line.
+
+   With Pal Center older than 0.4.0 (the `Pal Center version:` line) it cannot run from the set: add
+   `<kind>: not available (worktree set)` to `codex.skipped`. Never run it from the owner's checkout.
+2. **Claude's reviewers**, each a subagent by its agent name (a type that can't be dispatched:
+   `subagents.md` section 5), given the spec, the plan, the branch list with base `origin/dev`,
+   and, once the reports exist (section 4 step 4), the report folder
+   (under `ci-test-summary`, the CI summary file, saying it replaces `_test_reports/`). Before
+   that, tell `pal-review-tests` "reports not made yet: skip the report checks (3–7)":
+
+   | Agent | When |
+   |---|---|
+   | `pal-review-code` | Every phase |
+   | `pal-review-tests` | Every phase |
+   | `pal-review-errors` | Every phase |
+   | `pal-review-security` | When the phase touches login, user data, payments or credentials, or the spec has a Trust boundaries section |
+   | `pal-review-contract` | When the API or the infrastructure changed |
+   | `pal-review-ui` | When screens changed; give it the `specs/NNN-slug/screens/` folder |
+
+   In a larger build, `pal-review-code` also gets the path of the ledger sdd keeps, to check that each parked
+   finding was carried (`build.md`, section 6, **Deferred minors**).
+3. Each reviewer writes its own report at the absolute path you give it,
+   `<set>/specs/NNN-slug/reviews/<agent>-YYYY-MM-DD-HHmm.md`, and returns a short verdict (one that returned
+   its report unwritten: save the text verbatim there). Then `git status` in every worktree shows no change
+   but the report paths you handed out and the Codex reports you saved; revert anything else and log it.
+
+## 3. Severity
+
+The severity table in `workflow.md` applies to every finding, Codex's and Claude's alike:
+
+- **none:** nothing to do. **minor:** Claude decides: fix it, or dismiss it with a one-line reason.
+- **major** and **critical:** one numbered batch to the owner (an owner stop, `kind: findings`,
+  `reviews/owner-YYYY-MM-DD-HHmm.md` by `.pal-harness/templates/owner-stop.md`), critical first,
+  each with its reason, impact, options with what else each stops or hides, and a recommended one.
+
+Each Codex major or critical carries `precondition:` and `likelihood:`; a sub-second race in a
+command-only tool is never critical (`workflow.md`, severity). A downgrade from major or critical is
+written in the report with the reason, and the owner still sees it. A Codex finding that only re-raises a settled
+decision (the code doesn't break it, and it brings no new fact) is none: `Codex <id>: settled by
+decision N` in Calls I made, never an owner stop; one with a new fact keeps its level and cites it.
+
+## 4. Fix rounds
+
+1. A round fixes every open finding, then re-runs only the reviewers that raised them.
+   - The round is done only when the repo's full lint, typecheck and test commands (`workflow.md`,
+     **Check before every push**) pass in every repo it changed, each read from its own exit code.
+     A single-file or single-package run does not count. Local Go runs set
+     `GOFLAGS=-p=1 GOMEMLIMIT=2GiB` (`testing.md`). Stale language-server diagnostics are ignored
+     when those commands pass (`references/subagents.md`, section 4).
+   - A fix for a bug finding starts with a test that reproduces the bug, run red; a fixer's report
+     without that red run goes back to the fixer, and that counts as a fix round (build.md, section 3).
+   - A contrast fix is measured again with `pal-harness contrast '<foreground>' '<background>'` (or the
+     rendered colours), and the new ratio goes in the fix's log entry. An estimate is not evidence.
+   - A fix changes behaviour the owner sees or reaches only as far as its finding says (`subagents.md`
+     section 1 item 6). A fixer's **New question** joins a coming findings stop, or else becomes a
+     backlog issue with a recommended answer and `Why: a fix needs an owner-facing change`, listed in
+     the sign-off PR's review table; the finding is partly fixed, with that link. The re-check treats
+     owner-facing change beyond the finding as a new finding. A fix that changes what the owner sees
+     re-reads the affected features' test scripts (spec, `doc/features.yaml`) and updates a step that
+     no longer holds in both; the sign-off PR lists it in Calls I made.
+   - After each fix round, the reviewer re-checks the failure path and the retry of what was fixed:
+     the fix fails part-way, then the owner tries again (a failed Stop then Start, a failed restore
+     then a second restore).
+2. This whole-branch review gets 3 rounds; the per-task reviews inside a larger build get 5 rounds.
+3. Still unfixed after the limit → "needs you" with what was tried (`kind: findings`).
+4. After the last code change, make the reports (section 1; under `ci-test-summary`, take the CI
+   summary), so every report comes from the final commit (single-repo: the last commit that changes
+   code; SKILL.md, **Single-repo projects**). Then run `pal-review-tests` on them.
+   A missing, empty or stale report is a finding.
+
+## 5. Leftover findings
+
+Each finding not fixed goes to one place, recorded for the sign-off PR's review table:
+
+1. **Backlog**, only when it is a real bug, or tied to a `need` feature: an issue in the repo that
+   owns it, body starting `Feature: F-012. Why: …`, added to the backlog board.
+2. Otherwise one line in `doc/later.md` on `docs/NNN-slug`:
+   `- YYYY-MM-DD — <finding> (source: <reviewer>, phase NNN)`.
+
+## 6. Merge the component PRs
+
+1. Each `feature/NNN-slug` PR body carries the Codex report summary: the verdict, every major and
+   critical finding with the owner's decision, the minor ones with what Claude did (`workflow.md`).
+2. Each PR into `dev` merges on its own once CI is green and the reviews pass:
+   watch CI in the foreground (`devops_cicd.md`, **Waiting on CI and merging**), then `gh pr merge <n> -R <owner/repo> --merge` (a merge commit, never squash). Do not pass
+   `--delete-branch` from inside a worktree; branches go when the set is removed. A PR whose CI was
+   blocked by the spending limit merges on its green local run instead (`devops_cicd.md`, **CI runs
+   and minutes**); its body links `reviews/local-ci-*.md`.
+3. Single-repo: the code PR `docs/NNN-slug` → `dev` merges here the same way, with the reviews and
+   the reports on it. Keep the branch.
+4. `stage: signoff`. Commit and push `docs/NNN-slug`.
+5. Go to `.pal-harness/skills/phase/references/signoff.md`.

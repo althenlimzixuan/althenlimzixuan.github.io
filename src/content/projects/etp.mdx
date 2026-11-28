@@ -1,19 +1,22 @@
 ---
-title: ETP — Essential Traveller Planner
+title: ETP — Ellovia Trip Planner
 tagline: Turn a group's scattered wishlist into a day-by-day plan that actually works.
-role: Solo — product, API, web, mobile, infrastructure
+role: Solo — product, API, web, mobile, admin, infrastructure
 period: 2026 — present
 stack:
   - Go
   - Gin
   - Wire
   - GORM
-  - PostgreSQL
+  - MySQL
+  - Cloud SQL
   - Redis
   - Next.js
   - React Native
   - Expo
   - TypeScript
+  - Django
+  - Terraform
   - Cloud Run
   - Vercel
 liveUrl: https://etp-web.vercel.app/
@@ -23,9 +26,9 @@ featured: true
 order: 1
 metrics:
   - label: Surfaces shipped
-    value: API, web, mobile
+    value: API, web, mobile, admin
   - label: Delivery phases
-    value: "23"
+    value: "90+"
   - label: Contract
     value: Generated OpenAPI
   - label: State
@@ -45,20 +48,27 @@ ever difficult.
 
 ## What I built
 
-A production system across three surfaces, built solo:
+A production system across four surfaces, built solo:
 
-- **API** — Go with Gin, Wire for dependency injection, GORM over PostgreSQL,
-  Redis where it earns its place. Deployed to Cloud Run.
+- **API** — Go with Gin, Wire for dependency injection, GORM over MySQL on
+  Cloud SQL, Redis where it earns its place. Deployed to Cloud Run.
 - **Web** — Next.js App Router, deployed on Vercel.
 - **Mobile** — React Native on Expo.
+- **Admin** — a Django portal for running the service, and a Next.js
+  dashboard.
 
-All three consume a shared API client — TypeScript, generated from the
-OpenAPI spec and published to GitHub Packages — rather than each hand-writing
-its own fetch layer. That client is infrastructure the surfaces share, not a
-fourth surface in its own right.
+Web, mobile and the admin dashboard consume a shared API client — TypeScript,
+generated from the OpenAPI spec and published to GitHub Packages — rather than
+each hand-writing its own fetch layer. That client is infrastructure the
+surfaces share, not a fifth surface in its own right.
 
-Twenty-three delivery phases shipped. The interesting part is not the stack —
-it is four decisions that shaped everything after them.
+The product has grown well past its first release: auto-plan, which proposes
+an itinerary for the organiser to accept; Tripie, an in-app assistant; receipt
+scanning; daily exchange rates; packing lists; budget against actual spend,
+with export; and records of bookings made elsewhere.
+
+Ninety delivery phases shipped. The interesting part is not the stack — it is
+four decisions that shaped everything after them.
 
 ## Decision 1 — money is never a float
 
@@ -99,7 +109,7 @@ list to drift out of sync.
 
 ## Decision 3 — the contract is generated, not maintained
 
-Three surfaces consume the same API. The failure mode that kills that setup is
+Three clients consume the same API. The failure mode that kills that setup is
 contract drift: the Go handler changes, the spec does not, and the mobile client
 is wrong for two weeks before anyone notices.
 
@@ -147,11 +157,10 @@ A walkthrough will be added here once one is recorded.
 
 - **Travel time is a heuristic**, computed from place coordinates. There is no
   routing provider behind it yet, so it is a heads-up rather than a promise —
-  which is exactly why it warns instead of blocking.
-- **Assisted scheduling is not shipped.** Activities are placed by hand today;
-  preference-aware automatic ordering is designed but not built. That is the core
-  differentiator and it is still ahead.
+  which is exactly why it warns instead of blocking, and auto-plan uses the same
+  estimate.
 - **No public demo.** Everything is behind authentication, which is a real
   barrier to showing the work and is on the backlog.
-- **Bookings do not exist.** Flights, hotels and restaurant reservations are a
-  named placeholder in the domain model, not a shipped feature.
+- **ETP does not book anything.** It records bookings made elsewhere (where
+  each was booked, with a masked confirmation code), but flights, hotels and
+  restaurants are still booked outside it.

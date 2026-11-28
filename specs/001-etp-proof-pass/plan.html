@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>001 — ETP case study proof pass: plan</title>
+<style>
+:root{color-scheme:light dark;--bg:#fff;--fg:#1f2328;--muted:#59636e;--border:#d1d9e0;--code:#f6f8fa;--link:#0969da}
+@media (prefers-color-scheme: dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--border:#3d444d;--code:#151b23;--link:#4493f8}}
+*{box-sizing:border-box}
+body{margin:0;padding:1rem;background:var(--bg);color:var(--fg);font:1rem/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;overflow-wrap:break-word}
+a{color:var(--link)}
+h1,h2,h3{line-height:1.25}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}
+pre{background:var(--code);padding:.75rem;border-radius:6px;overflow-x:auto}
+code{background:var(--code);padding:.1em .3em;border-radius:4px}
+pre code{background:none;padding:0}
+table{display:block;overflow-x:auto;border-collapse:collapse;max-width:100%}
+th,td{border:1px solid var(--border);padding:.35rem .6rem}
+blockquote{margin:1rem 0;padding:0 1rem;border-left:4px solid var(--border);color:var(--muted)}
+figure{margin:1rem 0;overflow-x:auto}
+figure pre.mermaid{background:none;text-align:center}
+figcaption{color:var(--muted);font-size:.9em;text-align:center}
+details{margin:1rem 0;border-top:1px solid var(--border)}
+summary{cursor:pointer;font-weight:600;font-size:1.25rem;padding:.5rem 0}
+img{max-width:100%}
+</style>
+</head>
+<body>
+<h1>001 — ETP case study proof pass: plan</h1>
+<ul>
+<li><strong>Status:</strong> Auto-approved (2026-11-28) — no plan stop</li>
+<li><strong>Spec:</strong> <code>spec.md</code> (approved on 2026-11-28)</li>
+</ul>
+<blockquote>
+<p>Reads in about 8 minutes. There is no plan stop: building starts once Claude's plan review passes.
+Written in plain English for you. Written with the superpowers writing-plans skill, in the
+harness's plan format.</p>
+</blockquote>
+<h2>Summary</h2>
+<ol>
+<li>Three tasks:
+<ul>
+<li><strong>Task 1:</strong> correct every ETP fact in the case study's text, the About section and the
+resume, and put Postgres and MySQL side by side in the skills list and the services section.</li>
+<li><strong>Task 2:</strong> add the admin box to the case study's architecture diagram and rewrite its steps
+(&quot;Three clients consume one definition&quot;, &quot;GORM over MySQL&quot;).</li>
+<li><strong>Task 3:</strong> add the one report command (<code>npm run reports</code>) that the harness asks every phase
+to run. This project does not have one yet.</li>
+</ul>
+</li>
+<li>One repo: <code>althenlimzixuan.github.io</code> (single-repo project; everything on <code>docs/001-etp-proof-pass</code>).</li>
+<li>Risks and choices for you:
+<ul>
+<li>The new &quot;what else shipped&quot; paragraph is written out in Task 1 below, word for word. It names
+features and leaves the AI suppliers out (spec, Calls I made 4).</li>
+<li>The generated client was &quot;not a fourth surface&quot;. With admin it becomes &quot;not a fifth surface&quot;,
+in the case study, the diagram's step 2 and this repo's <code>CLAUDE.md</code>.</li>
+<li>The case study's role line gains &quot;admin&quot;: &quot;Solo — product, API, web, mobile, admin,
+infrastructure&quot;.</li>
+<li>Coverage has no report: the project's recorded exception to the 80% gate (<code>project.yaml</code>
+<code>harness.overrides</code>) covers it.</li>
+</ul>
+</li>
+<li>What you can test at the end: the 8 steps of F-009's test script, on the local preview from <code>staging</code>.</li>
+<li>Build approach: <strong>inline</strong>.</li>
+<li>Reports: unit tests, regression and profiling, plus a numbered summary. Details below.</li>
+</ol>
+<h2>Build approach</h2>
+<p><strong>inline</strong>: 3 tasks, one repo, no API change.</p>
+<h2>Reports</h2>
+<ul>
+<li>Every phase: unit tests (<code>unit_test.html</code>), regression (<code>regression.html</code>: tests, <code>astro check</code>,
+build and the built-CSS check, each with its exit code), profiling (<code>profiling.html</code>: build time
+and the size of each built page) and <code>summary.md</code>. Task 3 makes the command that writes the first
+three.</li>
+<li>Coverage: n/a. The project's recorded exception to the 80% gate (<code>project.yaml</code>
+<code>harness.overrides</code>, design spec section 9) means no coverage tooling is installed.</li>
+<li>Lighthouse speed check: read from CI's Lighthouse step (three runs per page on a clean runner).
+<code>CLAUDE.md</code> records that local Lighthouse timing on this PC is not trustworthy, so the paired
+local speed check is a recorded skip, and CI's scores are compared with the last <code>dev</code> run.</li>
+<li>Load test: no (not asked for in the spec reply).</li>
+</ul>
+<h2>Gate dry-runs</h2>
+<table>
+<thead>
+<tr>
+<th>Gate (task)</th>
+<th>On the current tree</th>
+<th>On a planted bad sample</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tests/facts.test.ts</code>, the <code>absent</code> phrases (Task 1, Task 2)</td>
+<td>Checked with Grep before the review: every <code>absent</code> phrase is in today's files, all real hits (the stale facts); none is in the new sentences this plan writes, so no false hit</td>
+<td>Today's tree is the bad sample: Step 2's failing run, before the edit, is the dry-run, and every <code>present</code> phrase fails there too</td>
+</tr>
+</tbody>
+</table>
+<h2>Deletes and locks</h2>
+<table>
+<thead>
+<tr>
+<th>Delete helper (task)</th>
+<th>What it deletes</th>
+<th>The read-only check first (proves the target is its own)</th>
+<th>Link and junction test cases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Manual cleanup in Task 3 Step 4 (no helper)</td>
+<td>The one folder <code>_test_reports/site/scratch</code> that Step 4's own run wrote</td>
+<td><code>git status --porcelain --untracked-files=all _test_reports/site/scratch</code> lists only untracked <code>unit_test.html</code>, <code>regression.html</code>, <code>profiling.html</code> and <code>vitest.json</code>, and nothing tracked; then <code>rm -r</code> on that exact path, no glob</td>
+<td>n/a: no helper, and the folder is the run's own output</td>
+</tr>
+</tbody>
+</table>
+<p>No callback runs under a lock.</p>
+<h2>Owner-run commands</h2>
+<p>none. Ship is the <code>staging</code> → <code>main</code> PR you merge, which deploys as today.</p>
+<h2>Global constraints</h2>
+<ul>
+<li>Never fabricate: every new sentence states a fact from the spec's Appendix or its question 1
+(the shipped features you approved naming), and nothing more.</li>
+<li>No live-demo link for ETP (<code>livePubliclyBrowsable: false</code> stays).</li>
+<li>The <code>/work/etp/</code> address, the <code>etp</code> file names and <code>src/components/etp/</code> stay (spec, Calls I made 11).</li>
+<li>Diagram labels are words only (API, web, mobile, admin): no project ids, hostnames or client ids.</li>
+<li>Scrolly rules from <code>CLAUDE.md</code>: at most 5 steps, and every figure node claimed by exactly one step.</li>
+<li>Left alone: &quot;three surfaces&quot; on How I build, the hero line and the process diagram (spec, Calls I made 8).</li>
+</ul>
+<h2>Review focus</h2>
+<ol>
+<li><strong>Prose wraps across lines.</strong> The <code>.mdx</code> and <code>.astro</code> text breaks lines mid-sentence, so a phrase
+check must collapse whitespace first, or a correct sentence fails and a wrong one slips by. The
+facts test in Task 1 normalises whitespace, and its fixture has one phrase that spans a line break.</li>
+<li><strong>A stale claim left in a second place.</strong> Each wrong fact appears in several files (the database
+in the case study's front matter, its text and the diagram's step 1). The <code>absent</code> list names
+every file each stale phrase is in today (found with Grep), not only the first one.</li>
+<li><strong>The diagram on a phone.</strong> A third box must fit the 240-wide drawing without overlapping the
+dashed &quot;gaps&quot; box. Task 2 has a render check at phone width.</li>
+<li><strong>The reports command on a failed step.</strong> A failing test or build must still write its report
+and end with a non-zero exit code, not stop before writing. Task 3's test
+<code>still writes reports and returns 1 when a command fails</code> covers it.</li>
+<li><strong>A report folder outside <code>_test_reports/</code>.</strong> A path like <code>_test_reports/../x</code> must be refused
+after it is resolved, not by a prefix match on the text. Task 3's test
+<code>refuses an out dir outside _test_reports</code> covers it.</li>
+</ol>
+<hr>
+<h3>Task 1: Correct the ETP facts in the text</h3>
+<p><strong>Repo:</strong> <code>althenlimzixuan.github.io</code></p>
+<p><strong>Files:</strong></p>
+<ul>
+<li>Create: <code>tests/helpers/loadFixture.ts</code>, <code>tests/unit_test/etp_facts.json</code>, <code>tests/facts.test.ts</code></li>
+<li>Modify: <code>src/content/projects/etp.mdx</code>, <code>src/components/About.astro:19-21</code>,
+<code>src/pages/resume.astro:27-44</code>, <code>src/components/SkillsMatrix.astro:5</code>, <code>src/data/services.yaml:9</code></li>
+<li>Read only (by the facts test): <code>src/pages/work/[...slug].astro</code>, <code>src/components/FeaturedProject.astro</code></li>
+</ul>
+<p><strong>Interfaces:</strong></p>
+<ul>
+<li>
+<p>Produces: <code>loadFixture&lt;T&gt;(relativePath: string): T</code> in <code>tests/helpers/loadFixture.ts</code>, reading a
+JSON file relative to the repo root, which it finds from its own location
+(<code>new URL('../../', import.meta.url)</code>), never from <code>process.cwd()</code>. Also <code>readRepoFile(relativePath: string): string</code>
+beside it, the same way, for the facts test. Task 2 and Task 3 use them.</p>
+</li>
+<li>
+<p>Produces: the fixture shape <code>{description, input: {}, expected: {present: [{file, text}], absent: [{file, text}]}}</code>.</p>
+</li>
+<li>
+<p><input disabled="" type="checkbox"> <strong>Step 1: Write the fixture and the failing test.</strong> <code>tests/unit_test/etp_facts.json</code>:</p>
+<ul>
+<li><code>present</code> (each in the file named): <code>etp.mdx</code>: <code>value: API, web, mobile, admin</code>,
+<code>value: &quot;90+&quot;</code>, <code>- MySQL</code>, <code>- Cloud SQL</code>, <code>- Terraform</code>, <code>- Django</code>, <code>GORM over MySQL</code>,
+<code>A production system across four surfaces</code>, <code>auto-plan</code>, <code>Tripie</code>, <code>receipt scanning</code>,
+<code>Three clients consume the same API</code>, <code>not a fifth surface</code>,
+<code>Ninety delivery phases shipped</code>, <code>does not book anything</code>,
+<code>auto-plan uses the same estimate</code>;
+<code>About.astro</code>: <code>one person, four surfaces</code>; <code>resume.astro</code>: <code>90+ delivery phases shipped</code>,
+<code>four surfaces</code>, <code>a React Native client and an admin dashboard</code>, <code>href=&quot;/work/etp/&quot;</code>;
+<code>SkillsMatrix.astro</code>:
+<code>'PostgreSQL', 'MySQL'</code>; <code>services.yaml</code>: <code>PostgreSQL or MySQL schema and migrations</code>.</li>
+<li><code>absent</code> (every file each phrase is in today): <code>PostgreSQL</code> in <code>etp.mdx</code>; <code>Twenty-three</code>
+and <code>value: &quot;23&quot;</code> in <code>etp.mdx</code>; <code>Assisted scheduling is not shipped</code> and
+<code>Bookings do not exist</code> in <code>etp.mdx</code>; <code>fourth surface</code> in <code>etp.mdx</code>;
+<code>Three surfaces consume</code> and <code>All three consume</code> in <code>etp.mdx</code>; <code>three surfaces</code> in
+<code>About.astro</code> and <code>resume.astro</code>; <code>23 delivery phases</code> in <code>resume.astro</code>; <code>Postgres schema</code> in
+<code>services.yaml</code>. (<code>src/data/etp.ts</code> and <code>CLAUDE.md</code> phrases are Task 2's.)</li>
+<li>Test step 7 (the address): the fixture's <code>present</code> list also holds
+<code>entry.id === 'etp'</code> in <code>src/pages/work/[...slug].astro</code> and <code>href={`/work/${id}/`}</code> in
+<code>src/components/FeaturedProject.astro</code>. The step itself is also run by hand on the preview.</li>
+<li><code>tests/facts.test.ts</code>: <code>describe('ETP facts')</code> with one <code>it.each</code> over <code>present</code>
+(<code>'states &quot;$text&quot; in $file'</code>) and one over <code>absent</code> (<code>'no longer states &quot;$text&quot; in $file'</code>).
+Each reads the file and collapses every run of whitespace to one space before
+<code>toContain</code> / <code>not.toContain</code>.</li>
+</ul>
+</li>
+<li>
+<p><input disabled="" type="checkbox"> <strong>Step 2: Run it and see it fail.</strong> <code>npx vitest run tests/facts.test.ts</code>. Expected: FAIL, with
+the failing test names in the output (for example <code>states &quot;value: \&quot;90+\&quot;&quot; in src/content/projects/etp.mdx</code>).
+Paste the failing names into the log.</p>
+</li>
+<li>
+<p><input disabled="" type="checkbox"> <strong>Step 3: Make it pass.</strong> Edit the five files:</p>
+<ul>
+<li><code>etp.mdx</code> front matter: role <code>Solo — product, API, web, mobile, admin, infrastructure</code>; stack
+<code>Go, Gin, Wire, GORM, MySQL, Cloud SQL, Redis, Next.js, React Native, Expo, TypeScript, Django, Terraform, Cloud Run, Vercel</code>; metrics <code>API, web, mobile, admin</code> and <code>&quot;90+&quot;</code>.</li>
+<li>&quot;What I built&quot;: &quot;A production system across four surfaces, built solo&quot;; the API bullet says
+&quot;GORM over MySQL on Cloud SQL&quot;; add <strong>Admin</strong>: &quot;a Django portal for running the service, and a
+Next.js dashboard&quot;; &quot;Web, mobile and the admin dashboard consume a shared API client …&quot;;
+&quot;… not a fifth surface in its own right.&quot;; &quot;Ninety delivery phases shipped.&quot; (exactly 90
+shipped on 25 Nov: 008 to 097; &quot;more than ninety&quot; would not be true)</li>
+<li>The new paragraph after it, word for word (each item is a row or a named feature in the
+spec's Appendix and question 1, nothing more): &quot;The product has grown well past its first
+release: auto-plan, which proposes an itinerary for the organiser to accept; Tripie, an in-app
+assistant; receipt scanning; daily exchange rates; packing lists; budget against actual spend,
+with export; and records of bookings made elsewhere.&quot;</li>
+<li>Decision 3: &quot;Three clients consume the same API.&quot;</li>
+<li>Honest limitations: remove the assisted-scheduling item; the travel-time item ends &quot;…, and
+auto-plan uses the same estimate.&quot;; the bookings item becomes &quot;<strong>ETP does not book anything.</strong>
+It records bookings made elsewhere (where each was booked, with a masked confirmation code),
+but flights, hotels and restaurants are still booked outside it.&quot;</li>
+<li><code>About.astro</code>: &quot;one person, four surfaces, shipped and running in production.&quot;</li>
+<li><code>resume.astro</code>: &quot;Sole engineer across four surfaces (API, web, mobile and admin) and the
+infrastructure. … a generated OpenAPI contract shared by three clients. 90+ delivery phases
+shipped; live in production.&quot; The Profile paragraph (lines 27-31) becomes &quot;a Go API on Cloud
+Run, a Next.js web app, a React Native client and an admin dashboard, all consuming one
+generated API contract&quot;, so it agrees with the four-surface sentence below it.</li>
+<li><code>SkillsMatrix.astro</code>: <code>'PostgreSQL', 'MySQL'</code>. <code>services.yaml</code>: &quot;PostgreSQL or MySQL schema and
+migrations, Redis where it earns its place&quot;.</li>
+</ul>
+</li>
+<li>
+<p><input disabled="" type="checkbox"> <strong>Step 4: Prove it.</strong> <code>npx vitest run tests/facts.test.ts</code> → PASS. <code>npm test</code> → all pass.
+<code>npm run check</code> → 0 errors. (This repo has no lint script; <code>astro check</code> is its type and content check.)</p>
+</li>
+<li>
+<p><input disabled="" type="checkbox"> <strong>Step 5: Commit.</strong> <code>Correct ETP facts on the case study, About and resume</code>.</p>
+</li>
+</ul>
+<h3>Task 2: Add admin to the architecture diagram</h3>
+<p><strong>Repo:</strong> <code>althenlimzixuan.github.io</code></p>
+<p><strong>Files:</strong></p>
+<ul>
+<li>Create: <code>tests/unit_test/etp_architecture.json</code></li>
+<li>Modify: <code>tests/scrolly.test.ts</code>, <code>tests/unit_test/etp_facts.json</code> (Task 2's <code>absent</code> rows),
+<code>src/data/etp.ts</code>, <code>src/components/etp/SurfaceDiagram.astro</code>,
+<code>CLAUDE.md</code> (the &quot;not as a third surface&quot; line and the &quot;not a fourth surface&quot; quote, under Visual design)</li>
+</ul>
+<p><strong>Existing behaviour</strong> (the figure is re-laid-out; each item keeps working, with what covers it):</p>
+<table>
+<thead>
+<tr>
+<th>Today</th>
+<th>Covered by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4 steps, under the cap of 5</td>
+<td><code>stays within the tier CSS step cap</code> (existing)</td>
+</tr>
+<tr>
+<td>Every node lights with exactly one step</td>
+<td><code>claims every figure node exactly once</code> (existing)</td>
+</tr>
+<tr>
+<td><code>api</code>, <code>contract</code> and <code>gaps</code> boxes keep their place (x 40/30/178, y 20/86/86)</td>
+<td>new test <code>keeps the api, contract and gaps boxes where they were</code>, reading the node list from the fixture against an exported <code>SURFACE_LAYOUT</code> (see Step 3)</td>
+</tr>
+<tr>
+<td>The <code>gaps</code> box and its edge stay dashed in every tier</td>
+<td>render check, line 2</td>
+</tr>
+<tr>
+<td>The figure stays hidden from screen readers (<code>role=&quot;presentation&quot;</code>, <code>aria-hidden=&quot;true&quot;</code>)</td>
+<td>facts fixture <code>present</code>: <code>aria-hidden=&quot;true&quot;</code> in <code>SurfaceDiagram.astro</code></td>
+</tr>
+<tr>
+<td>The reduced-motion rule (no transition) stays</td>
+<td>facts fixture <code>present</code>: <code>prefers-reduced-motion: reduce</code> in <code>SurfaceDiagram.astro</code></td>
+</tr>
+<tr>
+<td>Web and mobile still light at step 3</td>
+<td>render check, line 3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interfaces:</strong></p>
+<ul>
+<li>
+<p>Consumes: <code>loadFixture</code> from Task 1.</p>
+</li>
+<li>
+<p>Produces: <code>SURFACE_NODE_IDS</code> gains <code>'admin'</code> (order: <code>api, contract, web, mobile, admin, gaps</code>).</p>
+</li>
+<li>
+<p><input disabled="" type="checkbox"> <strong>Step 1: Write the fixture and the failing test.</strong> <code>etp_architecture.json</code> <code>expected</code>:
+<code>{clients: {heading: &quot;Three clients consume one definition&quot;, nodes: [&quot;web&quot;, &quot;mobile&quot;, &quot;admin&quot;]}, api: {bodyContains: &quot;GORM over MySQL&quot;}, contract: {bodyContains: &quot;not a fifth surface&quot;}}</code>. In
+<code>tests/scrolly.test.ts</code> add <code>describe('etp architecture copy')</code> with three tests:
+<code>lights web, mobile and admin in the clients step</code>, <code>names MySQL in the API step</code> and
+<code>calls the client shared infrastructure, not a fifth surface</code>, each reading the fixture, plus
+<code>keeps the api, contract and gaps boxes where they were</code> (fixture <code>expected.layout</code>:
+<code>{api: {x: 40, y: 20}, contract: {x: 30, y: 86}, gaps: {x: 178, y: 86}}</code>). Add to
+<code>etp_facts.json</code> <code>absent</code>: <code>PostgreSQL</code>, <code>fourth surface</code> and <code>Two clients consume</code> in
+<code>src/data/etp.ts</code>; <code>fourth surface</code> and <code>third surface</code> in <code>CLAUDE.md</code> and
+<code>SurfaceDiagram.astro</code>; and to <code>present</code>: <code>aria-hidden=&quot;true&quot;</code> and
+<code>prefers-reduced-motion: reduce</code> in <code>SurfaceDiagram.astro</code> (the Existing behaviour rows).</p>
+</li>
+<li>
+<p><input disabled="" type="checkbox"> <strong>Step 2: Run it and see it fail.</strong> <code>npx vitest run tests/scrolly.test.ts tests/facts.test.ts</code>.
+Expected: FAIL on the four new scrolly tests and Task 2's new <code>absent</code> rows (names in the log).
+The existing per-module tests and Task 1's rows still pass.</p>
+</li>
+<li>
+<p><input disabled="" type="checkbox"> <strong>Step 3: Make it pass.</strong></p>
+<ul>
+<li><code>src/data/etp.ts</code>: add <code>'admin'</code> to <code>SURFACE_NODE_IDS</code>. Step 1 body: &quot;GORM over MySQL on
+Cloud SQL&quot;. Step 2 body ends &quot;not a fifth surface&quot;. Step 3 heading &quot;Three clients consume one
+definition&quot;, nodes <code>['web', 'mobile', 'admin']</code>, body: &quot;Next.js on Vercel, React Native on Expo,
+and the admin dashboard. None hand-writes a fetch layer, so none can be wrong about the shape of
+a response; they did not write it down independently.&quot; Update the header comment (&quot;fifth surface&quot;).</li>
+<li>Move the node list out of <code>SurfaceDiagram.astro</code> into <code>src/data/etp.ts</code> as
+<code>export const SURFACE_LAYOUT: readonly {id: SurfaceNodeId; x: number; y: number; w: number; label: string}[]</code>
+(one home, and testable); the component imports it. Nodes: <code>api</code>, <code>contract</code>, <code>gaps</code> as
+today; <code>web</code> x 10, <code>mobile</code> x 90, <code>admin</code> x 170, each w 60, y 170, label <code>admin</code>.</li>
+<li><code>SurfaceDiagram.astro</code> edges, full strings: web <code>M95 120 V150 M40 150 H200 M40 150 V170</code>;
+mobile <code>M120 150 V170</code>; admin <code>M200 150 V170</code> with <code>data-step={stepOf.admin}</code>. The header
+comment says &quot;three consuming clients&quot; and &quot;not an extra surface alongside them&quot;.</li>
+<li><code>CLAUDE.md</code>: &quot;not as a third surface&quot; becomes &quot;not as an extra surface&quot;, and the quote becomes
+&quot;not a fifth surface in its own right&quot;.</li>
+</ul>
+</li>
+<li>
+<p><input disabled="" type="checkbox"> <strong>Step 4: Prove it.</strong> <code>npm test</code> → all pass, including <code>claims every figure node exactly once</code>
+for <code>etp</code>. <code>npm run check</code> → 0 errors. <code>npm run build</code> → exit 0; <code>npm run verify:css</code> → exit 0.</p>
+</li>
+<li>
+<p><input disabled="" type="checkbox"> <strong>Render check:</strong> <code>npm run preview</code>, open <code>/work/etp/</code> at 390 px and 1280 px wide, scroll to
+step 3. One screenshot each, saved to <code>specs/001-etp-proof-pass/reviews/screens/</code>. Look for:
+(1) three boxes in a row, none overlapping &quot;gaps&quot;; (2) &quot;gaps&quot; and its edge still dashed;
+(3) web, mobile and admin lit together. <code>screens.spec.ts</code> (<code>testing.md</code>, Screenshots): recorded
+skip, since the repo has no Playwright; this manual check stands in, and the gap goes in the retro.</p>
+</li>
+<li>
+<p><input disabled="" type="checkbox"> <strong>Step 5: Commit.</strong> <code>Add admin to the ETP architecture diagram</code>.</p>
+</li>
+</ul>
+<h3>Task 3: Add the report command</h3>
+<p><strong>Repo:</strong> <code>althenlimzixuan.github.io</code></p>
+<p><strong>Files:</strong></p>
+<ul>
+<li>Create: <code>scripts/reports.mjs</code>, <code>scripts/report-lib.mjs</code>, <code>tests/reports.test.ts</code>,
+<code>tests/unit_test/vitest_summary.json</code></li>
+<li>Modify: <code>package.json</code> (script <code>&quot;reports&quot;: &quot;node scripts/reports.mjs&quot;</code>)</li>
+</ul>
+<p><strong>Interfaces:</strong></p>
+<ul>
+<li>Consumes: <code>loadFixture</code> from Task 1.</li>
+<li>Produces, in <code>scripts/report-lib.mjs</code>:
+<ul>
+<li><code>summariseVitest(json: object): {passed: number, failed: number, files: {name: string, passed: number, failed: number}[]}</code>;</li>
+<li><code>renderTable(title: string, headers: string[], rows: string[][]): string</code> (a whole HTML page,
+every cell HTML-escaped);</li>
+<li><code>resolveOutDir(outDir: string, repoRoot: string): string</code>: resolves the path, throws unless
+the result is inside <code>&lt;repoRoot&gt;/_test_reports/</code>;</li>
+<li><code>runReports({outDir, repoRoot, run, writeFile, listPages}): number</code>: runs the four commands
+through the injected <code>run(command: string): {status: number | null, ms: number}</code>, writes the
+three pages through <code>writeFile</code>, and returns 1 if any status is not 0, else 0.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Values from data:</strong> command string (the script's own constant, string); exit code
+(<code>spawnSync().status</code>, number, or <code>null</code> when killed, shown as &quot;killed&quot;); duration
+(<code>performance.now()</code> difference, number, shown in seconds); page path (each <code>dist/**/*.html</code> path,
+string); page size (<code>fs.statSync().size</code>, number, shown in KB); Vitest fields
+(<code>testResults[].name</code>, string; <code>testResults[].assertionResults[].status</code>, string <code>passed</code> or <code>failed</code>).</p>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Step 1: Write the fixture and the failing test.</strong> <code>vitest_summary.json</code>: <code>input.vitest</code> is
+a trimmed real <code>vitest --reporter=json</code> output (captured from this repo's own run) with one file
+passing 2 tests and one failing 1 of 2; <code>input.runs</code> maps the four commands to statuses
+<code>[0, 0, 1, 0]</code>; <code>expected</code> is <code>{passed: 3, failed: 1}</code>, the two file rows, and <code>exitCode: 1</code>.
+<code>tests/reports.test.ts</code>: <code>summarises passed and failed tests per file</code>,
+<code>escapes HTML in table cells</code> (<code>renderTable</code> with a cell <code>&lt;b&gt;&amp;&lt;/b&gt;</code> contains
+<code>&amp;lt;b&amp;gt;&amp;amp;&amp;lt;/b&amp;gt;</code>), <code>still writes reports and returns 1 when a command fails</code>
+(<code>runReports</code> with a fake <code>run</code> from <code>input.runs</code>: three pages written, returns 1), and
+<code>refuses an out dir outside _test_reports</code> (<code>resolveOutDir('_test_reports/../x', root)</code> throws).</li>
+<li><input disabled="" type="checkbox"> <strong>Step 2: Run it and see it fail.</strong> <code>npx vitest run tests/reports.test.ts</code> → FAIL (module not
+found); test names in the log.</li>
+<li><input disabled="" type="checkbox"> <strong>Step 3: Make it pass.</strong> <code>report-lib.mjs</code> implements the four functions. <code>reports.mjs &lt;out dir&gt;</code>:
+<ol>
+<li>Preflight, failing in seconds with a one-line fix: Node at least 22.12.0 (&quot;install Node
+22.12 or later&quot;), <code>node_modules</code> present (&quot;run npm ci&quot;).</li>
+<li>Runs, one after another, each through <code>child_process.spawnSync</code> with <code>shell: true</code> (Windows
+refuses <code>.cmd</code> files without it; the command strings are the script's own constants, no user
+input) and its exit code kept:
+<code>npx vitest run --reporter=json --outputFile=&lt;out&gt;/vitest.json</code>, <code>npm run check</code>,
+<code>npm run build</code> (timed), <code>npm run verify:css</code>.</li>
+<li>Writes <code>unit_test.html</code> (from <code>summariseVitest</code>), <code>regression.html</code> (each command, its exit
+code and its duration) and <code>profiling.html</code> (build seconds, and each <code>dist/**/*.html</code> page's
+size in KB with the CSS it links or inlines), then exits 1 if any command failed, else 0.
+The out dir goes through <code>resolveOutDir</code> first; <code>reports.mjs</code> is only the thin wiring of
+<code>runReports</code> to the real <code>spawnSync</code>, <code>fs</code> and <code>dist/</code> listing.</li>
+</ol>
+</li>
+<li><input disabled="" type="checkbox"> <strong>Step 4: Prove it.</strong> <code>npm test</code> → all pass. <code>npm run check</code> → 0 errors.
+<code>npm run reports -- _test_reports/site/scratch</code> → exit 0 and three HTML files. Then the
+read-only check in <strong>Deletes and locks</strong>, and only then delete that exact folder.</li>
+<li><input disabled="" type="checkbox"> <strong>Step 5: Commit.</strong> <code>Add the npm run reports command</code>.</li>
+</ul>
+<h2>Coverage of the spec</h2>
+<table>
+<thead>
+<tr>
+<th>Spec item</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Test step 1 (facts strip)</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Test step 2 (stack list)</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Test step 3 (What I built, the new paragraph, no &quot;not built&quot; claims)</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Test step 4 (architecture walkthrough)</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Test step 5 (Honest limitations)</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Test step 6 (About and Resume)</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Test step 7 (address unchanged)</td>
+<td>1 (fixture checks the route and the featured card's link; also run by hand on the preview)</td>
+</tr>
+<tr>
+<td>Test step 8 (Skills and services, Postgres and MySQL)</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Calls I made 1–7, 11</td>
+<td>1 and 2</td>
+</tr>
+<tr>
+<td>Calls I made 8 (left alone)</td>
+<td>Global constraints</td>
+</tr>
+<tr>
+<td>Calls I made 9 (diagram labels only)</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Appendix: every fact row</td>
+<td>1 and 2</td>
+</tr>
+<tr>
+<td>Reports the harness asks for</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

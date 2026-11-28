@@ -1,0 +1,112 @@
+- id: F-001
+  name: Landing page
+  label: need
+  why: A technical stranger on `/` sees what the owner builds and how to get in touch.
+  use_case: Open `/` and read down from the hero to the closing call to action.
+  status: passed
+  phase: ""
+  test_script:
+    - {step: 1, do: "Open /", expect: "The hero shows the owner's name, role and a call-to-action button"}
+    - {step: 2, do: "Scroll down the page", expect: "Services, the featured ETP project, the process walkthrough, About and the closing call to action follow in that order, joined by the thread on the left"}
+    - {step: 3, do: "Scroll through the process walkthrough", expect: "Each step lights up its part of the pipeline diagram"}
+    - {step: 4, do: "Open / with JavaScript turned off", expect: "Every section is readable; the walkthrough stays on step one"}
+  results: []
+- id: F-002
+  name: ETP case study
+  label: need
+  why: Shows a real production product in depth while its repos stay private.
+  use_case: Open the ETP case study from the landing page and read how it was built.
+  status: passed
+  phase: ""
+  test_script:
+    - {step: 1, do: "On /, open the featured ETP project", expect: "/work/etp/ opens with the case study"}
+    - {step: 2, do: "Scroll through the architecture walkthrough", expect: "Each step lights up its part of the surface diagram"}
+    - {step: 3, do: "Look for a live-demo link", expect: "There is none, because ETP sits behind a sign-in"}
+  results: []
+- id: F-003
+  name: How I build
+  label: need
+  why: The owner's delivery pipeline is real and sets them apart, and needs no new build to show.
+  use_case: Open /how-i-build/ and read the delivery-pipeline exhibit.
+  status: passed
+  phase: ""
+  test_script:
+    - {step: 1, do: "Open /how-i-build/", expect: "The delivery-pipeline page opens with its sections"}
+    - {step: 2, do: "Follow each link on the page", expect: "None is broken"}
+  results: []
+- id: F-004
+  name: Resume page
+  label: need
+  why: Employers and clients need a current, presentable resume.
+  use_case: Open /resume/ and read it, or print it.
+  status: passed
+  phase: ""
+  test_script:
+    - {step: 1, do: "Open /resume/", expect: "The resume page opens"}
+    - {step: 2, do: "Check the employment timeline", expect: "It is hidden while src/data/experience.yaml is empty, with no empty heading left behind"}
+  results: []
+- id: F-005
+  name: Get in touch by email
+  label: need
+  why: A static site has no form backend; every call to action must still reach the owner.
+  use_case: Click any call to action and write to the owner.
+  status: passed
+  phase: ""
+  test_script:
+    - {step: 1, do: "On /, click the hero's call to action", expect: "It reads 'Get in touch' and opens an email to the owner"}
+    - {step: 2, do: "Click the closing call to action", expect: "It opens the same email"}
+  results: []
+- id: F-006
+  name: Not-found page
+  label: need
+  why: A wrong link should still lead somewhere useful.
+  use_case: Open a page that does not exist.
+  status: passed
+  phase: ""
+  test_script:
+    - {step: 1, do: "Open /no-such-page/", expect: "The site's 404 page shows, styled, with a way back to /"}
+  results: []
+- id: F-007
+  name: Book a call
+  label: might
+  why: Booking converts better than email (design D6), once the owner has a Cal.com link.
+  use_case: Click a call to action and book a slot.
+  status: todo
+  phase: ""
+  test_script: []
+  results: []
+- id: F-008
+  name: Employment history
+  label: need
+  why: The resume is incomplete without it; it ships empty because nothing may be made up.
+  use_case: Read the owner's past roles on /resume/.
+  status: todo
+  phase: ""
+  test_script: []
+  results: []
+- id: F-009
+  name: ETP case study proof pass
+  label: need
+  why: The ETP case study is the site's main proof of work, and three months of drift left it naming the wrong database, undercounting phases and calling a shipped feature unbuilt.
+  use_case: A prospect reads /work/etp/ and every fact on it matches what ETP actually runs today.
+  status: code-review
+  phase: "001"
+  test_script:
+    - {step: 1, do: "Open /work/etp/ and read the facts strip under the title.", expect: "Surfaces shipped reads \"API, web, mobile, admin\" and Delivery phases reads \"90+\"."}
+    - {step: 2, do: "Read the stack list on the same page.", expect: "MySQL, Cloud SQL, Terraform and Django are listed; PostgreSQL is not."}
+    - {step: 3, do: "Read \"What I built\".", expect: "Four surfaces, the admin one included; a short paragraph names auto-plan, the assistant, receipt scanning and the other shipped features; no sentence says auto-plan or bookings do not exist."}
+    - {step: 4, do: "Scroll through the architecture walkthrough.", expect: "The API step says \"GORM over MySQL\"; step 3 reads \"Three clients consume one definition\", and its diagram lights up three boxes: web, mobile and admin."}
+    - {step: 5, do: "Read \"Honest limitations\".", expect: "Travel time and \"no public demo\" are still there; bookings say ETP records them but does not book; there is no \"assisted scheduling is not shipped\" line."}
+    - {step: 6, do: "On /, read the About section; then open /resume/ and read Selected work.", expect: "About says four surfaces; the resume says \"90+ delivery phases\" and four surfaces."}
+    - {step: 7, do: "Check the case study's address.", expect: "It is still /work/etp/, and the landing page's featured project still opens it."}
+    - {step: 8, do: "On /resume/, read the Skills list; then on /, open the \"Backend APIs in Go\" service.", expect: "Both list PostgreSQL and MySQL side by side (by design: Ellovia Vault runs on Postgres, ETP on MySQL)."}
+  results: []
+- id: F-010
+  name: Links to the live Ellovia products
+  label: need
+  why: A prospect who can open the real product, its website or its Play Store page trusts the case study more than one who can only read about it.
+  use_case: A prospect on the site follows a link to the Ellovia Trip or Ellovia Vault website or Play Store page.
+  status: todo
+  phase: ""
+  test_script: []
+  results: []

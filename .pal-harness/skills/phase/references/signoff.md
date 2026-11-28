@@ -1,0 +1,95 @@
+# Stage: sign-off (`signoff`)
+
+One sign-off PR per phase, in the SSOT repo, `dev → staging`, titled `[HUMAN GATE]`. Merging it is
+the owner's approval for the whole phase. Only the owner merges it. Under `auto-promote` (SKILL.md,
+**Flow overrides**) it has no `[HUMAN GATE]` prefix and merges on its own once CI and the reviews
+pass (section 4).
+
+## 1. Before opening it
+
+1. **One staging at a time.** Read the `phase-state.yaml` of every other live phase of this project
+   (`origin/docs/[0-9]*` branches). Under `uat-queue`, up to 3 phases may sit merged on `staging`
+   at once: pause only when 3 are already there (in `staging-test` or `shipping`), or when one is in
+   `shipping` (its promotion has started). Otherwise one in `staging-test` or `shipping` holds
+   staging, so pause:
+   1. Set `waiting_on_owner` to `{kind: staging-test, since: <now>, link: <that phase's test link
+      from its waiting_on_owner>, questions: 0}`, add a note `waiting for phase MMM's staging
+      test`, write a log entry, commit and push.
+   2. Tell the owner in the session; do not poll. `/pm`'s start-of-session note shows the wait.
+   3. The owner (or a later session) continues with `/phase resume NNN` once phase MMM is `done`;
+      the resume clears `waiting_on_owner` and starts this section again.
+2. Check: every component PR is merged into `dev`; the reports come from the final commits and pass
+   (or are recorded "n/a" or skips); no major or critical finding is open; regression passed (until
+   the project has staging).
+
+## 2. Bring `docs/NNN-slug` into `dev`
+
+1. The branch carries the spec, the plan, the reviews, the reports, `doc/features.yaml` statuses,
+   `doc/decisions.md`, `doc/later.md` and `phase-state.yaml` (`stage: signoff`).
+2. Single-repo: skip this section; the code PR already brought the branch into `dev` (SKILL.md,
+   **Single-repo projects**). Otherwise open its PR into `dev` just before the sign-off PR. It
+   merges on its own once CI is green, with a merge commit so the same branch can PR again at ship: watch CI in the foreground (`devops_cicd.md`, **Waiting on CI and merging**), then
+   `gh pr merge <n> -R <owner/repo> --merge` (CI blocked by the spending limit: on the green local run,
+   `devops_cicd.md`, **CI runs and minutes**). Keep the branch: Pal Center reads `phase-state.yaml` from it, and the
+   close-out PR at ship comes from it.
+
+## 3. Write the sign-off PR
+
+Fill `.pal-harness/templates/signoff-pr.md` (the template's first line is the title), sized for a
+10-minute read:
+
+1. **Summary**, numbered: what was built, which features, which of the owner's answers shaped it
+   (from `doc/decisions.md`), the review and test verdict in one line, what the owner does next,
+   and the link to `specs/NNN-slug/plan.md`.
+2. **Calls I made:** from the spec and the build.
+3. **Review results:** one row per reviewer and per Codex kind: found, fixed, left over and where it
+   went (an issue link or `doc/later.md`). Recorded Codex skips go here; one skipped because auto
+   review is off adds "turn it on in Pal Center at Projects → <project> → Reviews".
+4. **Test reports:** counts, coverage and speed changes, each with its link under `_test_reports/`
+   on `dev`. Under `ci-test-summary`, the test summary from the final commit's CI run replaces the
+   links: tests passed and failed and coverage per component, the contract drift check, the run's
+   link.
+5. **Screens:** when the review stage took screenshots (`references/review.md`, section 1), each
+   page's light and dark PNG at the default width, as images from `docs/NNN-slug`
+   (`https://github.com/<owner>/<repo>/blob/docs/NNN-slug/specs/NNN-slug/screens/<file>?raw=true`),
+   and a link to the folder for the rest. A recorded skip is one line. Delete the section when no
+   screen changed.
+6. **When you merge:** what happens next (staging, regression, the load test if asked, "ready for
+   your test"). Under `auto-promote` the PR merges on its own once CI passes; under
+   `no-owner-test` there is no test: say what ships next and point to the What to expect now list.
+7. **Your test scripts:** the UAT list, one link per feature to its test script in `spec.md` (under
+   `no-owner-test`, its What to expect now list, with nothing to run). The session's final message
+   points to the same list.
+
+## 4. Open it and wait
+
+1. Write the body to a file, then in the SSOT repo:
+   `gh pr create -R <owner/repo> --base staging --head dev --title "[HUMAN GATE] Phase NNN — <Title>" --body-file <file>`.
+   Under `auto-promote`, drop the `[HUMAN GATE] ` prefix.
+2. Never merge it yourself and never turn on auto-merge for it.
+3. Owner stop (SKILL.md, **Owner stops**): `waiting_on_owner` with `kind: signoff` and the PR URL as
+   the link. Push `docs/NNN-slug`. PushNotification: "needs you: sign-off for phase NNN — <PR URL>,
+   about 10 minutes. Reply 'merged' when done."
+4. On any reply, read the PR: `gh pr view <n> -R <owner/repo> --json state,mergedAt`.
+   - Changes asked: fix them on the branch they belong to (a component fix by the usual PR into
+     `dev`; a docs fix on `docs/NNN-slug`, merged into `dev` the same way), update the PR body and
+     notify again.
+   - Merged: go on.
+
+Under `auto-promote`, steps 2–4 do not apply: watch CI in the foreground (`devops_cicd.md`, **Waiting on CI and merging**), merge with
+`gh pr merge <n> -R <owner/repo> --merge`, and go to section 5.
+
+## 5. After the owner merges (or, under `auto-promote`, after the merge)
+
+1. `gates.signoff_merged` the date; clear `waiting_on_owner`; commit and push.
+2. Promote each component repo the phase touched, `dev → staging`, yourself: open
+   `gh pr create -R <owner/repo> --base staging --head dev --title "Promote dev to staging (phase NNN)"`,
+   wait on CI and merge with a merge commit (`devops_cicd.md`, **Waiting on CI and merging**; `gh pr merge <n> -R <owner/repo> --merge`). These PRs
+   carry no `[HUMAN GATE]`: the owner's merge above approved them. Single-repo: there are none.
+3. **QA pass.** When `project.yaml` sets `harness.qa_command`, run `references/qa.md` now
+   (`.pal-harness/skills/phase/references/qa.md`), before the staging test or, under
+   `no-owner-test`, before ship. Unset: skip it.
+4. `stage: staging-test`. Commit and push; compact (SKILL.md, **Owner stops** step 6).
+   Under `no-owner-test`: `stage: shipping` instead (`gates.staging_test_done` stays `null`).
+5. Go to `.pal-harness/skills/phase/references/staging-test.md` (under `no-owner-test`,
+   `.pal-harness/skills/phase/references/ship.md`).
