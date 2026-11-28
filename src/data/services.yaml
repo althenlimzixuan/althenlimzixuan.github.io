@@ -6,7 +6,7 @@
     - Gin, GORM and Wire, structured the way a team can extend without a rewrite
     - OpenAPI spec generated from the source, so the contract cannot drift from the code
     - RFC 7807 problem responses, URL-versioned routes, explicit handling of 401/403/422/429/503
-    - Postgres schema and migrations, Redis where it earns its place
+    - PostgreSQL or MySQL schema and migrations, Redis where it earns its place
 
 - id: web
   title: Web apps in Next.js

@@ -1,0 +1,206 @@
+{
+  "description": "every ETP fact the site states matches ETP's code as of 25 Nov 2026 (spec 001, Appendix)",
+  "input": {},
+  "expected": {
+    "present": [
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "value: API, web, mobile, admin"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "value: \"90+\""
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "- MySQL"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "- Cloud SQL"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "- Terraform"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "- Django"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "GORM over MySQL"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "A production system across four surfaces"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "auto-plan"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "Tripie"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "receipt scanning"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "Three clients consume the same API"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "not a fifth surface"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "Ninety delivery phases shipped"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "does not book anything"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "auto-plan uses the same estimate"
+      },
+      {
+        "file": "src/components/About.astro",
+        "text": "one person, four surfaces"
+      },
+      {
+        "file": "src/pages/resume.astro",
+        "text": "90+ delivery phases shipped"
+      },
+      {
+        "file": "src/pages/resume.astro",
+        "text": "four surfaces"
+      },
+      {
+        "file": "src/pages/resume.astro",
+        "text": "a React Native client and an admin dashboard"
+      },
+      {
+        "file": "src/pages/resume.astro",
+        "text": "href=\"/work/etp/\""
+      },
+      {
+        "file": "src/components/SkillsMatrix.astro",
+        "text": "'PostgreSQL', 'MySQL'"
+      },
+      {
+        "file": "src/data/services.yaml",
+        "text": "PostgreSQL or MySQL schema and migrations"
+      },
+      {
+        "file": "src/pages/work/[...slug].astro",
+        "text": "entry.id === 'etp'"
+      },
+      {
+        "file": "src/components/FeaturedProject.astro",
+        "text": "href={`/work/${id}/`}"
+      },
+      {
+        "file": "src/components/etp/SurfaceDiagram.astro",
+        "text": "aria-hidden=\"true\""
+      },
+      {
+        "file": "src/components/etp/SurfaceDiagram.astro",
+        "text": "prefers-reduced-motion: reduce"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "Travel time is a heuristic"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "No public demo."
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "The product has grown well past its first release: auto-plan, which proposes an itinerary for the organiser to accept; Tripie, an in-app assistant; receipt scanning; daily exchange rates; packing lists; budget against actual spend, with export; and records of bookings made elsewhere."
+      }
+    ],
+    "absent": [
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "PostgreSQL"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "Twenty-three"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "value: \"23\""
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "Assisted scheduling is not shipped"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "Bookings do not exist"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "fourth surface"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "Three surfaces consume"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "All three consume"
+      },
+      {
+        "file": "src/components/About.astro",
+        "text": "three surfaces"
+      },
+      {
+        "file": "src/pages/resume.astro",
+        "text": "three surfaces"
+      },
+      {
+        "file": "src/pages/resume.astro",
+        "text": "23 delivery phases"
+      },
+      {
+        "file": "src/data/services.yaml",
+        "text": "Postgres schema"
+      },
+      {
+        "file": "src/data/etp.ts",
+        "text": "PostgreSQL"
+      },
+      {
+        "file": "src/data/etp.ts",
+        "text": "fourth surface"
+      },
+      {
+        "file": "src/data/etp.ts",
+        "text": "Two clients consume"
+      },
+      {
+        "file": "CLAUDE.md",
+        "text": "fourth surface"
+      },
+      {
+        "file": "CLAUDE.md",
+        "text": "third surface"
+      },
+      {
+        "file": "src/components/etp/SurfaceDiagram.astro",
+        "text": "fourth surface"
+      },
+      {
+        "file": "src/components/etp/SurfaceDiagram.astro",
+        "text": "third surface"
+      }
+    ]
+  }
+}

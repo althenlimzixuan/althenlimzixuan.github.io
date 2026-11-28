@@ -1,0 +1,150 @@
+# Stage: spec (`spec`, then `spec-review`)
+
+The spec says what this phase builds and how the owner tests it. You draft it alone; the owner reads it once, in about 10 minutes, and answers in one line.
+
+## 1. Read
+
+Read-only, from the SSOT worktree:
+
+1. `doc/north-star.md`, the lead card, and each bundle feature's `why` and `use_case` in
+   `doc/features.yaml`.
+2. Each bundle issue (`gh issue view <n> -R <owner/repo>`). One already done is closed with its link
+   and left out (`/pm` **Bundle and vehicle** step 1); the summary gives the count closed.
+3. `doc/decisions.md`: past owner answers. A question answered there is never asked again; it is a call.
+4. When the API may change: `doc/API.md`, `doc/openapi.yaml`, and the component code as needed, read-only.
+
+## 2. Draft
+
+Write `specs/NNN-slug/spec.md` alone, in the sections `spec new` copied from
+`.pal-harness/templates/spec.md`. Ask the owner nothing while drafting. Write it in plain English
+for the owner (`workflow.md`, **Plain English.**): diagrams, test steps and reports included.
+
+- **Hardware the owner can't reach.** A test step that needs a device, an account or a place the
+  owner cannot reach before sign-off is marked `unverified: <reason>` in the step. It still ships,
+  and the sign-off PR lists it under its test scripts, so it is never signed off as tested.
+- **Store identity.** Before a spec fixes an app package or bundle id, read the package of the
+  existing Play or App Store app (its store listing or the release runbook) and record it in Calls I
+  made. A new id for an app already in a store is a numbered question.
+
+1. **Summary:** the numbered points the template lists.
+2. **Questions for the owner:** only questions that change what gets built. Numbered, at the top,
+   each with its options and a recommended answer with a one-line reason, so the owner can reply
+   `accept all` or `accept all except 2: B`.
+3. **Calls I made:** every smaller choice, one line each with its reason.
+4. **Features:** one block per bundle feature with its why, use case and numbered test script
+   (step: what you do → what you should see). Write steps the owner can run with the seeded test
+   accounts, each with one visible result, needing no code knowledge. A step whose expected result
+   is correct but likely to surprise the owner says why, in the step itself:
+   "→ you see X (by design: reason)". Check each step against where the owner will test: staging
+   or the local stack (its fake or stubbed services, such as a fake file store, and which accounts
+   exist there) and the real phone (airplane mode or Wi-Fi off drops wireless adb, so an offline
+   step says how to stay connected: by USB, or on a build that needs no Metro). A step that cannot
+   run there is rewritten, or moved to the automated tests with a line in Calls I made. A bundle fix the owner can
+   see gets a step in the test script of the feature it touches; a fix for a `deferred` feature is
+   tested by that feature's failed step. Approving the spec approves how the owner will test.
+   **Destructive or optional steps** (removing the phone's screen lock, deleting an account, a reset)
+   go in their own feature with their own test script, so skipping them is an explicit partial run.
+   A test that needs two roles names the two-role seed (`references/staging-test.md`, section 1).
+   Under `no-owner-test` (SKILL.md, **Flow overrides**) the test section is a
+   **What to expect now** list instead: what behaves differently and where to see it, one line
+   each, with nothing to run.
+5. **UX outline:** screens or steps in plain words; delete it when nothing on screen changes. It ends
+   with **QA seeds:** the records each changed screen needs to look filled in QA, or `none`. **Data sources:** when the spec says, or relies on, a screen's data already being served, list
+   each figure, list or badge with the endpoint and field that serves it and where you checked it
+   (the `doc/openapi.yaml` line, or the handler's file and line) in the template's **Data sources**
+   table, before the Codex review. A figure nothing serves becomes a row in **Contract** (the phase
+   adds it) or a numbered question. Delete the table when the phase builds every figure it shows.
+6. **Contract:** only when the phase changes the API; the contract comes before any code. An
+   endpoint table (method and path, what it does, errors) plus one sequence diagram per call in
+   `specs/NNN-slug/diagrams/<name>.mmd`, linked from the table. REST under `/api/v1/`, RFC 7807 errors. A breaking change is a numbered question
+   at the top, with its impact. Delete the section otherwise.
+7. **Infrastructure:** every spec embeds `doc/infra.mmd`, the project's one diagram of its runtime
+   parts (apps, services, databases, queues, outside services, CI and hosting) and how they
+   connect. List the parts this phase adds or changes under it, or write "no change". No
+   `doc/infra.mmd` yet → draft it from `.pal-harness/templates/infra.mmd` in this phase. A phase
+   that changes the infrastructure updates `doc/infra.mmd` on `docs/NNN-slug`. Hygiene:
+   names and kinds only ("API on Cloud Run", "MySQL"); never project ids, hostnames, client ids,
+   keys or URLs, since some SSOT repos are public.
+8. **Trust boundaries:** needed when code runs as another account or elevated, or reads a file,
+   config, environment, pipe or registry value that another account or a less-trusted process can
+   write; delete the section otherwise. One table row per input that crosses the boundary: the
+   input, who can write it, who reads or runs it and as which account, the session or desktop, what
+   stops misuse, and what it does not stop. Under it, one line per process that runs as another
+   account or elevated: who starts it, which binary (and who can write that path), and where its
+   environment comes from. Fill it before the Codex review, so a trust problem shows up in the spec,
+   not at the final review.
+9. **Security claims:** each claim that a security limit holds ("cannot", "never", "guarantees",
+   "ensures", "prevents", "only X can") names what enforces it (an OS ACL, a check in code with its
+   test, a token's scope) and what it does not cover. A limit kept only by convention or a deny list
+   is written as what it reduces ("blocks the listed commands"), never as absolute.
+10. **Out of scope** and the collapsed **Appendix**, as the template shows (a rule that follows another
+    feature's rule or a decision lists every case of it, ending `cases: N of N`).
+
+## 3. Size
+
+1. About 10 minutes: about 1,500 words plus diagrams. Move detail into the collapsed appendix.
+2. Still too long, or more than about one working day of building → split the phase. Keep the
+   part that fits, and make the split question 1: what stays, what becomes a new feature (recommended
+   answer: split). On the owner's yes, add the new feature to `doc/features.yaml` as `todo` with its
+   why and use case; `/pm` puts it on the board.
+
+## 4. Codex reviews the spec
+
+Run it before the owner sees the spec. `pal-review` is the absolute path from the session-start line
+`Codex review CLI: "<path>\pal-review.exe"`; run each command with a Bash timeout of 600000 ms.
+
+1. **Not available:** no CLI path in the session-start context, or Pal Center older than 0.4.0 (the
+   `Pal Center version:` line): it has no `doc` kind and cannot resolve a worktree set to its
+   project. Add `doc: not available` (or `doc: not available (worktree set)`) to
+   `codex.skipped`, write "Codex spec review: not available" in the log and in the spec's Calls I
+   made, and go on. Never run `pal-review` from the owner's checkout for a phase: it would review
+   the owner's code, not the phase's.
+2. Otherwise, from the set's root: `pal-review run --kind doc --spec specs/NNN-slug`. Exit codes:
+   - 0: the report is printed. Save it as `specs/NNN-slug/reviews/codex-doc-YYYY-MM-DD-HHmm.md`;
+     add 1 to `codex.spec`.
+   - 3: still running. `pal-review wait <id>` (same Bash timeout) until it ends.
+   - 4: failed. Record it in the log, retry once; failed again → add `doc: failed (<reason>)` to
+     `codex.skipped` and go on with a note in Calls I made.
+   - 5: skipped. Add `doc: skipped (<reason>)` to `codex.skipped` and go on.
+3. Minor findings: fix them in the spec first. A wording-only finding (its fix changes no behaviour,
+   contract, data or test script) is minor at most: fix it, and list it in Calls I made as
+   `Codex doc <id>: wording only, rated minor (<one line>)`. Other majors and criticals join the questions for
+   the owner, each with its reason, impact and a recommended answer (critical first).
+
+Codex never reviews the plan.
+
+## 5. Send it
+
+1. `pal-harness render <set>/specs/NNN-slug/spec.md`, then publish `spec.html` (SKILL.md, **Owner stops**).
+2. `stage: spec-review`; bundle features `spec-review`; `waiting_on_owner` with `kind: spec-review`,
+   the page link and the number of questions. Commit and push.
+3. PushNotification: "needs you: spec NNN — <title>, N questions, about 10 minutes". Add "include
+   load test" to the reply for a load test on staging. Wait.
+
+## 6. The owner's reply
+
+1. `accept all` takes every recommended answer. `accept all except 2: B` takes the rest and changes
+   one. A reply that answers every question and asks for no change approves the spec.
+2. A request for changes: revise the spec, then Codex checks the revision again (section 4) unless
+   the reply says `skip Codex`; then add `doc rN: owner said skip Codex` to `codex.skipped`.
+   Render, publish and send again (section 5).
+   - **A new feature asked for during spec review** becomes its own card by default: a `todo` entry
+     in `doc/features.yaml` with its why and use case, at most one line in this spec's Out of scope.
+     It joins this phase only when the owner says so after being told it is a new feature.
+   - **Live spec changes.** While the owner rules on the spec in the session, keep one running list
+     of the owner's rulings in the spec's **Rulings** section, numbered and dated. Re-run the Codex
+     doc check once per batch of changes, when the owner says the batch is done, not once per message.
+3. An unclear reply: ask one short follow-up in the session.
+
+## 7. On approval
+
+1. Append each answered question to `doc/decisions.md`:
+   `N. YYYY-MM-DD (phase NNN): <question> → <answer>`. Fold the answers into the spec's sections.
+2. Set the spec's `Status:` to `Approved (YYYY-MM-DD)`. Re-render `spec.html`. When the reply says
+   "include load test", set `load_test: true` in `phase-state.yaml`.
+3. Copy each feature's test script into its `test_script` in `doc/features.yaml`
+   (`{step, do, expect}`, numbered as in the spec). Under `no-owner-test`, copy the
+   What to expect now lines the same way (`do`: where to look, `expect`: what is different).
+4. `gates.spec_approved` the date; clear `waiting_on_owner`; `stage: planning`; bundle features
+   `planning`. Commit and push; compact (SKILL.md, **Owner stops** step 6).
+5. Go to `.pal-harness/skills/phase/references/plan.md`.

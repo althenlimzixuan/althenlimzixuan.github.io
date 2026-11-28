@@ -1,0 +1,13 @@
+flowchart LR
+    %% doc/infra.mmd: every runtime part of the project and how they connect.
+    %% Hygiene: names and kinds only; never project ids, hostnames, client ids, keys or URLs.
+    visitor([Visitor])
+    site["Static site (Astro build, plain HTML and CSS)"]
+    pages["GitHub Pages hosting"]
+    ci["GitHub Actions (quality checks and deploy)"]
+    mail["Visitor's own email app"]
+
+    visitor --> pages
+    pages --> site
+    site -->|mailto link| mail
+    ci -.->|deploys from main| pages

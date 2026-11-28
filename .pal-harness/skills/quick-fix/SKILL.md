@@ -1,0 +1,109 @@
+---
+name: quick-fix
+description: Use to run a card whose vehicle is quick-fix — a small change with no spec or plan, built in the session, one review, one test step for the owner, then sign-off, the owner's test and ship as in the phase skill. Use when /pm routes a quick-fix card or its pickup takes a safe backlog item. Run from the project's SSOT root.
+---
+
+# /quick-fix — a small fix, still reviewed and tested
+
+A quick fix skips the spec and the plan. It is still reviewed, and it adds one test step for the
+owner. Everything else (saved state, the worktree set, owner stops, the interim rules) works as in
+`.pal-harness/skills/phase/SKILL.md`; read that file's **Saved state**, **The worktree set** and
+**Owner stops** sections first.
+
+## When it fits
+
+`/pm`'s bar: a small change in one repo, no API change, no product decision. If, while working, it
+needs an API change, a product decision, a second repo or more than a few tasks, stop: tell the
+owner (an owner stop, `kind: questions`) and recommend running it as a phase.
+
+## 1. Start
+
+Run `pal-work mode --project <key>` first and keep its output: a findings stop follows the phase's
+`references/company-mode.md`.
+
+1. Create the worktree set and the phase folder exactly as the phase skill's **Start** steps 1–2
+   (`pal-harness spec new <slug>` makes `specs/NNN-slug/` on `docs/NNN-slug`). Delete the generated
+   `spec.md`: a quick fix has none.
+2. Write `phase-state.yaml` from the template: `vehicle: quick-fix`, `approach: inline`,
+   `stage: building`, the bundle, `session:`, `tasks: {done: 0, total: 1}`. Then start `phase-log.md` with `pal-harness log`, which stamps
+   `last_progress_at`; every log entry is written that way (the phase skill's **Saved state** step 4). Commit and push `docs/NNN-slug`.
+3. The feature the fix touches (if any) becomes `building` in `doc/features.yaml`; move its card.
+
+## 2. The test step
+
+Write the owner's one test step for what the fix changes (do → expect), concrete and visible:
+
+- **The fix touches a feature:** add the step to that feature's `test_script` in
+  `doc/features.yaml`, numbered after its last step. For the fix of a `deferred` feature, the failed
+  step is the test step; add nothing.
+- **No feature fits:** write the step in the sign-off PR's "Your test scripts", and record its result
+  as a comment on the issue.
+
+## 3. Build
+
+1. One `fix/NNN-slug` branch in the one repo, a worktree in the set from `origin/dev`
+   (as the phase's `references/build.md` section 2 shows, with `fix/` for `feature/`).
+2. Test first from a JSON fixture (`testing.md`): run it red. The log entry shows RED then GREEN:
+   the failing output before the code, then the passing output after it.
+   Then the code, by the build rules in `workflow.md`, and the repo's lint through its own script.
+   Code that only builds on Linux, on a Windows host: the phase's `references/linux-check.md`.
+   Commit, push, update `tasks`, write the log entry (`pal-harness log`), push `docs/NNN-slug`.
+3. Stuck (fix rounds used up, CI red, no progress for 1 hour): as the phase's `references/build.md`
+   section 5. A spending-limit block with a green local run is not stuck (`devops_cicd.md`, **CI runs
+   and minutes**).
+
+## Single-repo projects
+
+When every component's `repo` equals `ssot.repo` (the phase skill's **Single-repo projects**), the
+fix's code goes on its `docs/NNN-slug` branch in the set's root, beside its state. There is no
+`fix/NNN-slug` branch or worktree: it would sit inside the SSOT worktree's own component folders.
+The PR of section 4 step 5 is `docs/NNN-slug` → `dev`; keep the branch after it merges, since the
+close-out PR at ship comes from it.
+
+## 4. One review
+
+1. Run one review over the whole branch: `pal-review run --kind code` (and `--kind uiux` when
+   something on screen changed) plus the `pal-review-code` agent; add `pal-review-security` when the
+   fix touches login, user data, payments or credentials. Save each Codex report under
+   `specs/NNN-slug/reviews/`; each reviewer agent writes its own, as the phase's `references/review.md`
+   section 2 says.
+   - When the card or the fix cites an owner decision, end spec.md's `## Out of scope` with
+     `### Settled by the owner` before the code run, and treat a finding that only re-raises it as
+     the phase's `references/review.md` sections 2 and 3 say (`Codex <id>: settled by decision N`).
+   - `pal-review` exit codes (Bash timeout 600000 ms): 0 the report is printed; 3 still running →
+     `pal-review wait <id>` (same timeout) until it ends; 4 failed → record it, retry once, then
+     add `<kind>: failed (<reason>)` to `codex.skipped` and go on with a note; 5 skipped → add
+     `<kind>: skipped (<reason>)` to `codex.skipped`. When the reason says auto review is off, add
+     "turn it on in Pal Center at Projects → <project> → Reviews"; the sign-off PR and the next owner
+     message carry the same line.
+   - With Pal Center older than 0.4.0 (the `Pal Center version:` line), which cannot resolve a
+     worktree set to its project, add
+     `<kind>: not available (worktree set)` to `codex.skipped` and go on. Never run `pal-review`
+     from the owner's checkout for a quick fix.
+2. Severity, 3 fix rounds and leftover findings as in `references/review.md` sections 3–5. Each
+   fix round is done only when the repo's full lint, typecheck and test commands pass
+   (`references/review.md`, section 4).
+3. After the last review fix, make the reports once, as the phase's `references/review.md` section 1
+   says, after `pal-harness mem` (`devops_cicd.md`, **Free memory before heavy runs**).
+4. A fix that touches Windows security (the phase's `references/plan.md`, section 1) gets the
+   session-0 run before its PR, as the phase's `references/build.md` section 6 step 2 says.
+5. Run `pal-harness merge-check` (a conflict: the phase's `references/review.md`, **Merge check first**), then open the PR into `dev` with the Codex summary in its body; it merges on its own once CI is green (or, under a spending-limit block, its local run is), with `gh pr merge --merge` (never squash).
+   Wait and merge as `devops_cicd.md`, **Waiting on CI and merging**, says: one foreground watch, run again
+   when it is killed (never park for the owner), and the unpiped `gh pr checks` exit code before the
+   merge (`8` is still running: do not merge). `ci:` takes only `green`, `red`, `running` or `none`.
+   `stage: code-review` while reviewing, then `stage: signoff`.
+
+## 5. Sign-off, the owner's test, ship
+
+Follow the phase skill's references in order:
+
+1. `references/signoff.md`: the `[HUMAN GATE]` sign-off PR, shorter (the fix, its review, its test
+   step).
+2. `references/staging-test.md`: the owner runs the one test step; fix now or defer as there.
+3. `references/ship.md`, without the retro unless something went badly; then file that one idea as
+   ship.md section 5 says.
+
+The owner stops for a quick fix are the sign-off and the test step, plus any findings or stuck stop.
+The phase skill's **Flow overrides** apply here too: under `no-owner-test` the test step is a What
+to expect now line, with nothing to run, and the staging test is skipped. Under `installer-ready`
+the fix's commit bumps the version (patch) in the project's version files; ship tags it.
