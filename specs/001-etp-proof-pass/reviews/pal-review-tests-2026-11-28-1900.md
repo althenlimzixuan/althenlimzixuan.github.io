@@ -1,0 +1,16 @@
+# review-tests: 001-etp-proof-pass (reports, checks 3-7 and 11)
+
+Verdict: minor
+
+1. [minor] The Lighthouse scores in summary line 4 (`/` 97 → 97, `/work/etp/` 98 → 98, `/how-i-build/` 98 → 98, `/resume/` 98 → 98; accessibility 100) cite the artifacts `lhr-*.json` of CI runs 45505132969 and 46137084489. I could not check the numbers. The run logs list only the report URLs (the "Open the report at …" lines), and the artifact files are not in the repo, so the claim has no source a reader can check from the branch. The runs themselves are real: both ended `success`, 45505132969 on `dev` at head 81d4536 (the base), 46137084489 on this branch. - specs/001-etp-proof-pass/../_test_reports/site/2026-11-28-18-001-etp-proof-pass/summary.md:line 4 of the numbered list - Fix: add the four medians per run to a note (or a small committed table) so the claim can be read against something in the repo, or say plainly that the scores were read from the artifacts by hand.
+
+2. [minor] Summary line 2 cites `project.yaml:26-29`. The overrides entry is at `project.yaml:25-29` (`overrides:` is on line 25). The cited range misses its first line. - summary.md line 2 - Fix: cite `project.yaml:25-29`.
+
+3. [minor] The final CI run 46137084489 ran at head a461fb3, not at the final code commit c429ee3. The diff between the two touches only `specs/**` and state files, so the code is identical and the comparison is valid. The summary does not say this. - summary.md line 4 - Fix: add "(a461fb3, which differs from c429ee3 only in specs)" to the source.
+
+Checked, no problem:
+- Reports present, non-empty and fresh (checks 6, 7). `unit_test.html`, `regression.html`, `profiling.html` and `summary.md` all exist and are committed. The `Commit: c429ee3 · tree: 5dfecd75…` line equals `git rev-parse c429ee3^{tree}`. `git log -1 -- . (excluding _test_reports, specs, doc, _feedbacks)` returns c429ee3, so it is the final code commit. `test_coverage.html` is n/a with a stated reason (the project override; `project.yaml:25-29`), accepted. The load test is not requested (`phase-state.yaml:12`, `load_test: false`).
+- Tests pass (check 4). `unit_test.html` shows 89 passed, 0 failed, 0 skipped. The per-file counts (49 + 9 + 15 + 16) add up to 89. `regression.html` shows all four commands at exit 0.
+- Thresholds (check 5). There is no API. The paired local check is a recorded skip, which `CLAUDE.md` supports ("local Lighthouse timing on this machine is not trustworthy"). The CI Lighthouse comparison is the substitute: 3 runs per URL, on the base commit 81d4536, which equals `origin/dev` and the merge-base. No Lighthouse drop is claimed, so none is blocking. This depends on finding 1.
+- Claims against sources (check 11). Line 3's timings (78.5, 19.8 and 17.0 s) and the page sizes (`work/etp/index.html` 19.5 KB + 5.8 KB, `index.html` 19.1 KB + 12.4 KB) match `regression.html` and `profiling.html`. Line 5 matches `regression.html`. Line 6 matches `phase-state.yaml:12`. The note on `package.json:16` (the `reports` script) is correct. `vitest.json` is not committed, as the note says. The "1.9 GiB free, exit 1" memory note comes from a command I cannot re-run read-only, and it does not affect the verdict.
+- Every numbered line and each note ends with a bracketed source.

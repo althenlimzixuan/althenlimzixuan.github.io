@@ -103,3 +103,7 @@ npm test exit 0 (89 passed); npm run check exit 0.
 Reports made on the final code commit c429ee3 (npm run reports, exit 0): 89 of 89 tests passed; regression passed; CI Lighthouse unchanged from dev (97 to 98 performance, 100 accessibility). Coverage n/a (project override). Raw vitest.json not committed (machine paths).
 Review round 3: errors none. Codex code re-check failed twice (HTTP 403 outage), recorded in codex.skipped; its round-1 finding is fixed and tested.
 low memory: 1.9 GiB free before the reports.
+
+## 2026-11-28 18:57 — Report citations fixed
+
+Tests reviewer on the reports: 3 minor citation findings in summary.md, applied (lighthouse.md added, line range fixed, final CI commit explained); minors applied, no re-review.
