@@ -136,6 +136,10 @@ featured project still opens it.</li>
 <li>Do: on <code>/resume/</code>, read the Skills list; then on <code>/</code>, open the &quot;Backend APIs in Go&quot; service →
 Expect: both list PostgreSQL and MySQL side by side (by design: answer 2: B, since Ellovia
 Vault runs on Postgres and ETP on MySQL).</li>
+<li>Do: on <code>/</code>, read the featured project's title; open <code>/work/etp/</code> and read its title and the
+browser tab; on <code>/resume/</code>, read the Selected work heading → Expect: each reads &quot;ETP — Ellovia
+Trip Planner&quot;; &quot;Essential Traveller Planner&quot; appears nowhere (added at your staging test,
+decision 6).</li>
 </ol>
 <h2>UX outline</h2>
 <ol>
@@ -163,7 +167,7 @@ generated client.</li>
 <p>No change. (<code>doc/infra.mmd</code> is drafted in this phase, since the project had none.)</p>
 <h2>Out of scope</h2>
 <ul>
-<li>The Ellovia rename of ETP: it happens in ETP's own launch phase, maybe months away.</li>
+<li><del>The Ellovia rename of ETP</del>: brought in at your staging test (decision 6). The site now says &quot;ETP — Ellovia Trip Planner&quot;; the <code>/work/etp/</code> address stays.</li>
 <li>Ellovia Vault or Ellovia Accounts on the site: a later call, when there is something public.</li>
 <li>Links to the Ellovia Trip and Ellovia Vault websites or Play Store pages: asked for at spec
 review, now its own card, F-010.</li>
@@ -173,6 +177,7 @@ review, now its own card, F-010.</li>
 <ul>
 <li>Decision 4: How much of ETP's newer work should the case study mention? → One short paragraph naming what else shipped; the four decisions stay the spine.</li>
 <li>Decision 5: Replace Postgres with MySQL in the skills list and services section? → Keep Postgres and add MySQL beside it (Ellovia Vault runs on Postgres).</li>
+<li>Decision 6: Rename ETP on the site? → Yes, now: &quot;ETP — Ellovia Trip Planner&quot;; the /work/etp/ address stays.</li>
 <li>The ETP infrastructure diagram (milestone M2) and the screenshots in your checkout.</li>
 <li>A walkthrough video or screenshots on the case study.</li>
 </ul>

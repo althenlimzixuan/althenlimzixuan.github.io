@@ -89,7 +89,7 @@
   label: need
   why: The ETP case study is the site's main proof of work, and three months of drift left it naming the wrong database, undercounting phases and calling a shipped feature unbuilt.
   use_case: A prospect reads /work/etp/ and every fact on it matches what ETP actually runs today.
-  status: fixing
+  status: retest
   phase: "001"
   test_script:
     - {step: 1, do: "On /, read the facts on the featured ETP card.", expect: "Surfaces shipped reads \"API, web, mobile, admin\" and Delivery phases reads \"90+\"."}
@@ -107,6 +107,24 @@
   label: need
   why: A prospect who can open the real product, its website or its Play Store page trusts the case study more than one who can only read about it.
   use_case: A prospect on the site follows a link to the Ellovia Trip or Ellovia Vault website or Play Store page.
+  status: todo
+  phase: ""
+  test_script: []
+  results: []
+- id: F-011
+  name: Use the full screen width
+  label: need
+  why: The owner wants pages to use the screen's width instead of sitting in narrow centred columns; side margins, not width caps, should set where content stops.
+  use_case: A visitor on a wide screen sees the hero and every section fill the screen, inside even side margins, while paragraphs keep a readable line length.
+  status: todo
+  phase: ""
+  test_script: []
+  results: []
+- id: F-012
+  name: WhatsApp and LinkedIn contact
+  label: need
+  why: The owner asked for WhatsApp and LinkedIn as contact routes beside email, so a prospect can reach them the way they prefer.
+  use_case: A visitor taps WhatsApp to message the owner, or opens the owner's LinkedIn profile, from the footer or the resume.
   status: todo
   phase: ""
   test_script: []

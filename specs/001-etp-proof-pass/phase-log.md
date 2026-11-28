@@ -131,3 +131,9 @@ Waiting for the owner's staging test (8 steps).
 Owner raised two things during the staging test.
 1. Rename ETP to Ellovia Trip Planner: fix now (small, words only, within F-009 pages). Decision 6; spec step 9 added; F-009 fixing. Fix branches from origin/staging as fix/001-ellovia-name.
 2. Hero max-width: asked the owner (own card F-011 recommended, keep readable paragraph width); waiting for the answer.
+
+## 2026-11-28 19:27 — Rename fixed on staging, retest
+
+Fix now (rename, decision 6): fix/001-ellovia-name from origin/staging; facts test red first (4 rows), then green (93 passed); check, build, verify:css exit 0. pal-review-code: none. Codex code: failed twice (HTTP 403 outage). PR 39 merged into staging, PR 40 merged into dev, after CI and the merge guard. Preview rebuilt from the fixed code. F-009: retest (step 9).
+Hero width (decision 7): own card F-011, next phase, margins instead of caps via the ui-ux-pro-max skill.
+WhatsApp and LinkedIn: new card F-012 (todo); asked the owner for the values and whether it joins now.
