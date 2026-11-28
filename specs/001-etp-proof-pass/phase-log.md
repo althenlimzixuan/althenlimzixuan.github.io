@@ -145,3 +145,7 @@ Owner cannot see the test steps. F-009 set back to not-tested (no step had a res
 ## 2026-11-28 19:53 — Staging test passed
 
 Staging test done on the local preview (env: local): step 1 pass in the session; owner passed steps 2 to 9 together ("lets pass all"). Pal Center results: none. F-009 passed. Stage: shipping.
+
+## 2026-11-28 19:54 — Promotion PR to main opened
+
+Ship: no runbooks, no owner-run commands; reader check passed. Production gate on main (Workflow Overrides): [HUMAN GATE] PR 41 staging -> main opened; waiting for the owner. Local staging preview stopped (teardown; nothing else was started).
