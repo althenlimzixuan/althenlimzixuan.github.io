@@ -27,3 +27,7 @@ Stage: planning.
 ## 2026-11-28 18:18 — Plan drafted
 
 Plan drafted: 3 tasks, inline. Sent to pal-review-plan.
+
+## 2026-11-28 18:23 — Plan review round 1 fixed
+
+pal-review-plan round 1: 2 major, 12 minor, 0 critical. Neither major changes what gets built (Existing behaviour list for the diagram; the read-only check before the scratch delete). All 14 fixed in plan.md; round 2 dispatched.
