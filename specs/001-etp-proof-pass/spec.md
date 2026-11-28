@@ -131,6 +131,13 @@ No change. (`doc/infra.mmd` is drafted in this phase, since the project had none
 - Ellovia Vault or Ellovia Accounts on the site: a later call, when there is something public.
 - Links to the Ellovia Trip and Ellovia Vault websites or Play Store pages: asked for at spec
   review, now its own card, F-010.
+
+### Settled by the owner
+
+Decided by the owner (`doc/decisions.md`): not findings unless the code breaks one.
+
+- Decision 4: How much of ETP's newer work should the case study mention? → One short paragraph naming what else shipped; the four decisions stay the spine.
+- Decision 5: Replace Postgres with MySQL in the skills list and services section? → Keep Postgres and add MySQL beside it (Ellovia Vault runs on Postgres).
 - The ETP infrastructure diagram (milestone M2) and the screenshots in your checkout.
 - A walkthrough video or screenshots on the case study.
 
