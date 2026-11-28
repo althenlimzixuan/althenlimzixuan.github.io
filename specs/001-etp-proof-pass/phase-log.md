@@ -35,3 +35,15 @@ pal-review-plan round 1: 2 major, 12 minor, 0 critical. Neither major changes wh
 ## 2026-11-28 18:24 — Plan approved, building starts
 
 pal-review-plan round 2: 0 critical, 0 major, 4 minor. Minors applied, no re-review. Plan auto-approved (no plan stop). Stage: building.
+
+## 2026-11-28 18:27 — Task 1 done
+
+RED: npx vitest run tests/facts.test.ts, exit 1, 34 failed; for example:
+     × states "'value: API, web, mobile, admin'" in 'src/content/projects/etp.mdx' 10ms
+     × states "'value: "90+"'" in 'src/content/projects/etp.mdx' 7ms
+     × states "'- MySQL'" in 'src/content/projects/etp.mdx' 2ms
+     × states "'- Cloud SQL'" in 'src/content/projects/etp.mdx' 2ms
+     × states "'- Terraform'" in 'src/content/projects/etp.mdx' 1ms
+     × states "'- Django'" in 'src/content/projects/etp.mdx' 1ms
+(the 3 address checks passed, as expected: nothing is renamed)
+GREEN: npx vitest run tests/facts.test.ts, 37 passed; npm test exit 0 (64 passed); npm run check exit 0 (0 errors). No lint script in this repo.
