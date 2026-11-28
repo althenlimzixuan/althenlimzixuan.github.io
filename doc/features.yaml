@@ -84,3 +84,29 @@
   phase: ""
   test_script: []
   results: []
+- id: F-009
+  name: ETP case study proof pass
+  label: need
+  why: The ETP case study is the site's main proof of work, and three months of drift left it naming the wrong database, undercounting phases and calling a shipped feature unbuilt.
+  use_case: A prospect reads /work/etp/ and every fact on it matches what ETP actually runs today.
+  status: code-review
+  phase: "001"
+  test_script:
+    - {step: 1, do: "Open /work/etp/ and read the facts strip under the title.", expect: "Surfaces shipped reads \"API, web, mobile, admin\" and Delivery phases reads \"90+\"."}
+    - {step: 2, do: "Read the stack list on the same page.", expect: "MySQL, Cloud SQL, Terraform and Django are listed; PostgreSQL is not."}
+    - {step: 3, do: "Read \"What I built\".", expect: "Four surfaces, the admin one included; a short paragraph names auto-plan, the assistant, receipt scanning and the other shipped features; no sentence says auto-plan or bookings do not exist."}
+    - {step: 4, do: "Scroll through the architecture walkthrough.", expect: "The API step says \"GORM over MySQL\"; step 3 reads \"Three clients consume one definition\", and its diagram lights up three boxes: web, mobile and admin."}
+    - {step: 5, do: "Read \"Honest limitations\".", expect: "Travel time and \"no public demo\" are still there; bookings say ETP records them but does not book; there is no \"assisted scheduling is not shipped\" line."}
+    - {step: 6, do: "On /, read the About section; then open /resume/ and read Selected work.", expect: "About says four surfaces; the resume says \"90+ delivery phases\" and four surfaces."}
+    - {step: 7, do: "Check the case study's address.", expect: "It is still /work/etp/, and the landing page's featured project still opens it."}
+    - {step: 8, do: "On /resume/, read the Skills list; then on /, open the \"Backend APIs in Go\" service.", expect: "Both list PostgreSQL and MySQL side by side (by design: Ellovia Vault runs on Postgres, ETP on MySQL)."}
+  results: []
+- id: F-010
+  name: Links to the live Ellovia products
+  label: need
+  why: A prospect who can open the real product, its website or its Play Store page trusts the case study more than one who can only read about it.
+  use_case: A prospect on the site follows a link to the Ellovia Trip or Ellovia Vault website or Play Store page.
+  status: todo
+  phase: ""
+  test_script: []
+  results: []

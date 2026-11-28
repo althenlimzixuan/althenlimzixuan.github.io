@@ -1,36 +1,24 @@
 ---
 /**
- * ETP's architecture: one Go API, one generated client, two consuming
- * surfaces — and, drawn dashed and hanging off to the side, the concepts the
+ * ETP's architecture: one Go API, one generated client, three consuming
+ * clients — and, drawn dashed and hanging off to the side, the concepts the
  * generated contract does not carry.
  *
  * That dashed node is the point of the drawing. A diagram that showed only the
  * tidy part would be marketing; the case study is explicit that two such gaps
  * reached production, so the shape that failed is on the page too.
  *
- * The generated client is one node between the API and its consumers, not a
- * third surface alongside them — the case study says so directly, and drawing
+ * The generated client is one node between the API and its consumers, not an
+ * extra surface alongside them — the case study says so directly, and drawing
  * it otherwise would contradict the text it sits beside.
  */
-import { etpSteps, type SurfaceNodeId } from '../../data/etp';
+import { SURFACE_LAYOUT, etpSteps, type SurfaceNodeId } from '../../data/etp';
 
 const stepOf = Object.fromEntries(
   etpSteps.flatMap((s, i) => s.nodes.map((n) => [n, i + 1])),
 ) as Record<SurfaceNodeId, number>;
 
-const nodes: {
-  id: SurfaceNodeId;
-  x: number;
-  y: number;
-  w: number;
-  label: string;
-}[] = [
-  { id: 'api',      x: 40,  y: 20,  w: 110, label: 'Go API' },
-  { id: 'contract', x: 30,  y: 86,  w: 130, label: 'generated' },
-  { id: 'gaps',     x: 178, y: 86,  w: 58,  label: 'gaps' },
-  { id: 'web',      x: 10,  y: 170, w: 60,  label: 'web' },
-  { id: 'mobile',   x: 120, y: 170, w: 60,  label: 'mobile' },
-];
+const nodes = SURFACE_LAYOUT;
 
 const H = 34;
 ---
@@ -46,9 +34,10 @@ const H = 34;
     <!-- API -> generated client -->
     <path data-step={stepOf.contract} d="M95 54 V86" />
 
-    <!-- generated client -> fork -> the two consuming surfaces -->
-    <path data-step={stepOf.web} d="M95 120 V150 M40 150 H150 M40 150 V170" />
-    <path data-step={stepOf.mobile} d="M150 150 V170" />
+    <!-- generated client -> fork -> the three consuming clients -->
+    <path data-step={stepOf.web} d="M95 120 V150 M40 150 H200 M40 150 V170" />
+    <path data-step={stepOf.mobile} d="M120 150 V170" />
+    <path data-step={stepOf.admin} d="M200 150 V170" />
 
     <!-- generated client -> what it does not carry. Dashed, and it leads off
          the side rather than down into the surfaces, because these concepts

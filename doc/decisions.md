@@ -6,3 +6,5 @@ Costly architecture choices go to an ADR instead.
 1. 2026-11-19 (move to the phase flow): Which stack practice fits an Astro site? → None yet; the component stack is `tbd`.
 2. 2026-11-19 (move to the phase flow): Where does the owner's staging test run, with no staging site on GitHub Pages? → On a local preview build (`npm run build && npm run preview`) from `staging`.
 3. 2026-11-19 (move to the phase flow): What happens to `docs/superpowers/` and the old `feat/*` branches? → They stay as history; new work uses `specs/`.
+4. 2026-11-28 (phase 001 spec): How much of ETP's newer work should the case study mention? → A. Fix the wrong facts and add one short paragraph naming what else shipped; the four decisions stay the spine.
+5. 2026-11-28 (phase 001 spec): The skills list and the services section say Postgres; replace it with MySQL? → B. Keep Postgres and add MySQL beside it. Owner: "go both, Vault is in Postgre" (checked: Ellovia Vault's API uses GORM's Postgres driver, `api/go.mod`).
