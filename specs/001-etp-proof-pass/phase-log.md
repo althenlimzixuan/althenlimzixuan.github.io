@@ -71,3 +71,7 @@ GREEN: npx vitest run tests/reports.test.ts, 4 passed; npm test exit 0 (81 passe
 npm run reports -- _test_reports/site/scratch: exit 0, wrote unit_test.html, regression.html, profiling.html (repo-relative paths only). npm run reports -- _test_reports/../x: exit 1, refused.
 Scratch folder deleted after the read-only check (git status showed only the four untracked files the run wrote; nothing tracked).
 Calls: runReports takes readVitest (reads the JSON the test command wrote) instead of repoRoot; paths shown in the pages are repo-relative so no machine folder lands in the public repo; the output path is quoted, since the worktree path has a space.
+
+## 2026-11-28 18:35 — Code PR opened
+
+Full check green locally. merge-check clean. Code PR #36 opened (docs/001-etp-proof-pass -> dev). ci: running. Session-0 run: not applicable (no Windows security).
