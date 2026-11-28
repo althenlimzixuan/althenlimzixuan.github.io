@@ -125,3 +125,9 @@ Owner merged sign-off PR 38 (merge 2ed1afb). Single-repo: no component promotion
 Pre-flight: origin/staging (2ed1afb) built in the set (build exit 0, verify:css ok), then the set switched back to docs/001-etp-proof-pass; astro preview serves the staging build at localhost:4321; /, /work/etp/ and /resume/ answer 200. low memory: 1.9 GiB free.
 Each test step checked against the built pages: steps 1 and 2 pointed at /work/etp/, but the facts strip and stack list render on the landing page's featured ETP card. Steps corrected in spec.md (Calls I made 13) and doc/features.yaml; nothing built changed. Spec page republished.
 Waiting for the owner's staging test (8 steps).
+
+## 2026-11-28 19:16 — Owner requests during staging test
+
+Owner raised two things during the staging test.
+1. Rename ETP to Ellovia Trip Planner: fix now (small, words only, within F-009 pages). Decision 6; spec step 9 added; F-009 fixing. Fix branches from origin/staging as fix/001-ellovia-name.
+2. Hero max-width: asked the owner (own card F-011 recommended, keep readable paragraph width); waiting for the answer.

@@ -111,6 +111,10 @@ matches what ETP runs today.
 8. Do: on `/resume/`, read the Skills list; then on `/`, open the "Backend APIs in Go" service →
    Expect: both list PostgreSQL and MySQL side by side (by design: answer 2: B, since Ellovia
    Vault runs on Postgres and ETP on MySQL).
+9. Do: on `/`, read the featured project's title; open `/work/etp/` and read its title and the
+   browser tab; on `/resume/`, read the Selected work heading → Expect: each reads "ETP — Ellovia
+   Trip Planner"; "Essential Traveller Planner" appears nowhere (added at your staging test,
+   decision 6).
 
 ## UX outline
 
@@ -130,7 +134,7 @@ No change. (`doc/infra.mmd` is drafted in this phase, since the project had none
 
 ## Out of scope
 
-- The Ellovia rename of ETP: it happens in ETP's own launch phase, maybe months away.
+- ~~The Ellovia rename of ETP~~: brought in at your staging test (decision 6). The site now says "ETP — Ellovia Trip Planner"; the `/work/etp/` address stays.
 - Ellovia Vault or Ellovia Accounts on the site: a later call, when there is something public.
 - Links to the Ellovia Trip and Ellovia Vault websites or Play Store pages: asked for at spec
   review, now its own card, F-010.
@@ -141,6 +145,7 @@ Decided by the owner (`doc/decisions.md`): not findings unless the code breaks o
 
 - Decision 4: How much of ETP's newer work should the case study mention? → One short paragraph naming what else shipped; the four decisions stay the spine.
 - Decision 5: Replace Postgres with MySQL in the skills list and services section? → Keep Postgres and add MySQL beside it (Ellovia Vault runs on Postgres).
+- Decision 6: Rename ETP on the site? → Yes, now: "ETP — Ellovia Trip Planner"; the /work/etp/ address stays.
 - The ETP infrastructure diagram (milestone M2) and the screenshots in your checkout.
 - A walkthrough video or screenshots on the case study.
 
