@@ -16,3 +16,10 @@ reader check: Pal Center 0.35.0 reads harness 1.9.0; check --reader passed.
 Codex doc review: verdict major, one finding (F1, test script missed the Postgres check on the resume skills list and the services section). Fixed with test step 8 and a check in step 4; rated minor with the reason in reviews/codex-doc-2026-11-28-1756.md and in Calls I made item 12.
 Spec rendered and published: https://claude.ai/artifact/8cCa5CDPa6YYUDb7g1BuhG
 Owner stop: spec-review, 2 questions. Both questions set what the public site claims, so the decision is held (never by default); waiting for the owner's own answer.
+
+## 2026-11-28 18:10 — Spec approved by the owner
+
+Owner answered in the session: 1: A, 2: B ("go both, Vault is in Postgre"; checked in Ellovia Vault's api/go.mod, which uses GORM's Postgres driver). Recorded as decisions 4 and 5.
+Spec approved; test script copied to F-009 in doc/features.yaml. Step 8 now expects Postgres and MySQL side by side.
+The owner also asked for links to the Ellovia Trip and Ellovia Vault websites or Play Store pages. New feature, so it is its own card: F-010 (todo), one line in the spec's Out of scope. Neither product has a public listing yet (Vault's store listing is its F-008, todo; ETP sits behind a sign-in wall).
+Stage: planning.

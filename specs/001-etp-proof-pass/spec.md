@@ -1,6 +1,6 @@
 # 001 — ETP case study proof pass
 
-- **Status:** Draft
+- **Status:** Approved (2026-11-28)
 - **Roadmap card:** F-009 — ETP case study proof pass (closes althenlimzixuan/althenlimzixuan.github.io#35)
 - **Vehicle:** phase
 
@@ -18,11 +18,12 @@
    August audit, and it found one more stale claim: **bookings now exist** (shipped 30 Sep, phase
    084), and the case study still says they do not. The phase count has also moved on, from 47 in
    August to 90 today.
-5. Questions for you: **2**.
+5. Questions for you: **2**, answered 28 Nov: 1: A, 2: B (`doc/decisions.md` 4 and 5).
 
 ## Questions for the owner
 
-Reply in one line, like "accept all" or "accept all except 2: B".
+Answered 28 Nov 2026: **1: A** (one short paragraph), **2: B** (Postgres and MySQL side by
+side; Ellovia Vault's API runs on Postgres, checked in its `api/go.mod`).
 
 1. **How much of ETP's newer work should the case study mention?** It describes a much smaller
    product than exists: the in-app assistant (Tripie), auto-plan, receipt scanning, daily exchange
@@ -105,8 +106,8 @@ matches what ETP runs today.
 7. Do: the case study's address → Expect: it is still `/work/etp/`, and the landing page's
    featured project still opens it.
 8. Do: on `/resume/`, read the Skills list; then on `/`, open the "Backend APIs in Go" service →
-   Expect: both say MySQL, and neither says PostgreSQL or Postgres (with answer 2: B, both list
-   Postgres and MySQL side by side instead).
+   Expect: both list PostgreSQL and MySQL side by side (by design: answer 2: B, since Ellovia
+   Vault runs on Postgres and ETP on MySQL).
 
 ## UX outline
 
@@ -128,6 +129,8 @@ No change. (`doc/infra.mmd` is drafted in this phase, since the project had none
 
 - The Ellovia rename of ETP: it happens in ETP's own launch phase, maybe months away.
 - Ellovia Vault or Ellovia Accounts on the site: a later call, when there is something public.
+- Links to the Ellovia Trip and Ellovia Vault websites or Play Store pages: asked for at spec
+  review, now its own card, F-010.
 - The ETP infrastructure diagram (milestone M2) and the screenshots in your checkout.
 - A walkthrough video or screenshots on the case study.
 

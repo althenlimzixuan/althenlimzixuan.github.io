@@ -29,7 +29,7 @@ img{max-width:100%}
 <body>
 <h1>001 — ETP case study proof pass</h1>
 <ul>
-<li><strong>Status:</strong> Draft</li>
+<li><strong>Status:</strong> Approved (2026-11-28)</li>
 <li><strong>Roadmap card:</strong> F-009 — ETP case study proof pass (closes althenlimzixuan/althenlimzixuan.github.io#35)</li>
 <li><strong>Vehicle:</strong> phase</li>
 </ul>
@@ -48,10 +48,11 @@ change, so the later Ellovia rename touches words only.</li>
 August audit, and it found one more stale claim: <strong>bookings now exist</strong> (shipped 30 Sep, phase
 084), and the case study still says they do not. The phase count has also moved on, from 47 in
 August to 90 today.</li>
-<li>Questions for you: <strong>2</strong>.</li>
+<li>Questions for you: <strong>2</strong>, answered 28 Nov: 1: A, 2: B (<code>doc/decisions.md</code> 4 and 5).</li>
 </ol>
 <h2>Questions for the owner</h2>
-<p>Reply in one line, like &quot;accept all&quot; or &quot;accept all except 2: B&quot;.</p>
+<p>Answered 28 Nov 2026: <strong>1: A</strong> (one short paragraph), <strong>2: B</strong> (Postgres and MySQL side by
+side; Ellovia Vault's API runs on Postgres, checked in its <code>api/go.mod</code>).</p>
 <ol>
 <li><strong>How much of ETP's newer work should the case study mention?</strong> It describes a much smaller
 product than exists: the in-app assistant (Tripie), auto-plan, receipt scanning, daily exchange
@@ -130,8 +131,8 @@ says four surfaces; the resume says &quot;90+ delivery phases&quot; and four sur
 <li>Do: the case study's address → Expect: it is still <code>/work/etp/</code>, and the landing page's
 featured project still opens it.</li>
 <li>Do: on <code>/resume/</code>, read the Skills list; then on <code>/</code>, open the &quot;Backend APIs in Go&quot; service →
-Expect: both say MySQL, and neither says PostgreSQL or Postgres (with answer 2: B, both list
-Postgres and MySQL side by side instead).</li>
+Expect: both list PostgreSQL and MySQL side by side (by design: answer 2: B, since Ellovia
+Vault runs on Postgres and ETP on MySQL).</li>
 </ol>
 <h2>UX outline</h2>
 <ol>
@@ -161,6 +162,8 @@ generated client.</li>
 <ul>
 <li>The Ellovia rename of ETP: it happens in ETP's own launch phase, maybe months away.</li>
 <li>Ellovia Vault or Ellovia Accounts on the site: a later call, when there is something public.</li>
+<li>Links to the Ellovia Trip and Ellovia Vault websites or Play Store pages: asked for at spec
+review, now its own card, F-010.</li>
 <li>The ETP infrastructure diagram (milestone M2) and the screenshots in your checkout.</li>
 <li>A walkthrough video or screenshots on the case study.</li>
 </ul>
