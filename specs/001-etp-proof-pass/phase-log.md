@@ -107,3 +107,7 @@ low memory: 1.9 GiB free before the reports.
 ## 2026-11-28 18:57 — Report citations fixed
 
 Tests reviewer on the reports: 3 minor citation findings in summary.md, applied (lighthouse.md added, line range fixed, final CI commit explained); minors applied, no re-review.
+
+## 2026-11-28 19:01 — Code PR merged, sign-off next
+
+Code PR 36 merged into dev (merge commit 51e0521) after CI green and the merge guard. Stage: signoff.
