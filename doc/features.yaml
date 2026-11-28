@@ -134,7 +134,7 @@
   label: need
   why: The owner asked for WhatsApp and LinkedIn as contact routes beside email, so a prospect can reach them the way they prefer.
   use_case: A visitor taps WhatsApp to message the owner, or opens the owner's LinkedIn profile, from the footer or the resume.
-  status: todo
+  status: recommended
   phase: ""
   test_script: []
   results: []
@@ -152,7 +152,7 @@
   label: need
   why: ETP and Ellovia Vault sit under one master brand, Ellovia; the portfolio should say so, so a prospect sees one product family, not unrelated projects.
   use_case: A visitor reads on the site that the owner builds the Ellovia products, and which products are part of it.
-  status: todo
+  status: recommended
   phase: ""
   test_script: []
   results: []
