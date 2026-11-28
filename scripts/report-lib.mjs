@@ -7,7 +7,7 @@ import { isAbsolute, join, relative, resolve } from 'node:path';
  * The commands the report runs, in order, each as the arguments to `node`:
  * a script path, then its own arguments. They run with no shell, so the out
  * dir always reaches the test runner as one argument.
- * @type {{name: string, args: (out: string) => string[]}[]}
+ * @type {{name: string, args: (out: string) => string[], needsBuild?: boolean}[]}
  */
 export const REPORT_COMMANDS = [
   {
@@ -16,7 +16,7 @@ export const REPORT_COMMANDS = [
   },
   { name: 'Type and content check', args: () => ['node_modules/astro/bin/astro.mjs', 'check'] },
   { name: 'Build', args: () => ['node_modules/astro/bin/astro.mjs', 'build'] },
-  { name: 'Built CSS check', args: () => ['scripts/verify-built-css.mjs'] },
+  { name: 'Built CSS check', args: () => ['scripts/verify-built-css.mjs'], needsBuild: true },
 ];
 
 const SKIPPED = new Set(['skipped', 'pending', 'todo']);
@@ -110,10 +110,20 @@ function statusText(status) {
  * @returns {number}
  */
 export function runReports({ outDir, run, readVitest, listPages, writeFile }) {
-  const results = REPORT_COMMANDS.map(({ name, args }) => {
+  /** @type {{name: string, line: string, status: number | null, ms: number, error?: string, skipped?: string}[]} */
+  const results = [];
+  for (const { name, args, needsBuild } of REPORT_COMMANDS) {
     const argv = args(outDir);
-    return { name, line: ['node', ...argv].join(' '), ...run(argv) };
-  });
+    const line = ['node', ...argv].join(' ');
+    // The built CSS check reads dist/, which a failed build may have left
+    // from an earlier run: a pass there would describe old CSS.
+    const buildFailed = results.some((r) => r.name === 'Build' && r.status !== 0);
+    if (needsBuild && buildFailed) {
+      results.push({ name, line, status: null, ms: 0, skipped: 'skipped: the build failed' });
+    } else {
+      results.push({ name, line, ...run(argv) });
+    }
+  }
 
   const vitest = readVitest();
   const summary = vitest ? summariseVitest(vitest) : null;
@@ -134,7 +144,13 @@ export function runReports({ outDir, run, readVitest, listPages, writeFile }) {
     renderTable(
       'Regression',
       ['Check', 'Command', 'Exit code', 'Seconds', 'Error'],
-      results.map((r) => [r.name, r.line, statusText(r.status), (r.ms / 1000).toFixed(1), r.error ?? '']),
+      results.map((r) => [
+        r.name,
+        r.line,
+        r.skipped ?? statusText(r.status),
+        (r.ms / 1000).toFixed(1),
+        r.error ?? '',
+      ]),
     ),
   );
 

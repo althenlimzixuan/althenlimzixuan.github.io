@@ -23,6 +23,7 @@ interface ReportsFixture {
     exitCode: number;
     pages: string[];
     buildFailedNote: string;
+    cssSkippedNote: string;
   };
 }
 
@@ -70,7 +71,7 @@ describe('report command', () => {
   });
 
   it('still writes reports and returns 1 when a command fails', () => {
-    const { exitCode, pages, commands } = fakeRun();
+    const { exitCode, pages, commands } = fakeRun({ statuses: [1, 0, 0, 0] });
     expect(commands).toHaveLength(input.runs.length);
     expect(exitCode).toBe(expected.exitCode);
     expect([...pages.keys()]).toEqual(expected.pages.map((p) => `out/${p}`));
@@ -80,6 +81,14 @@ describe('report command', () => {
     const profiling = fakeRun().pages.get('out/profiling.html') ?? '';
     expect(profiling).toContain(expected.buildFailedNote);
     expect(profiling).not.toContain('index.html');
+  });
+
+  // The CSS check reads dist/, which a failed build may have left from an
+  // earlier run; a pass there would describe old CSS.
+  it('skips the built CSS check after a failed build', () => {
+    const { commands, pages } = fakeRun();
+    expect(commands).toHaveLength(input.runs.length - 1);
+    expect(pages.get('out/regression.html')).toContain(expected.cssSkippedNote);
   });
 
   it('returns 1 when no Vitest result was written', () => {

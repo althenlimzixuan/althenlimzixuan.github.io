@@ -107,6 +107,7 @@
       "regression.html",
       "profiling.html"
     ],
-    "buildFailedNote": "Build failed: no pages listed"
+    "buildFailedNote": "Build failed: no pages listed",
+    "cssSkippedNote": "skipped: the build failed"
   }
 }
