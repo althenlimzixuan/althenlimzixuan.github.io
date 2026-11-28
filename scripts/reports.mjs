@@ -55,25 +55,37 @@ function listPages() {
 }
 
 const vitestJson = join(outDir, 'vitest.json');
+const startedAt = Date.now();
+// Ten minutes per command, so a hung command ends as "killed" instead of
+// holding the report forever.
+const COMMAND_TIMEOUT_MS = 600_000;
 // Pages and command lines show repo-relative paths, never this machine's folders.
 const shown = relative(repoRoot, outDir).replace(/\\/g, '/');
 const toRepoPath = (name) => relative(repoRoot, name).replace(/\\/g, '/');
 
 const code = runReports({
   outDir: shown,
-  // The command strings are this script's own constants, never user input;
-  // the shell lets Windows run npm and npx, which are .cmd files there.
-  run: (command) => {
-    console.log(`reports: ${command}`);
+  // Node runs each script directly, with no shell, so no argument is ever
+  // read as shell syntax.
+  run: (args) => {
+    console.log(`reports: node ${args.join(' ')}`);
     const start = performance.now();
-    const r = spawnSync(command, { cwd: repoRoot, shell: true, stdio: 'inherit' });
-    return { status: r.status, ms: performance.now() - start };
+    const r = spawnSync(process.execPath, args, { cwd: repoRoot, stdio: 'inherit', timeout: COMMAND_TIMEOUT_MS });
+    if (r.error) console.error(`reports: ${args[0]}: ${r.error.message}`);
+    return { status: r.status, ms: performance.now() - start, error: r.error?.message };
   },
+  // Only this run's result counts: a file left by an earlier run, or one that
+  // is not valid JSON, is reported as no result.
   readVitest: () => {
-    if (!existsSync(vitestJson)) return null;
-    const json = JSON.parse(readFileSync(vitestJson, 'utf8'));
-    for (const file of json.testResults ?? []) file.name = toRepoPath(file.name);
-    return json;
+    if (!existsSync(vitestJson) || statSync(vitestJson).mtimeMs < startedAt) return null;
+    try {
+      const json = JSON.parse(readFileSync(vitestJson, 'utf8'));
+      for (const file of json.testResults ?? []) file.name = toRepoPath(file.name);
+      return json;
+    } catch (e) {
+      console.error(`reports: vitest.json is not valid JSON: ${e.message}`);
+      return null;
+    }
   },
   listPages,
   writeFile: (path, html) => writeFileSync(join(repoRoot, path), html),

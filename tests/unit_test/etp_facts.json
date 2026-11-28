@@ -110,6 +110,18 @@
       {
         "file": "src/components/etp/SurfaceDiagram.astro",
         "text": "prefers-reduced-motion: reduce"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "Travel time is a heuristic"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "No public demo."
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "The product has grown well past its first release: auto-plan, which proposes an itinerary for the organiser to accept; Tripie, an in-app assistant; receipt scanning; daily exchange rates; packing lists; budget against actual spend, with export; and records of bookings made elsewhere."
       }
     ],
     "absent": [

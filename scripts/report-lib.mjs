@@ -3,30 +3,44 @@
 // through injected effects so a failed command can be tested without running it.
 import { isAbsolute, join, relative, resolve } from 'node:path';
 
-/** The commands the report runs, in order. `{out}` is the report folder. */
+/**
+ * The commands the report runs, in order, each as the arguments to `node`:
+ * a script path, then its own arguments. They run with no shell, so the out
+ * dir always reaches the test runner as one argument.
+ * @type {{name: string, args: (out: string) => string[]}[]}
+ */
 export const REPORT_COMMANDS = [
-  { name: 'Unit tests', command: 'npx vitest run --reporter=json --outputFile="{out}/vitest.json"' },
-  { name: 'Type and content check', command: 'npm run check' },
-  { name: 'Build', command: 'npm run build' },
-  { name: 'Built CSS check', command: 'npm run verify:css' },
+  {
+    name: 'Unit tests',
+    args: (out) => ['node_modules/vitest/vitest.mjs', 'run', '--reporter=json', `--outputFile=${out}/vitest.json`],
+  },
+  { name: 'Type and content check', args: () => ['node_modules/astro/bin/astro.mjs', 'check'] },
+  { name: 'Build', args: () => ['node_modules/astro/bin/astro.mjs', 'build'] },
+  { name: 'Built CSS check', args: () => ['scripts/verify-built-css.mjs'] },
 ];
 
+const SKIPPED = new Set(['skipped', 'pending', 'todo']);
+
 /**
- * @param {{testResults?: {name: string, assertionResults: {status: string}[]}[]}} json
+ * @param {{testResults?: {name: string, status: string, assertionResults: {status: string}[]}[]}} json
  *   the output of `vitest --reporter=json`
- * @returns {{passed: number, failed: number, files: {name: string, passed: number, failed: number}[]}}
+ * @returns {{passed: number, failed: number, skipped: number,
+ *   files: {name: string, passed: number, failed: number, skipped: number}[]}}
  */
 export function summariseVitest(json) {
-  const files = (json.testResults ?? []).map((file) => ({
-    name: file.name,
-    passed: file.assertionResults.filter((a) => a.status === 'passed').length,
-    failed: file.assertionResults.filter((a) => a.status === 'failed').length,
-  }));
-  return {
-    passed: files.reduce((n, f) => n + f.passed, 0),
-    failed: files.reduce((n, f) => n + f.failed, 0),
-    files,
-  };
+  const files = (json.testResults ?? []).map((file) => {
+    const count = (match) => file.assertionResults.filter((a) => match(a.status)).length;
+    const failed = count((s) => s === 'failed');
+    return {
+      name: file.name,
+      passed: count((s) => s === 'passed'),
+      // A file that failed to load has no test results at all; it still failed.
+      failed: file.status === 'failed' && failed === 0 ? 1 : failed,
+      skipped: count((s) => SKIPPED.has(s)),
+    };
+  });
+  const total = (key) => files.reduce((n, f) => n + f[key], 0);
+  return { passed: total('passed'), failed: total('failed'), skipped: total('skipped'), files };
 }
 
 /** @param {unknown} value */
@@ -84,11 +98,11 @@ function statusText(status) {
 
 /**
  * Runs every report command, writes the three report pages, and returns the
- * exit code: 1 when any command did not exit 0, else 0. A failed command
- * never stops the others or the pages.
+ * exit code: 1 when any command did not exit 0 or no Vitest result was
+ * written, else 0. A failed command never stops the others or the pages.
  * @param {{
  *   outDir: string,
- *   run: (command: string) => {status: number | null, ms: number},
+ *   run: (args: string[]) => {status: number | null, ms: number, error?: string},
  *   readVitest: () => object | null,
  *   listPages: () => {path: string, kb: number, cssKb: number}[],
  *   writeFile: (path: string, html: string) => void,
@@ -96,9 +110,9 @@ function statusText(status) {
  * @returns {number}
  */
 export function runReports({ outDir, run, readVitest, listPages, writeFile }) {
-  const results = REPORT_COMMANDS.map(({ name, command }) => {
-    const line = command.replace('{out}', outDir);
-    return { name, line, ...run(line) };
+  const results = REPORT_COMMANDS.map(({ name, args }) => {
+    const argv = args(outDir);
+    return { name, line: ['node', ...argv].join(' '), ...run(argv) };
   });
 
   const vitest = readVitest();
@@ -107,10 +121,10 @@ export function runReports({ outDir, run, readVitest, listPages, writeFile }) {
     join(outDir, 'unit_test.html'),
     renderTable(
       'Unit tests',
-      ['File', 'Passed', 'Failed'],
-      summary ? summary.files.map((f) => [f.name, f.passed, f.failed]) : [],
+      ['File', 'Passed', 'Failed', 'Skipped'],
+      summary ? summary.files.map((f) => [f.name, f.passed, f.failed, f.skipped]) : [],
       summary
-        ? `${summary.passed} passed, ${summary.failed} failed`
+        ? `${summary.passed} passed, ${summary.failed} failed, ${summary.skipped} skipped`
         : 'No Vitest result: the unit test command did not write one.',
     ),
   );
@@ -119,21 +133,26 @@ export function runReports({ outDir, run, readVitest, listPages, writeFile }) {
     join(outDir, 'regression.html'),
     renderTable(
       'Regression',
-      ['Check', 'Command', 'Exit code', 'Seconds'],
-      results.map((r) => [r.name, r.line, statusText(r.status), (r.ms / 1000).toFixed(1)]),
+      ['Check', 'Command', 'Exit code', 'Seconds', 'Error'],
+      results.map((r) => [r.name, r.line, statusText(r.status), (r.ms / 1000).toFixed(1), r.error ?? '']),
     ),
   );
 
+  // After a failed build, dist/ may hold an earlier build's pages, so none
+  // are listed rather than old sizes shown as this run's.
   const build = results.find((r) => r.name === 'Build');
+  const built = build?.status === 0;
   writeFile(
     join(outDir, 'profiling.html'),
     renderTable(
       'Profiling',
       ['Built page', 'HTML (KB)', 'Linked CSS (KB)'],
-      listPages().map((p) => [p.path, p.kb.toFixed(1), p.cssKb.toFixed(1)]),
-      `Build: ${build ? (build.ms / 1000).toFixed(1) : '?'} s, exit code ${build ? statusText(build.status) : '?'}`,
+      built ? listPages().map((p) => [p.path, p.kb.toFixed(1), p.cssKb.toFixed(1)]) : [],
+      built
+        ? `Build: ${(build.ms / 1000).toFixed(1)} s`
+        : `Build failed: no pages listed (exit code ${build ? statusText(build.status) : '?'})`,
     ),
   );
 
-  return results.every((r) => r.status === 0) ? 0 : 1;
+  return summary && results.every((r) => r.status === 0) ? 0 : 1;
 }

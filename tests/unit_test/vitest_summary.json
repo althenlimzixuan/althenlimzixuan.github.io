@@ -1,8 +1,8 @@
 {
-  "description": "summarises a real vitest --reporter=json run (trimmed) and runs the report commands with one failing",
+  "description": "summarises a real vitest --reporter=json run (trimmed: one file passing with a skip, one with a failed test, one that failed to load) and runs the report commands with the build failing",
   "input": {
     "vitest": {
-      "numTotalTests": 4,
+      "numTotalTests": 5,
       "numPassedTests": 3,
       "numFailedTests": 1,
       "success": false,
@@ -10,6 +10,7 @@
         {
           "name": "tests/a.test.js",
           "status": "passed",
+          "message": "",
           "assertionResults": [
             {
               "title": "adds",
@@ -22,12 +23,19 @@
               "fullName": "joins",
               "status": "passed",
               "failureMessages": []
+            },
+            {
+              "title": "later",
+              "fullName": "later",
+              "status": "skipped",
+              "failureMessages": []
             }
           ]
         },
         {
           "name": "tests/b.test.js",
           "status": "failed",
+          "message": "",
           "assertionResults": [
             {
               "title": "passes",
@@ -44,41 +52,53 @@
               ]
             }
           ]
+        },
+        {
+          "name": "tests/c.test.js",
+          "status": "failed",
+          "message": "Cannot find module './does-not-exist.js'",
+          "assertionResults": []
         }
       ]
     },
     "runs": [
       {
-        "command": "npx vitest run",
         "status": 0
       },
       {
-        "command": "npm run check",
         "status": 0
       },
       {
-        "command": "npm run build",
         "status": 1
       },
       {
-        "command": "npm run verify:css",
         "status": 0
       }
-    ]
+    ],
+    "injectionOutDir": "_test_reports/site/x\"; echo injected; \""
   },
   "expected": {
     "passed": 3,
-    "failed": 1,
+    "failed": 2,
+    "skipped": 1,
     "files": [
       {
         "name": "tests/a.test.js",
         "passed": 2,
-        "failed": 0
+        "failed": 0,
+        "skipped": 1
       },
       {
         "name": "tests/b.test.js",
         "passed": 1,
-        "failed": 1
+        "failed": 1,
+        "skipped": 0
+      },
+      {
+        "name": "tests/c.test.js",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0
       }
     ],
     "exitCode": 1,
@@ -86,6 +106,7 @@
       "unit_test.html",
       "regression.html",
       "profiling.html"
-    ]
+    ],
+    "buildFailedNote": "Build failed: no pages listed"
   }
 }
