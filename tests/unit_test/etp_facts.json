@@ -122,6 +122,14 @@
       {
         "file": "src/content/projects/etp.mdx",
         "text": "The product has grown well past its first release: auto-plan, which proposes an itinerary for the organiser to accept; Tripie, an in-app assistant; receipt scanning; daily exchange rates; packing lists; budget against actual spend, with export; and records of bookings made elsewhere."
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "title: ETP — Ellovia Trip Planner"
+      },
+      {
+        "file": "src/pages/resume.astro",
+        "text": "ETP — Ellovia Trip Planner"
       }
     ],
     "absent": [
@@ -200,6 +208,14 @@
       {
         "file": "src/components/etp/SurfaceDiagram.astro",
         "text": "third surface"
+      },
+      {
+        "file": "src/content/projects/etp.mdx",
+        "text": "Essential Traveller Planner"
+      },
+      {
+        "file": "src/pages/resume.astro",
+        "text": "Essential Traveller Planner"
       }
     ]
   }
