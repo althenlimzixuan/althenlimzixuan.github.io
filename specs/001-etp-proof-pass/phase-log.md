@@ -23,3 +23,7 @@ Owner answered in the session: 1: A, 2: B ("go both, Vault is in Postgre"; check
 Spec approved; test script copied to F-009 in doc/features.yaml. Step 8 now expects Postgres and MySQL side by side.
 The owner also asked for links to the Ellovia Trip and Ellovia Vault websites or Play Store pages. New feature, so it is its own card: F-010 (todo), one line in the spec's Out of scope. Neither product has a public listing yet (Vault's store listing is its F-008, todo; ETP sits behind a sign-in wall).
 Stage: planning.
+
+## 2026-11-28 18:18 — Plan drafted
+
+Plan drafted: 3 tasks, inline. Sent to pal-review-plan.
