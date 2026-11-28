@@ -79,3 +79,13 @@ Full check green locally. merge-check clean. Code PR #36 opened (docs/001-etp-pr
 ## 2026-11-28 18:38 — CI green, code review starts
 
 CI green on PR 36 (quality 2m38s, ssot check). Stage: code-review.
+
+## 2026-11-28 18:46 — Review round 1 fixed
+
+Review round 1. Codex code: major (F1, shell in the report command) rated minor with precondition and likelihood, fixed (reviews/codex-code-2026-11-28-1840.md). Codex uiux: failed twice (HTTP 403 from the Codex service), recorded in codex.skipped.
+Claude: code 4 minor, tests 4 minor, errors 5 minor, ui 2 minor; no major or critical.
+Fixed: report command runs node scripts directly (no shell) with a 10-minute timeout and the spawn error shown; counts a test file that failed to load and skipped tests; ignores a stale or corrupt vitest.json (exit 1 with no result); no pages listed after a failed build; facts fixture pins the two kept limitations and the new paragraph; resume line re-wrapped.
+Bug-fix tests ran red first: 5 failed in tests/reports.test.ts before the fix, 8 passed after.
+Dismissed: ui 2 (four surfaces = API plus three clients, consistent); code 4 (F-009 status moves at staging test by the flow); tests 4 (accepted manual render check).
+Parked in doc/later.md: ui 1 (faint future-tier contrast, existing design); tests 3 (reports.mjs wiring proved by a real run).
+low memory: 853 MiB free before the full check. Full check: npm test exit 0 (88 passed); npm run reports (check, build, verify:css) exit 0.
