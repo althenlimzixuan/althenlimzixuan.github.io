@@ -115,3 +115,7 @@ Code PR 36 merged into dev (merge commit 51e0521) after CI green and the merge g
 ## 2026-11-28 19:02 — Sign-off PR opened
 
 Sign-off PR 38 opened (dev -> staging, [HUMAN GATE]). Waiting for the owner to merge it.
+
+## 2026-11-28 19:09 — Sign-off merged, staging test next
+
+Owner merged sign-off PR 38 (merge 2ed1afb). Single-repo: no component promotions. No qa_command: no QA pass. Stage: staging-test (local preview of origin/staging; GitHub Pages has no staging site).
