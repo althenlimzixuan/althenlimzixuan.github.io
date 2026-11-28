@@ -103,6 +103,9 @@ did not check the skills list and the services section for the Postgres change).
 one more test step (step 8) and a check of the API step's text in step 4; it changes no
 journey, contract or data. Precondition: the build edits the case study but misses
 <code>SkillsMatrix</code> or <code>services.yaml</code>; likelihood: low, and now caught by step 8.</li>
+<li><strong>Test steps 1 and 2 corrected before your test (28 Nov).</strong> The facts strip and the stack list
+are on the landing page's featured ETP card, not on <code>/work/etp/</code>; the steps first sent you to
+the wrong page. Nothing built changed, only where the steps say to look.</li>
 </ol>
 <h2>Features</h2>
 <h3>F-009 — ETP case study proof pass</h3>
@@ -113,9 +116,9 @@ differentiator was never built.</p>
 matches what ETP runs today.</p>
 <p><strong>Test script</strong> (on the local preview: <code>npm run build &amp;&amp; npm run preview</code> from <code>staging</code>):</p>
 <ol>
-<li>Do: open <code>/work/etp/</code> and read the facts strip under the title → Expect: Surfaces shipped reads
+<li>Do: on <code>/</code>, read the facts on the featured ETP card → Expect: Surfaces shipped reads
 &quot;API, web, mobile, admin&quot; and Delivery phases reads &quot;90+&quot;.</li>
-<li>Do: read the stack list on the same page → Expect: MySQL, Cloud SQL, Terraform and Django are
+<li>Do: read the stack list on the same card → Expect: MySQL, Cloud SQL, Terraform and Django are
 listed; PostgreSQL is not.</li>
 <li>Do: read &quot;What I built&quot; → Expect: four surfaces, the admin one included; a short paragraph
 names auto-plan, the assistant, receipt scanning and the other shipped features; no sentence
@@ -164,6 +167,12 @@ generated client.</li>
 <li>Ellovia Vault or Ellovia Accounts on the site: a later call, when there is something public.</li>
 <li>Links to the Ellovia Trip and Ellovia Vault websites or Play Store pages: asked for at spec
 review, now its own card, F-010.</li>
+</ul>
+<h3>Settled by the owner</h3>
+<p>Decided by the owner (<code>doc/decisions.md</code>): not findings unless the code breaks one.</p>
+<ul>
+<li>Decision 4: How much of ETP's newer work should the case study mention? → One short paragraph naming what else shipped; the four decisions stay the spine.</li>
+<li>Decision 5: Replace Postgres with MySQL in the skills list and services section? → Keep Postgres and add MySQL beside it (Ellovia Vault runs on Postgres).</li>
 <li>The ETP infrastructure diagram (milestone M2) and the screenshots in your checkout.</li>
 <li>A walkthrough video or screenshots on the case study.</li>
 </ul>

@@ -119,3 +119,9 @@ Sign-off PR 38 opened (dev -> staging, [HUMAN GATE]). Waiting for the owner to m
 ## 2026-11-28 19:09 — Sign-off merged, staging test next
 
 Owner merged sign-off PR 38 (merge 2ed1afb). Single-repo: no component promotions. No qa_command: no QA pass. Stage: staging-test (local preview of origin/staging; GitHub Pages has no staging site).
+
+## 2026-11-28 19:12 — Ready for the owner test
+
+Pre-flight: origin/staging (2ed1afb) built in the set (build exit 0, verify:css ok), then the set switched back to docs/001-etp-proof-pass; astro preview serves the staging build at localhost:4321; /, /work/etp/ and /resume/ answer 200. low memory: 1.9 GiB free.
+Each test step checked against the built pages: steps 1 and 2 pointed at /work/etp/, but the facts strip and stack list render on the landing page's featured ETP card. Steps corrected in spec.md (Calls I made 13) and doc/features.yaml; nothing built changed. Spec page republished.
+Waiting for the owner's staging test (8 steps).

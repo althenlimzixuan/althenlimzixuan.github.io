@@ -74,6 +74,9 @@ side; Ellovia Vault's API runs on Postgres, checked in its `api/go.mod`).
     one more test step (step 8) and a check of the API step's text in step 4; it changes no
     journey, contract or data. Precondition: the build edits the case study but misses
     `SkillsMatrix` or `services.yaml`; likelihood: low, and now caught by step 8.
+13. **Test steps 1 and 2 corrected before your test (28 Nov).** The facts strip and the stack list
+    are on the landing page's featured ETP card, not on `/work/etp/`; the steps first sent you to
+    the wrong page. Nothing built changed, only where the steps say to look.
 
 ## Features
 
@@ -88,9 +91,9 @@ matches what ETP runs today.
 
 **Test script** (on the local preview: `npm run build && npm run preview` from `staging`):
 
-1. Do: open `/work/etp/` and read the facts strip under the title → Expect: Surfaces shipped reads
+1. Do: on `/`, read the facts on the featured ETP card → Expect: Surfaces shipped reads
    "API, web, mobile, admin" and Delivery phases reads "90+".
-2. Do: read the stack list on the same page → Expect: MySQL, Cloud SQL, Terraform and Django are
+2. Do: read the stack list on the same card → Expect: MySQL, Cloud SQL, Terraform and Django are
    listed; PostgreSQL is not.
 3. Do: read "What I built" → Expect: four surfaces, the admin one included; a short paragraph
    names auto-plan, the assistant, receipt scanning and the other shipped features; no sentence

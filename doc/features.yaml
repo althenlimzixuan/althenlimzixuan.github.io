@@ -92,8 +92,8 @@
   status: not-tested
   phase: "001"
   test_script:
-    - {step: 1, do: "Open /work/etp/ and read the facts strip under the title.", expect: "Surfaces shipped reads \"API, web, mobile, admin\" and Delivery phases reads \"90+\"."}
-    - {step: 2, do: "Read the stack list on the same page.", expect: "MySQL, Cloud SQL, Terraform and Django are listed; PostgreSQL is not."}
+    - {step: 1, do: "On /, read the facts on the featured ETP card.", expect: "Surfaces shipped reads \"API, web, mobile, admin\" and Delivery phases reads \"90+\"."}
+    - {step: 2, do: "Read the stack list on the same card.", expect: "MySQL, Cloud SQL, Terraform and Django are listed; PostgreSQL is not."}
     - {step: 3, do: "Read \"What I built\".", expect: "Four surfaces, the admin one included; a short paragraph names auto-plan, the assistant, receipt scanning and the other shipped features; no sentence says auto-plan or bookings do not exist."}
     - {step: 4, do: "Scroll through the architecture walkthrough.", expect: "The API step says \"GORM over MySQL\"; step 3 reads \"Three clients consume one definition\", and its diagram lights up three boxes: web, mobile and admin."}
     - {step: 5, do: "Read \"Honest limitations\".", expect: "Travel time and \"no public demo\" are still there; bookings say ETP records them but does not book; there is no \"assisted scheduling is not shipped\" line."}
