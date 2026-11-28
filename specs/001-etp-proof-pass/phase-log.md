@@ -141,3 +141,7 @@ WhatsApp and LinkedIn: new card F-012 (todo); asked the owner for the values and
 ## 2026-11-28 19:41 — F-009 back to not-tested
 
 Owner cannot see the test steps. F-009 set back to not-tested (no step had a result yet, so retest was wrong). Walking the owner through the steps in the session meanwhile.
+
+## 2026-11-28 19:53 — Staging test passed
+
+Staging test done on the local preview (env: local): step 1 pass in the session; owner passed steps 2 to 9 together ("lets pass all"). Pal Center results: none. F-009 passed. Stage: shipping.

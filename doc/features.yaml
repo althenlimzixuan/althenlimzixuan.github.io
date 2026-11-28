@@ -89,7 +89,7 @@
   label: need
   why: The ETP case study is the site's main proof of work, and three months of drift left it naming the wrong database, undercounting phases and calling a shipped feature unbuilt.
   use_case: A prospect reads /work/etp/ and every fact on it matches what ETP actually runs today.
-  status: not-tested
+  status: passed
   phase: "001"
   test_script:
     - {step: 1, do: "On /, read the facts on the featured ETP card.", expect: "Surfaces shipped reads \"API, web, mobile, admin\" and Delivery phases reads \"90+\"."}
@@ -101,7 +101,16 @@
     - {step: 7, do: "Check the case study's address.", expect: "It is still /work/etp/, and the landing page's featured project still opens it."}
     - {step: 8, do: "On /resume/, read the Skills list; then on /, open the \"Backend APIs in Go\" service.", expect: "Both list PostgreSQL and MySQL side by side (by design: Ellovia Vault runs on Postgres, ETP on MySQL)."}
     - {step: 9, do: "On /, read the featured project's title; open /work/etp/ and read its title and the browser tab; on /resume/, read the Selected work heading.", expect: "Each reads \"ETP — Ellovia Trip Planner\"; \"Essential Traveller Planner\" appears nowhere (added at the staging test, decision 6)."}
-  results: []
+  results:
+    - {date: "2026-11-28", env: local, step: 1, result: pass, note: "", issue: ""}
+    - {date: "2026-11-28", env: local, step: 2, result: pass, note: "owner passed steps 2 to 9 together: pass all", issue: ""}
+    - {date: "2026-11-28", env: local, step: 3, result: pass, note: "owner passed steps 2 to 9 together: pass all", issue: ""}
+    - {date: "2026-11-28", env: local, step: 4, result: pass, note: "owner passed steps 2 to 9 together: pass all", issue: ""}
+    - {date: "2026-11-28", env: local, step: 5, result: pass, note: "owner passed steps 2 to 9 together: pass all", issue: ""}
+    - {date: "2026-11-28", env: local, step: 6, result: pass, note: "owner passed steps 2 to 9 together: pass all", issue: ""}
+    - {date: "2026-11-28", env: local, step: 7, result: pass, note: "owner passed steps 2 to 9 together: pass all", issue: ""}
+    - {date: "2026-11-28", env: local, step: 8, result: pass, note: "owner passed steps 2 to 9 together: pass all", issue: ""}
+    - {date: "2026-11-28", env: local, step: 9, result: pass, note: "owner passed steps 2 to 9 together: pass all", issue: ""}
 - id: F-010
   name: Links to the live Ellovia products
   label: need
