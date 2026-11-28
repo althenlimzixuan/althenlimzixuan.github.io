@@ -6,11 +6,11 @@ bundle: {features: [F-009], issues: ["althenlimzixuan/althenlimzixuan.github.io#
 stage: spec
 waiting_on_owner: null
 approach: inline
-session: "PF-work-HDJQBE"
+session: "PF-pickup-2026-11-28"
 tasks: {done: 0, total: 0}
 ci: none
 load_test: false
 codex: {spec: 0, code: 0, uiux: 0, skipped: []}
 gates: {spec_approved: null, plan_approved: null, signoff_merged: null, staging_test_done: null}
-last_progress_at: 2026-11-25T21:45:01+08:00
+last_progress_at: 2026-11-28T17:54:51+08:00
 notes: []
